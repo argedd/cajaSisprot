@@ -21,7 +21,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.adminpay.caja.R
-import com.adminpay.caja.ui.presentation.contract.FacturacionScreen
+import com.adminpay.caja.ui.presentation.checkout.CheckoutScreen
+import com.adminpay.caja.utils.rememberScreenDimensions
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -53,9 +54,12 @@ fun MainScreen() {
                 }
             },
             content = { padding ->
-                Box(modifier = Modifier.padding(padding)) {
+                Box(modifier = Modifier.padding(padding).background(Color.White)) {
                     when (selectedScreen) {
-                        "facturacion" -> FacturacionScreen()
+                        "facturacion" -> CheckoutScreen(
+                            screen = rememberScreenDimensions(),
+                            serviceId = "1234"
+                        )
                         "caja" -> CajaScreen()
                     }
                 }

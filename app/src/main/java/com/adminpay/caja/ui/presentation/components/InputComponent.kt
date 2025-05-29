@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
@@ -40,7 +41,7 @@ fun InputComponent(
     leadingIcon: ImageVector? = null,
     trailingIcon: ImageVector? = null,
     singleLine: Boolean = true,
-    height: Int = 56,
+    height: Int = 48,
     cornerRadius: Int = 12,
     textStyle: TextStyle = TextStyle.Default,
     placeholderStyle: TextStyle = TextStyle.Default,
@@ -54,7 +55,7 @@ fun InputComponent(
             .fillMaxWidth()
             .height(height.dp),
         shape = RoundedCornerShape(cornerRadius.dp),
-        color = MaterialTheme.colorScheme.surface,
+        color = Color.White,
         border = BorderStroke(
             1.dp,
             if (isError) MaterialTheme.colorScheme.error
@@ -77,7 +78,7 @@ fun InputComponent(
                         contentDescription = null,
                         tint = if (isError) MaterialTheme.colorScheme.error
                         else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(20.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                 }
@@ -123,7 +124,7 @@ fun InputComponent(
                         tint = if (isError) MaterialTheme.colorScheme.error
                         else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                         modifier = Modifier
-                            .size(24.dp)
+                            .size(20.dp)
                             .clickable { onTrailingIconClick() }
                     )
                 }
