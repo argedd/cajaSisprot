@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.adminpay.caja.ui.presentation.auth.AuthScreen
+import com.adminpay.caja.ui.presentation.main.MainScreen
 import com.adminpay.caja.ui.theme.CajaTheme
 
 class MainActivity : ComponentActivity() {
@@ -23,7 +24,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             CajaTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) {
-                    AuthScreen()
+                    MainScreen()
                 }
             }
         }
