@@ -80,6 +80,9 @@ dependencies {
     //lottie
     implementation (libs.lottie.compose)
 
+    //Chars
+    implementation (libs.compose.charts)
+
 
 
 

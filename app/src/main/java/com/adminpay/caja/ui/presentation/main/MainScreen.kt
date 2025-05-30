@@ -21,6 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.adminpay.caja.R
+import com.adminpay.caja.ui.presentation.box.BoxScreen
 import com.adminpay.caja.ui.presentation.checkout.CheckoutScreen
 import com.adminpay.caja.utils.rememberScreenDimensions
 import kotlinx.coroutines.launch
@@ -60,7 +61,7 @@ fun MainScreen() {
                             screen = rememberScreenDimensions(),
                             serviceId = "1234"
                         )
-                        "caja" -> CajaScreen()
+                        "caja" -> BoxScreen()
                     }
                 }
             }

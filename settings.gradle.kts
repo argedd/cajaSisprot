@@ -9,7 +9,9 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        maven("https://jitpack.io") // <- Agrega esto
         maven ("https://oss.sonatype.org/content/repositories/snapshots/")
+
 
     }
 }
