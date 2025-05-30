@@ -156,6 +156,20 @@ fun CheckoutSummary(screen: ScreenDimensions) {
                         color = Color(0xFFB71C1C) // rojo oscuro
                     )
                     AmountComponent(monto = 862.20, screen = screen)
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // Botón Validar Pago
+                    Button(
+                        onClick = {
+                            // Acción de validación
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 4.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                    ) {
+                        Text("Pagar", color = Color.White)
+                    }
                 }
             }
         }
