@@ -35,6 +35,7 @@ fun MedioDigitalScreen() {
     var titular by remember { mutableStateOf("") }
     var fecha by remember { mutableStateOf("") }
     var monto by remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -123,7 +124,7 @@ fun MedioDigitalScreen() {
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp),
+                .padding(horizontal = 4.dp),
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
             Text("Cargar Pago", color = Color.White)

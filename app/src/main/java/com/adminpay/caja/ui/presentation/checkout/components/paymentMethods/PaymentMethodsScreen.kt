@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.bancaNacional.BancaNacionalScreen
 import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.medioDigital.MedioDigitalScreen
+import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.pos.PosScreen
 import com.adminpay.caja.utils.ScreenDimensions
 
 @Composable
@@ -112,10 +113,9 @@ fun PaymentMethodsScreen(
                     PaymentMethod.BANCA_NACIONAL -> BancaNacionalScreen()
                     PaymentMethod.MEDIOS_DIGITALES -> MedioDigitalScreen()
                     PaymentMethod.EFECTIVO -> Text("Vista Efectivo")
-                    PaymentMethod.PUNTO_VENTA -> Text("Vista Punto de Venta")
+                    PaymentMethod.PUNTO_VENTA -> PosScreen()
                 }
 
-                Spacer(modifier = Modifier.height(32.dp))
 
             }
         }

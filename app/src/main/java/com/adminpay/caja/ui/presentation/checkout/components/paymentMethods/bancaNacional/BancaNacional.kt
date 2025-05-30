@@ -137,7 +137,7 @@ fun BancaNacionalScreen() {
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp),
+                .padding(horizontal = 4.dp),
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
             Text("Validar Pago", color = Color.White)
