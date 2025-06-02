@@ -50,6 +50,7 @@ androidx-retrofit = { group = "com.squareup.retrofit2", name = "retrofit", versi
 androidx-retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 
 
+
 # Dagger Hilt (usando KSP)
 androidx-hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 androidx-hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }

@@ -1,6 +1,5 @@
 package com.adminpay.caja.ui.presentation.auth
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -31,11 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -48,7 +43,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 
 @Composable
-fun AuthScreen() {
+fun AuthScreen(authViewModel: AuthViewModel ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
@@ -148,7 +143,9 @@ fun AuthScreen() {
                             Spacer(modifier = Modifier.height(32.dp))
 
                             Button(
-                                onClick = { /* handle login */ },
+                                onClick = {
+                                    authViewModel.login(email = username, password = password)
+                                },
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(56.dp),

@@ -1,3 +1,6 @@
+import java.util.Properties
+import kotlin.apply
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -10,6 +13,11 @@ android {
     namespace = "com.adminpay.caja"
     compileSdk = 35
 
+    buildFeatures {
+        compose = true
+        buildConfig = true
+    }
+
     defaultConfig {
         applicationId = "com.adminpay.caja"
         minSdk = 27
@@ -18,6 +26,18 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Cargando las variables del .env
+        val envProps = Properties().apply {
+            val envFile = rootProject.file(".env")
+            if (envFile.exists()) {
+                envFile.inputStream().use { load(it) }
+            }
+        }
+        // Imprimir las propiedades en los logs de la compilación
+        println("API_URL: ${envProps["API_URL"]}")
+
+        buildConfigField("String", "API_URL", "\"${envProps["API_URL"]}\"")
     }
 
     buildTypes {
@@ -36,9 +56,7 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
-    buildFeatures {
-        compose = true
-    }
+
 }
 
 dependencies {
