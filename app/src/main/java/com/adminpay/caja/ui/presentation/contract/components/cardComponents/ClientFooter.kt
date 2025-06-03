@@ -10,14 +10,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.adminpay.caja.ui.presentation.contract.Cliente
 
 @Composable
-fun ClienteFooter(cliente: Cliente) {
+fun ClienteFooter(cliente: Cliente, navController: NavHostController) {
     if (cliente.debt_bs > 0f) {
         Box(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
             Button(
-                onClick = { /* Acción de pago */ },
+                onClick = { navController.navigate("checkout_screen") },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFFFCA311),

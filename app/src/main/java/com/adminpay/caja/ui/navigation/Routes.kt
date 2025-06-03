@@ -5,6 +5,11 @@ sealed class Routes(val route: String) {
     object AuthScreen : Routes("auth_screen")
 
 
+    // Rutas internas dentro del drawer
+    object ContractScreen : Routes("contract_screen")
+    object BoxScreen : Routes("box_screen")
+    object CheckoutScreen : Routes("checkout_screen")
+
 
     fun withArgs(vararg args: String): String {
         return buildString {

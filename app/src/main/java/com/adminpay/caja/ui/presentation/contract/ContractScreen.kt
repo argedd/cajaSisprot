@@ -11,11 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.adminpay.caja.ui.presentation.contract.components.Buscador
 import com.adminpay.caja.ui.presentation.contract.components.ClienteCard
 
 @Composable
-fun FacturacionScreen() {
+fun ContractScreen(navController: NavHostController) {
     val tipos = listOf("V", "E", "J", "G", "P")
     var selectedTipo by remember { mutableStateOf("V") }
     var cedula by remember { mutableStateOf("") }
@@ -47,7 +48,7 @@ fun FacturacionScreen() {
             modifier = Modifier.fillMaxSize()
         ) {
             items(clientes) { cliente ->
-                ClienteCard(cliente)
+                ClienteCard(cliente, navController)
             }
         }
     }

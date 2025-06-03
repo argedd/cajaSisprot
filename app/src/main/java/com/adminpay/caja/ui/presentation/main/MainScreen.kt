@@ -10,40 +10,48 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.adminpay.caja.domain.model.auth.User
+import com.adminpay.caja.ui.navigation.MainNavHost
 import com.adminpay.caja.ui.presentation.auth.AuthState
 import com.adminpay.caja.ui.presentation.auth.AuthViewModel
-import com.adminpay.caja.ui.presentation.box.BoxScreen
-import com.adminpay.caja.ui.presentation.checkout.CheckoutScreen
 import com.adminpay.caja.ui.presentation.main.components.DrawerContent
 import com.adminpay.caja.ui.presentation.main.components.HeaderContent
-import com.adminpay.caja.utils.rememberScreenDimensions
 import kotlinx.coroutines.launch
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnrememberedGetBackStackEntry")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainScreen(navController: NavHostController, authViewModel: AuthViewModel) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val authState by authViewModel.authState.collectAsState()
 
-    var selectedScreen by remember { mutableStateOf("facturacion") }
-
-    // Obtenemos el User ya procesado desde el AuthState
     val user: User? = (authState as? AuthState.Success)?.user?.getOrNull()
-
     Log.d("MainScreen", "User: $user")
+
+    // NavController interno para navegación dentro del layout principal
+    val internalNavController = rememberNavController()
+
+    // Obtener la ruta actual
+    val currentRoute = internalNavController.currentBackStackEntryAsState().value?.destination?.route.orEmpty()
 
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
             DrawerContent(
-                selectedRoute = selectedScreen,
+                selectedRoute = currentRoute,
                 onDestinationClicked = { route ->
                     if (route == "logout") {
                         authViewModel.logout()
                     } else {
-                        selectedScreen = route
+                        internalNavController.navigate(route) {
+                            launchSingleTop = true
+                            popUpTo(internalNavController.graph.startDestinationId) {
+                                saveState = true
+                            }
+                            restoreState = true
+                        }
                         scope.launch { drawerState.close() }
                     }
                 },
@@ -55,24 +63,17 @@ fun MainScreen(navController: NavHostController, authViewModel: AuthViewModel) {
             topBar = {
                 HeaderContent(
                     user = user,
-                    onMenuClick = { scope.launch { drawerState.open() } },
+                    onMenuClick = { scope.launch { drawerState.open() } }
                 )
-            },
-            content = { padding ->
-                Box(modifier = Modifier.padding(padding).background(Color.White)) {
-                    when (selectedScreen) {
-                        "facturacion" -> CheckoutScreen(
-                            screen = rememberScreenDimensions(),
-                            serviceId = "1234"
-                        )
-                        "caja" -> BoxScreen()
-                    }
-                }
             }
-
-        )
+        ) { padding ->
+            Box(
+                modifier = Modifier
+                    .padding(padding)
+                    .background(Color.White)
+            ) {
+                MainNavHost(navController = internalNavController)
+            }
+        }
     }
 }
-
-
-

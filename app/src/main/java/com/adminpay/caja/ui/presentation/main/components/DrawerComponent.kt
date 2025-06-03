@@ -48,8 +48,8 @@ fun DrawerContent(
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
 
-            DrawerItem("Facturación", Icons.Default.RequestPage, "facturacion", selectedRoute, onDestinationClicked)
-            DrawerItem("Caja", Icons.Default.PointOfSale, "caja", selectedRoute, onDestinationClicked)
+            DrawerItem("Facturación", Icons.Default.RequestPage, "contract_screen", selectedRoute, onDestinationClicked)
+            DrawerItem("Caja", Icons.Default.PointOfSale, "box_screen", selectedRoute, onDestinationClicked)
         }
 
         Column(
