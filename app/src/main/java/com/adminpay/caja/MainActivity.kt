@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.adminpay.caja.ui.navigation.AppNavHost
+import com.adminpay.caja.ui.presentation.components.LoadingComponent
 import com.adminpay.caja.ui.theme.CajaTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -16,6 +17,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             CajaTheme {
                 AppNavHost()
+                LoadingComponent()
+
             }
         }
     }

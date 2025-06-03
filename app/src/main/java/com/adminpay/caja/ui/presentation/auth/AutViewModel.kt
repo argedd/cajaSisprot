@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.adminpay.caja.data.providers.TokenProvider
 import com.adminpay.caja.domain.model.auth.User
 import com.adminpay.caja.domain.useCase.LoginUseCase
+import com.movilpay.autopago.utils.LoadingController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,13 +15,16 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
-    private val tokenProvider: TokenProvider
+    private val tokenProvider: TokenProvider,
+    private val loadingController: LoadingController
+
 ) : ViewModel() {
 
     private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
     val authState: StateFlow<AuthState> = _authState
 
     fun login(email: String, password: String) {
+        loadingController.show()
         viewModelScope.launch {
             _authState.value = AuthState.Loading
             try {
@@ -28,16 +32,21 @@ class AuthViewModel @Inject constructor(
                 _authState.value = AuthState.Success(result)
             } catch (e: Exception) {
                 _authState.value = AuthState.Error(e.message ?: "Error desconocido")
+            } finally {
+                loadingController.hide()
             }
         }
     }
+
     fun logout() {
+        loadingController.show()
+
         tokenProvider.clearToken()
         _authState.value = AuthState.Idle
+        loadingController.hide()
+
     }
 }
-
-
 
 
 sealed class AuthState {
