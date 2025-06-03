@@ -18,6 +18,8 @@ import javax.inject.Singleton
 object NetworkModule {
 
     @Provides
+    @Singleton
+    @ApiUrl
     fun provideBaseUrl(): String = BuildConfig.API_URL
 
     @Provides
@@ -34,7 +36,7 @@ object NetworkModule {
     @DefaultRetrofit
     fun provideRetrofit(
         okHttpClient: OkHttpClient,
-        baseUrl: String,
+        @ApiUrl baseUrl: String,
         gson: Gson
     ): Retrofit =
         Retrofit.Builder()

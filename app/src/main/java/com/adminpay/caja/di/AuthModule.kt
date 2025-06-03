@@ -23,6 +23,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AuthModule {
 
+
     @Provides
     @Singleton
     fun provideSharedPrefs(app: Application): SharedPreferences =
@@ -51,7 +52,7 @@ object AuthModule {
     @AuthRetrofit
     fun provideAuthRetrofit(
         @AuthOkHttp okHttpClient: OkHttpClient,
-        baseUrl: String,
+        @ApiUrl baseUrl: String,
         gson: Gson
     ): Retrofit =
         Retrofit.Builder()

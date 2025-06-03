@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.adminpay.caja.domain.model.auth.User
+import com.adminpay.caja.ui.presentation.main.components.tasa.TasaBcv
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -30,7 +31,6 @@ fun HeaderContent(
         SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
     }
 
-    val tasaBCV = "0.00"
     val userName = if (user != null) {
         "${user.name.replaceFirstChar { it.uppercase() }} ${user.lastName.replaceFirstChar { it.uppercase() }}"
     } else {
@@ -72,11 +72,7 @@ fun HeaderContent(
                             style = MaterialTheme.typography.titleSmall,
                             modifier = Modifier.padding(end = 12.dp)
                         )
-                        Text(
-                            text = "Tasa BCV: $tasaBCV",
-                            color = Color.White,
-                            style = MaterialTheme.typography.titleSmall
-                        )
+                        TasaBcv()
                     }
                 }
 

@@ -14,3 +14,8 @@ annotation class AuthRetrofit
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class AuthOkHttp
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class ApiUrl
+
