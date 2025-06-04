@@ -16,8 +16,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.adminpay.caja.domain.model.auth.User
 import com.adminpay.caja.ui.presentation.main.components.tasa.TasaBcv
+import com.adminpay.caja.utils.rememberScreenDimensions
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -36,6 +38,8 @@ fun HeaderContent(
     } else {
         "Usuario"
     }
+
+    val screen = rememberScreenDimensions()
 
     Log.d("HeaderContent", "User: $userName")
 
@@ -68,8 +72,11 @@ fun HeaderContent(
                     ) {
                         Text(
                             text = "Fecha: $fecha",
-                            color = Color.White,
-                            style = MaterialTheme.typography.titleSmall,
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = screen.heightPercentage(0.020f).value.sp
+                            ),
                             modifier = Modifier.padding(end = 12.dp)
                         )
                         TasaBcv()

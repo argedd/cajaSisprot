@@ -7,9 +7,8 @@ import javax.inject.Inject
 
 class GetTasaUseCase @Inject constructor(    private val repository: TasaRepository
 ){
-    suspend operator fun invoke(): List<ModelTasa> {
-        Log.d("GetTasaUseCase", "Invoking use case")
-        return repository.getTasaBcv()
+    suspend operator fun invoke(removed: Boolean): List<ModelTasa> {
+        return repository.getTasaBcv(removed)
     }
 
 }

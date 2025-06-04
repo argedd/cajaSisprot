@@ -33,8 +33,7 @@ class TasaViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             try {
-                val result = getTasaUseCase()
-                Log.d("TasaViewModel", "Tasa result: $result")
+                val result = getTasaUseCase(removed = true)
                 _state.update {
                     it.copy(
                         isLoading = false,

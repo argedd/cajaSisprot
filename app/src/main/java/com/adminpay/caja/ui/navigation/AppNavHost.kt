@@ -1,5 +1,6 @@
 package com.adminpay.caja.ui.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -23,23 +24,27 @@ fun AppNavHost(
     val state = authViewModel.authState.collectAsState().value
 
     LaunchedEffect(state) {
+
         when (state) {
             is AuthState.Success -> {
                 navController.navigate(Routes.MainScreen.route) {
                     popUpTo(Routes.AuthScreen.route) { inclusive = true }
                 }
             }
-
-            is AuthState.Error,
+            is AuthState.Error -> {
+                // No navegar a ningún lado. El AuthScreen ya está visible.
+                // Puedes mostrar un Snackbar o mensaje de error desde el AuthScreen.
+            }
             AuthState.Idle -> {
+                // Al iniciar la app, asegúrate de estar en AuthScreen
                 navController.navigate(Routes.AuthScreen.route) {
-                    popUpTo(Routes.MainScreen.route) { inclusive = true }
+                    popUpTo(0) // limpiar todo si es necesario
                 }
             }
-
             else -> {}
         }
     }
+
 
 
     NavHost(

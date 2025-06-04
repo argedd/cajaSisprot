@@ -19,8 +19,6 @@ class AuthRepositoryImpl @Inject constructor(
             Log.d("AuthRepo", "Enviando login: email=$email, password=$password")
             val response = api.login(LoginRequestDto(email, password))
             tokenProvider.saveToken(response.token)
-            Log.d("AuthRepo", "Recibido token: ${response.token}")
-            Log.d("AuthRepo", "Usuario: ${response.user}")
             Result.success(response.user.toDomain())
         } catch (e: Exception) {
             Log.d("Error", "Recibido token: ${e}")

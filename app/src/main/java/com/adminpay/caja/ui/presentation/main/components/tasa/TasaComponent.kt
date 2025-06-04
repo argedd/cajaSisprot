@@ -30,16 +30,16 @@ fun TasaBcv(viewModel: TasaViewModel = hiltViewModel()) {
         Text(
             text = "${tasa.amount} BS",
             style = MaterialTheme.typography.bodyMedium.copy(
-                color = Color(0xFF4CAF50),
+                color = Color.White,
                 fontWeight = FontWeight.Bold,
-                fontSize = screen.widthPercentage(0.035f).value.sp
+                fontSize = screen.heightPercentage(0.020f).value.sp
             )
         )
     } ?: run {
         Text(
             text = "No disponible",
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-            fontSize = screen.widthPercentage(0.035f).value.sp
+            fontSize = screen.heightPercentage(0.020f).value.sp
         )
     }
 }

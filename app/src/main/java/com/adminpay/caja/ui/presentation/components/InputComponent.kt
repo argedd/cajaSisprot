@@ -3,6 +3,7 @@ package com.adminpay.caja.ui.presentation.components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,6 +39,8 @@ fun InputComponent(
     placeholder: String = "",
     keyboardType: KeyboardType = KeyboardType.Text,
     isError: Boolean = false,
+    error: String? = null,
+    isPassword: Boolean = false,
     leadingIcon: ImageVector? = null,
     trailingIcon: ImageVector? = null,
     singleLine: Boolean = true,
@@ -45,91 +48,103 @@ fun InputComponent(
     cornerRadius: Int = 12,
     textStyle: TextStyle = TextStyle.Default,
     placeholderStyle: TextStyle = TextStyle.Default,
-    onTrailingIconClick: () -> Unit = {}, // ← este valor por defecto lo hace opcional
-)
- {
+    onTrailingIconClick: () -> Unit = {}
+) {
     val focusRequester = remember { FocusRequester() }
 
-    Surface(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(height.dp),
-        shape = RoundedCornerShape(cornerRadius.dp),
-        color = Color.White,
-        border = BorderStroke(
-            1.dp,
-            if (isError) MaterialTheme.colorScheme.error
-            else MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
-        ),
-    ) {
-        Box(
+    Column(modifier = modifier) {
+        Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            contentAlignment = Alignment.CenterStart
+                .height(height.dp),
+            shape = RoundedCornerShape(cornerRadius.dp),
+            color = Color.White,
+            border = BorderStroke(
+                1.dp,
+                if (isError) MaterialTheme.colorScheme.error
+                else MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
+            ),
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                contentAlignment = Alignment.CenterStart
             ) {
-                // Leading Icon
-                leadingIcon?.let {
-                    Icon(
-                        imageVector = it,
-                        contentDescription = null,
-                        tint = if (isError) MaterialTheme.colorScheme.error
-                        else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                }
-
-                // Text Field
-                BasicTextField(
-                    value = value,
-                    onValueChange = onValueChange,
-                    modifier = Modifier
-                        .weight(1f)
-                        .focusRequester(focusRequester),
-                    singleLine = singleLine,
-                    textStyle = textStyle.copy(
-                        color = if (isError) MaterialTheme.colorScheme.error
-                        else MaterialTheme.colorScheme.onSurface,
-                        textAlign = TextAlign.Start
-                    ),
-                    keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-                    decorationBox = { innerTextField ->
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.CenterStart
-                        ) {
-                            if (value.isEmpty()) {
-                                Text(
-                                    text = placeholder,
-                                    style = placeholderStyle.copy(
-                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                                    )
-                                )
-                            }
-                            innerTextField()
-                        }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // Leading Icon
+                    leadingIcon?.let {
+                        Icon(
+                            imageVector = it,
+                            contentDescription = null,
+                            tint = if (isError) MaterialTheme.colorScheme.error
+                            else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
                     }
-                )
 
-                // Trailing Icon
-                trailingIcon?.let {
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Icon(
-                        imageVector = it,
-                        contentDescription = null,
-                        tint = if (isError) MaterialTheme.colorScheme.error
-                        else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                    // Text Field
+                    BasicTextField(
+                        value = value,
+                        onValueChange = onValueChange,
                         modifier = Modifier
-                            .size(20.dp)
-                            .clickable { onTrailingIconClick() }
+                            .weight(1f)
+                            .focusRequester(focusRequester),
+                        singleLine = singleLine,
+                        textStyle = textStyle.copy(
+                            color = if (isError) MaterialTheme.colorScheme.error
+                            else MaterialTheme.colorScheme.onSurface,
+                            textAlign = TextAlign.Start
+                        ),
+                        keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+                        visualTransformation = if (isPassword) androidx.compose.ui.text.input.PasswordVisualTransformation() else androidx.compose.ui.text.input.VisualTransformation.None,
+                        decorationBox = { innerTextField ->
+                            Box(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = Alignment.CenterStart
+                            ) {
+                                if (value.isEmpty()) {
+                                    Text(
+                                        text = placeholder,
+                                        style = placeholderStyle.copy(
+                                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                                        )
+                                    )
+                                }
+                                innerTextField()
+                            }
+                        }
                     )
-                }
 
+                    // Trailing Icon
+                    trailingIcon?.let {
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Icon(
+                            imageVector = it,
+                            contentDescription = null,
+                            tint = if (isError) MaterialTheme.colorScheme.error
+                            else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                            modifier = Modifier
+                                .size(20.dp)
+                                .clickable { onTrailingIconClick() }
+                        )
+                    }
+                }
             }
+        }
+
+        // Error message
+        if (error != null) {
+            Text(
+                text = error,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier
+                    .padding(start = 8.dp, top = 4.dp)
+            )
         }
     }
 }
