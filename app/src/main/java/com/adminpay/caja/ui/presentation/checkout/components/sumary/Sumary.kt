@@ -2,8 +2,10 @@ package com.adminpay.caja.ui.presentation.checkout.components.sumary
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Assignment
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,7 +36,7 @@ fun CheckoutSummary(screen: ScreenDimensions) {
                 val infoItems = listOf(
                     Icons.Default.Person to "Cliente: PRUEBA FREDDY",
                     Icons.Default.Description to "Nota de cobro: #40973",
-                    Icons.Default.Assignment to "Nro Contrato: #7363",
+                    Icons.AutoMirrored.Filled.Assignment to "Nro Contrato: #7363",
                     Icons.Default.Info to "SERVICIO DE INTERNET, RECURRENTE RESIDENCIAL PLAN 10M [FOR10] mes de ABRIL"
                 )
                 Column {
@@ -68,7 +70,7 @@ fun CheckoutSummary(screen: ScreenDimensions) {
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
-                Divider()
+                HorizontalDivider()
                 Spacer(modifier = Modifier.height(12.dp))
 
                 // Métodos de pago como cards 2x2
@@ -135,7 +137,7 @@ fun CheckoutSummary(screen: ScreenDimensions) {
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
-                Divider()
+                HorizontalDivider()
                 Spacer(modifier = Modifier.height(12.dp))
 
                 // Resumen de montos

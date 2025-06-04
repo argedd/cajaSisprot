@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.bancaNacional.BancaNacionalScreen
+import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.efectivo.EfectivoScreen
 import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.medioDigital.MedioDigitalScreen
 import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.pos.PosScreen
 import com.adminpay.caja.utils.ScreenDimensions
@@ -112,7 +113,7 @@ fun PaymentMethodsScreen(
                 when (selectedMethod) {
                     PaymentMethod.BANCA_NACIONAL -> BancaNacionalScreen()
                     PaymentMethod.MEDIOS_DIGITALES -> MedioDigitalScreen()
-                    PaymentMethod.EFECTIVO -> Text("Vista Efectivo")
+                    PaymentMethod.EFECTIVO -> EfectivoScreen()
                     PaymentMethod.PUNTO_VENTA -> PosScreen()
                 }
 
