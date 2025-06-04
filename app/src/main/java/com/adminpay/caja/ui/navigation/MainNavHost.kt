@@ -18,6 +18,7 @@ fun MainNavHost(navController: NavHostController) {
         composable(Routes.ContractScreen.route) { ContractScreen(navController) }
         composable(Routes.BoxScreen.route) { BoxScreen() }
         composable(Routes.CheckoutScreen.route) { CheckoutScreen(
+            navController=navController,
             screen = rememberScreenDimensions(),
             serviceId = "123456"
         ) }

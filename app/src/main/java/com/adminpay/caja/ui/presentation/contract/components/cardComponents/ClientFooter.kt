@@ -1,24 +1,29 @@
 package com.adminpay.caja.ui.presentation.contract.components.cardComponents
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.adminpay.caja.domain.model.invoice.FacturaModel
+import com.adminpay.caja.ui.presentation.components.AppModalComponent
 import com.adminpay.caja.ui.presentation.contract.Cliente
+import com.adminpay.caja.ui.presentation.invoices.FacturasModalContent
 
 @Composable
-fun ClienteFooter(cliente: Cliente, navController: NavHostController) {
+fun ClienteFooter(
+    cliente: Cliente,
+    facturas: List<FacturaModel>,
+    navController: NavHostController
+) {
+    var showModal by remember { mutableStateOf(false) }
+
     if (cliente.debt_bs > 0f) {
         Box(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
             Button(
-                onClick = { navController.navigate("checkout_screen") },
+                onClick = { showModal = true },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFFFCA311),
@@ -27,6 +32,18 @@ fun ClienteFooter(cliente: Cliente, navController: NavHostController) {
             ) {
                 Text("Ver Facturas")
             }
+        }
+    }
+
+    if (showModal) {
+        AppModalComponent(onDismiss = { showModal = false }) {
+            FacturasModalContent(
+                facturas = facturas,
+                onPagarClick = {
+                    showModal = false
+                    navController.navigate("checkout_screen") // Puedes pasar datos si deseas
+                }
+            )
         }
     }
 }
