@@ -96,12 +96,13 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
 
     //lottie
-    implementation (libs.lottie.compose)
+    implementation(libs.lottie.compose)
 
     //Chars
-    implementation (libs.compose.charts)
+    implementation(libs.compose.charts)
 
-
+    //LogsInterceptor
+    implementation(libs.logging.interceptor) // o la versión que estés usando
 
 
     testImplementation(libs.junit)

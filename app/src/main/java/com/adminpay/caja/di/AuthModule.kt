@@ -4,6 +4,7 @@ package com.adminpay.caja.di
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import com.adminpay.caja.data.interceptors.AuthInterceptor
 import com.adminpay.caja.data.providers.TokenProvider
 import com.adminpay.caja.data.remote.api.AuthApi
@@ -15,6 +16,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -42,10 +44,16 @@ object AuthModule {
     @Provides
     @Singleton
     @AuthOkHttp
-    fun provideAuthOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient =
-        OkHttpClient.Builder()
-            .addInterceptor(authInterceptor)
+    fun provideAuthOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
+        val logging = HttpLoggingInterceptor { message -> Log.d("HttpLogger", message) }
+        logging.level = HttpLoggingInterceptor.Level.BODY
+
+        return OkHttpClient.Builder()
+            .addInterceptor(authInterceptor)    // 🔐 Token + Custom logs
+            .addInterceptor(logging)            // 📜 Request/Response body
             .build()
+    }
+
 
     @Provides
     @Singleton
