@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import com.adminpay.caja.domain.model.auth.User
 import com.adminpay.caja.ui.presentation.main.components.tasa.TasaBcv
 import com.adminpay.caja.utils.rememberScreenDimensions
+import com.movilpay.autopago.utils.currentTimeVenezuela
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -40,6 +41,8 @@ fun HeaderContent(
     }
 
     val screen = rememberScreenDimensions()
+
+    val currentTime = currentTimeVenezuela()
 
     Log.d("HeaderContent", "User: $userName")
 
@@ -71,7 +74,7 @@ fun HeaderContent(
                         modifier = Modifier.padding(top = 12.dp)
                     ) {
                         Text(
-                            text = "Fecha: $fecha",
+                            text = "Fecha: $fecha : $currentTime",
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 color = Color.White,
                                 fontWeight = FontWeight.Bold,
@@ -80,6 +83,9 @@ fun HeaderContent(
                             modifier = Modifier.padding(end = 12.dp)
                         )
                         TasaBcv()
+
+
+
                     }
                 }
 

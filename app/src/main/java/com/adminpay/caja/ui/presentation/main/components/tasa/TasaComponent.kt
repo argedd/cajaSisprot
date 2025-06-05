@@ -28,7 +28,7 @@ fun TasaBcv(viewModel: TasaViewModel = hiltViewModel()) {
 
     state.tasas.firstOrNull()?.let { tasa ->
         Text(
-            text = "${tasa.amount} BS",
+            text = "Tasa BCV: ${tasa.amount} BS",
             style = MaterialTheme.typography.bodyMedium.copy(
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
