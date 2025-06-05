@@ -23,9 +23,6 @@ fun EfectivoScreen() {
     var seriales by remember { mutableStateOf(listOf<SerialEntry>()) }
 
     Column(modifier = Modifier.padding(16.dp)) {
-        Text("Método de Pago: Efectivo", style = MaterialTheme.typography.titleMedium)
-        Spacer(modifier = Modifier.height(16.dp))
-
         Row(verticalAlignment = Alignment.CenterVertically) {
             RadioButton(
                 selected = selectedCurrency == "BS",
@@ -79,6 +76,20 @@ fun EfectivoScreen() {
                 }
             }
         }
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // Botón Validar Pago
+        Button(
+            onClick = {
+                // Acción de validación
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 4.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+        ) {
+            Text("Cargar Pago")
+        }
     }
 
     if (showModal) {
@@ -102,7 +113,10 @@ fun SerialEntryComponent(onAdd: (SerialEntry) -> Unit, onClose: () -> Unit) {
         Text("Agregar Billete", style = MaterialTheme.typography.titleMedium)
         Spacer(modifier = Modifier.height(12.dp))
 
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             InputComponent(
                 value = valor,
                 onValueChange = { valor = it },
