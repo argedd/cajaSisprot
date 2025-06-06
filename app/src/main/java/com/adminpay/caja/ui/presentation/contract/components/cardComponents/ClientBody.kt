@@ -11,10 +11,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.adminpay.caja.ui.presentation.contract.Cliente
+import com.adminpay.caja.domain.model.contract.Contract
 
 @Composable
-fun ClienteBody(cliente: Cliente) {
+fun ClienteBody(cliente: Contract) {
     val labelColor = Color(0xFFFCA311)
     val textSizeLabel = 12.sp
     val textSizeValue = 14.sp
@@ -39,7 +39,7 @@ fun ClienteBody(cliente: Cliente) {
             GridItem(
                 icon = Icons.Default.SignalWifiStatusbar4Bar,
                 label = "Estado",
-                value = cliente.status_name,
+                value = cliente.statusName,
                 labelColor = labelColor,
                 textSizeLabel = textSizeLabel,
                 textSizeValue = textSizeValue,
@@ -49,7 +49,7 @@ fun ClienteBody(cliente: Cliente) {
             GridItem(
                 icon = Icons.Default.Money,
                 label = "Deuda",
-                value = "${cliente.debt_bs} Bs",
+                value = "${cliente.debtBs} Bs",
                 labelColor = labelColor,
                 textSizeLabel = textSizeLabel,
                 textSizeValue = textSizeValue,
@@ -81,7 +81,7 @@ fun ClienteBody(cliente: Cliente) {
                     fontSize = textSizeLabel,
                     fontWeight = FontWeight.Bold
                 )
-                Text(text = cliente.address_tax, fontSize = textSizeValue)
+                Text(text = cliente.addressTax, fontSize = textSizeValue)
             }
         }
     }

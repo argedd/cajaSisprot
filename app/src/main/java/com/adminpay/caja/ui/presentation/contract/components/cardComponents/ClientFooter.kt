@@ -7,20 +7,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.adminpay.caja.domain.model.contract.Contract
 import com.adminpay.caja.domain.model.invoice.FacturaModel
 import com.adminpay.caja.ui.presentation.components.AppModalComponent
-import com.adminpay.caja.ui.presentation.contract.Cliente
 import com.adminpay.caja.ui.presentation.invoices.FacturasModalContent
 
 @Composable
 fun ClienteFooter(
-    cliente: Cliente,
+    cliente: Contract,
     facturas: List<FacturaModel>,
     navController: NavHostController
 ) {
     var showModal by remember { mutableStateOf(false) }
 
-    if (cliente.debt_bs > 0f) {
+    if (cliente.debtBs > 0f) {
         Box(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
             Button(
                 onClick = { showModal = true },

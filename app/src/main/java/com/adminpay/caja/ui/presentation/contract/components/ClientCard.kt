@@ -11,15 +11,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.adminpay.caja.domain.model.contract.Contract
 import com.adminpay.caja.domain.model.invoice.AmountBs
 import com.adminpay.caja.domain.model.invoice.FacturaModel
-import com.adminpay.caja.ui.presentation.contract.Cliente
 import com.adminpay.caja.ui.presentation.contract.components.cardComponents.ClienteBody
 import com.adminpay.caja.ui.presentation.contract.components.cardComponents.ClienteFooter
 import com.adminpay.caja.ui.presentation.contract.components.cardComponents.ClienteHeader
 
 @Composable
-fun ClienteCard(cliente: Cliente, navController: NavHostController) {
+fun ClienteCard(cliente: Contract, navController: NavHostController) {
     val facturas = listOf(
         FacturaModel(
             id = 40973,

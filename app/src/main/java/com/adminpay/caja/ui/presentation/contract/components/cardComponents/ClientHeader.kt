@@ -12,10 +12,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.adminpay.caja.ui.presentation.contract.Cliente
+import com.adminpay.caja.domain.model.contract.Contract
 
 @Composable
-fun ClienteHeader(cliente: Cliente) {
+fun ClienteHeader(cliente: Contract) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
