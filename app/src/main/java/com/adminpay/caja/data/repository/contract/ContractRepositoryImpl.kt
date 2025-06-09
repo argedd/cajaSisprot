@@ -10,6 +10,7 @@ class ContractRepositoryImpl @Inject constructor(
     private val api: ContractApi
 ) : ContractRepository {
     override suspend fun getContracts(identification: String): List<Contract> {
-        return api.getContractsByClient(identification).map { it.toDomain() }
+        val response = api.getContractsByClient(identification)
+        return response.results.map { it.toDomain() }
     }
 }

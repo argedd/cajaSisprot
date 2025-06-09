@@ -35,13 +35,14 @@ fun ContractScreen(
             selectedTipo = state.tipo,
             cedula = state.cedula,
             onTipoSelected = { viewModel.onTipoChanged(it) },
-            onCedulaChange = {
-                viewModel.onCedulaChanged(it)
-                if (it.length >= 6) {
+            onCedulaChange = { viewModel.onCedulaChanged(it) },
+            onBuscarClick = {
+                if (state.cedula.length >= 6) {
                     viewModel.buscarContrato()
                 }
             }
         )
+
 
         Spacer(modifier = Modifier.height(12.dp))
 

@@ -1,5 +1,6 @@
 package com.adminpay.caja.utils
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
@@ -28,6 +29,7 @@ data class ScreenDimensions(
 /**
  * Función composable que provee las dimensiones actuales de la pantalla
  */
+@SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun rememberScreenDimensions(): ScreenDimensions {
     val configuration = LocalConfiguration.current

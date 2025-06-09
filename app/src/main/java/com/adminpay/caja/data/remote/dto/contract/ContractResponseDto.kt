@@ -2,14 +2,34 @@ package com.adminpay.caja.data.remote.dto.contract
 
 import com.google.gson.annotations.SerializedName
 
+
+
+data class ContractsResponseDto(
+    val count: Int,
+    val next: String?,
+    val previous: String?,
+
+    @SerializedName("results")
+    val results: List<ContractDto>
+)
+
+
 data class ContractDto(
     val id: Int,
+
+    @SerializedName("client_id")
+    val clientId: Int,
+
     val name: String,
 
     @SerializedName("last_name")
     val lastName: String,
 
     val identification: String,
+
+    @SerializedName("installation_order")
+    val installationOrder: String,
+
     val mobile: String,
     val status: Int,
 
@@ -27,7 +47,16 @@ data class ContractDto(
     val debtBs: Float,
 
     @SerializedName("bank_associated")
-    val bankAssociated: BankAssociatedDto
+    val bankAssociated: BankAssociatedDto,
+
+    @SerializedName("sector_name")
+    val sectorName: String,
+
+    @SerializedName("parish_name")
+    val parishName: String,
+
+    @SerializedName("retaining_client")
+    val retainingClient: Boolean
 )
 
 data class BankAssociatedDto(

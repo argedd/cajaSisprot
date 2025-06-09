@@ -21,7 +21,6 @@ class AuthRepositoryImpl @Inject constructor(
             tokenProvider.saveToken(response.token)
             Result.success(response.user.toDomain())
         } catch (e: Exception) {
-            Log.d("Error", "Recibido token: ${e}")
             Result.failure(e)
 
         }

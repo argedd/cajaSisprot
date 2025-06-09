@@ -45,11 +45,31 @@ fun ClienteBody(cliente: Contract) {
                 textSizeValue = textSizeValue,
                 modifier = Modifier.weight(1f)
             )
-            Spacer(modifier = Modifier.width(8.dp))
+
+        }
+
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+
             GridItem(
                 icon = Icons.Default.Money,
                 label = "Deuda",
                 value = "${cliente.debtBs} Bs",
+                labelColor = labelColor,
+                textSizeLabel = textSizeLabel,
+                textSizeValue = textSizeValue,
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            GridItem(
+                icon = Icons.Default.LocationCity,
+                label = "Sector",
+                value = cliente.sectorName,
                 labelColor = labelColor,
                 textSizeLabel = textSizeLabel,
                 textSizeValue = textSizeValue,

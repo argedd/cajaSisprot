@@ -6,10 +6,13 @@ import com.adminpay.caja.domain.model.contract.Contract
 fun ContractDto.toDomain(): Contract {
     return Contract(
         id = id,
+        clientId = clientId,
         name = name,
         lastName = lastName,
         identification = identification,
+        installationOrder = installationOrder,
         mobile = mobile,
+        status = status,
         statusName = statusName,
         email = email,
         addressTax = addressTax,
@@ -20,6 +23,9 @@ fun ContractDto.toDomain(): Contract {
             bankName = bankAssociated.bankName,
             bankCode = bankAssociated.bankCode,
             identification = bankAssociated.identification
-        )
+        ),
+        sectorName = sectorName,
+        parishName = parishName,
+        retainingClient = retainingClient
     )
 }

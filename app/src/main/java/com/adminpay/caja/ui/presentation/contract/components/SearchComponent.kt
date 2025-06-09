@@ -16,12 +16,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Buscador(
     selectedTipo: String,
     cedula: String,
     onTipoSelected: (String) -> Unit,
-    onCedulaChange: (String) -> Unit
+    onCedulaChange: (String) -> Unit,
+    onBuscarClick: () -> Unit
 ) {
     val tipos = listOf("V", "E", "J", "G", "P")
     var expanded by remember { mutableStateOf(false) }
@@ -30,12 +32,22 @@ fun Buscador(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(vertical = 16.dp, horizontal = 32.dp)
     ) {
-        Box(modifier = Modifier.width(80.dp)) {
+        // 🟦 Tipo con menú desplegable (más ancho y misma altura que el TextField)
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = !expanded },
+            modifier = Modifier
+                .width(100.dp)
+                .height(56.dp)
+        ) {
             TextField(
                 value = selectedTipo,
                 onValueChange = {},
                 readOnly = true,
                 label = { Text("Tipo") },
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                },
                 shape = RoundedCornerShape(8.dp),
                 colors = TextFieldDefaults.colors(
                     focusedIndicatorColor = Color.Transparent,
@@ -44,11 +56,12 @@ fun Buscador(
                     unfocusedContainerColor = Color.White
                 ),
                 modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxHeight() // 🔄 igual altura que el padre
                     .border(1.dp, Color(0xFF004C72), RoundedCornerShape(8.dp))
-                    .clickable { expanded = true }
             )
 
-            DropdownMenu(
+            ExposedDropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
@@ -56,8 +69,8 @@ fun Buscador(
                     DropdownMenuItem(
                         text = { Text(tipo) },
                         onClick = {
-                            expanded = false
                             onTipoSelected(tipo)
+                            expanded = false
                         }
                     )
                 }
@@ -66,12 +79,21 @@ fun Buscador(
 
         Spacer(modifier = Modifier.width(8.dp))
 
+        // 🧾 Campo de cédula o RIF
         TextField(
             value = cedula,
             onValueChange = onCedulaChange,
             placeholder = { Text("Cédula o RIF") },
+            singleLine = true,
             leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
-            trailingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = Color(0xFF004C72)) },
+            trailingIcon = {
+                Icon(
+                    Icons.Default.Search,
+                    contentDescription = "Buscar",
+                    tint = Color(0xFF004C72),
+                    modifier = Modifier.clickable { onBuscarClick() }
+                )
+            },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             shape = RoundedCornerShape(8.dp),
             colors = TextFieldDefaults.colors(
@@ -87,3 +109,5 @@ fun Buscador(
         )
     }
 }
+
+

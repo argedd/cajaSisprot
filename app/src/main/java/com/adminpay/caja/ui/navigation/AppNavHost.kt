@@ -56,7 +56,7 @@ fun AppNavHost(
         }
 
         composable(Routes.AuthScreen.route) {
-            AuthScreen(authViewModel = authViewModel, )
+            AuthScreen(authViewModel = authViewModel )
         }
     }
 }

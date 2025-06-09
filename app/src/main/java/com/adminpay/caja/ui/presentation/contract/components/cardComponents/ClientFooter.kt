@@ -19,19 +19,21 @@ fun ClienteFooter(
     navController: NavHostController
 ) {
     var showModal by remember { mutableStateOf(false) }
+    val tieneDeuda = cliente.debtBs > 0f
 
-    if (cliente.debtBs > 0f) {
-        Box(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
-            Button(
-                onClick = { showModal = true },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFFCA311),
-                    contentColor = Color.White
-                )
-            ) {
-                Text("Ver Facturas")
-            }
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .padding(12.dp)) {
+        Button(
+            onClick = { showModal = true },
+            enabled = tieneDeuda, // ✅ Solo habilitado si hay deuda
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = if (tieneDeuda) Color(0xFFFCA311) else Color.LightGray,
+                contentColor = Color.White
+            )
+        ) {
+            Text("Ver Facturas")
         }
     }
 
@@ -41,9 +43,10 @@ fun ClienteFooter(
                 facturas = facturas,
                 onPagarClick = {
                     showModal = false
-                    navController.navigate("checkout_screen") // Puedes pasar datos si deseas
+                    navController.navigate("checkout_screen")
                 }
             )
         }
     }
 }
+

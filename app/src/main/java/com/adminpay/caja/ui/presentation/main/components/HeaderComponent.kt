@@ -42,7 +42,6 @@ fun HeaderContent(
 
     val screen = rememberScreenDimensions()
 
-    val currentTime = currentTimeVenezuela()
 
     Log.d("HeaderContent", "User: $userName")
 
@@ -74,7 +73,7 @@ fun HeaderContent(
                         modifier = Modifier.padding(top = 12.dp)
                     ) {
                         Text(
-                            text = "Fecha: $fecha : $currentTime",
+                            text = "Fecha: $fecha : ",
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 color = Color.White,
                                 fontWeight = FontWeight.Bold,
