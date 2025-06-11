@@ -1,25 +1,40 @@
 package com.adminpay.caja.ui.presentation.checkout
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.adminpay.caja.ui.navigation.Routes
 import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.PaymentMethodsScreen
 import com.adminpay.caja.ui.presentation.checkout.components.sumary.CheckoutSummary
 import com.adminpay.caja.utils.ScreenDimensions
 
+@SuppressLint("UnrememberedGetBackStackEntry")
 @Composable
 fun CheckoutScreen(
     screen: ScreenDimensions,
-    serviceId: String,
     navController: NavHostController
 ) {
+
+    val parentEntry = remember {
+        navController.getBackStackEntry(Routes.ContractScreen.route)
+    }
+    val sharedViewModel: CheckoutSharedViewModel = hiltViewModel(parentEntry)
+
+    val selectedInvoice = sharedViewModel.selectedInvoice
+
+
+    Log.d("CheckoutScreen", "selectedInvoice: $selectedInvoice")
+
     Box(modifier = Modifier.fillMaxSize()) {
         // Contenido principal
         Row(
@@ -36,7 +51,6 @@ fun CheckoutScreen(
             ) {
                 PaymentMethodsScreen(
                     screen = screen,
-                    serviceId = serviceId
                 )
             }
 
@@ -49,7 +63,7 @@ fun CheckoutScreen(
                     .fillMaxHeight(),
                 contentAlignment = Alignment.TopCenter
             ) {
-                CheckoutSummary(screen = screen)
+                CheckoutSummary(screen = screen, selectedInvoice = selectedInvoice)
             }
         }
 

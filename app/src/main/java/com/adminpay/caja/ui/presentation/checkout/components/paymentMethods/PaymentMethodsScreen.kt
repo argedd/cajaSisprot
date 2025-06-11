@@ -26,7 +26,6 @@ import com.adminpay.caja.utils.ScreenDimensions
 @Composable
 fun PaymentMethodsScreen(
     screen: ScreenDimensions,
-    serviceId: String
 ) {
     var selectedMethod by remember { mutableStateOf(PaymentMethod.BANCA_NACIONAL) }
 

@@ -5,7 +5,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Assignment
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -13,10 +12,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.adminpay.caja.domain.model.invoice.InvoiceModel
 import com.adminpay.caja.utils.ScreenDimensions
 
 @Composable
-fun CheckoutSummary(screen: ScreenDimensions) {
+fun CheckoutSummary(screen: ScreenDimensions, selectedInvoice: InvoiceModel?) {
+    if (selectedInvoice == null) {
+        Text("No hay factura seleccionada.")
+        return
+    }
+
+    val details = selectedInvoice.invoiceItems.firstOrNull()?.details ?: "Sin descripción"
+    val totalAmountBs = selectedInvoice.amountBs.amount
+    val chargedAmountBs = selectedInvoice.chargedBs
+    val remainingAmountBs = totalAmountBs - chargedAmountBs
+
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = "Resumen del Pedido",
@@ -31,14 +41,13 @@ fun CheckoutSummary(screen: ScreenDimensions) {
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-
-                // Grid 2x2 con información
                 val infoItems = listOf(
-                    Icons.Default.Person to "Cliente: PRUEBA FREDDY",
-                    Icons.Default.Description to "Nota de cobro: #40973",
-                    Icons.AutoMirrored.Filled.Assignment to "Nro Contrato: #7363",
-                    Icons.Default.Info to "SERVICIO DE INTERNET, RECURRENTE RESIDENCIAL PLAN 10M [FOR10] mes de ABRIL"
+                    Icons.Default.Person to "Cliente: ${selectedInvoice.clientName}",
+                    Icons.Default.Description to "Nota de cobro: #${selectedInvoice.id}",
+                    Icons.AutoMirrored.Filled.Assignment to "Nro Contrato: #${selectedInvoice.contract}",
+                    Icons.Default.Info to details
                 )
+
                 Column {
                     for (i in infoItems.indices step 2) {
                         Row(modifier = Modifier.fillMaxWidth()) {
@@ -70,10 +79,9 @@ fun CheckoutSummary(screen: ScreenDimensions) {
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
-                HorizontalDivider()
+                Divider()
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Métodos de pago como cards 2x2
                 Text("Métodos de Pago", style = MaterialTheme.typography.titleSmall)
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -137,30 +145,28 @@ fun CheckoutSummary(screen: ScreenDimensions) {
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
-                HorizontalDivider()
+                Divider()
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Resumen de montos
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     SummaryLine(
                         label = "Monto cargado",
-                        value = "400.00 Bs.",
+                        value = "%.2f Bs.".format(chargedAmountBs),
                         fontSize = 13,
-                        color = Color(0xFF388E3C) // verde aceptable
+                        color = Color(0xFF388E3C)
                     )
                     SummaryLine(
                         label = "Monto restante",
-                        value = "462.20 Bs.",
+                        value = "%.2f Bs.".format(remainingAmountBs),
                         fontSize = 13,
-                        color = Color(0xFFB71C1C) // rojo oscuro
+                        color = Color(0xFFB71C1C)
                     )
-                    AmountComponent(monto = 862.20, screen = screen)
+                    AmountComponent(monto = totalAmountBs, screen = screen)
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // Botón Validar Pago
                     Button(
                         onClick = {
                             // Acción de validación

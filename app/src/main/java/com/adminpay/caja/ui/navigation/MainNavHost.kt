@@ -20,7 +20,6 @@ fun MainNavHost(navController: NavHostController) {
         composable(Routes.CheckoutScreen.route) { CheckoutScreen(
             navController=navController,
             screen = rememberScreenDimensions(),
-            serviceId = "123456"
         ) }
         // Aquí agregas más pantallas internas si las necesitas
     }
