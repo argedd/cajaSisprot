@@ -10,6 +10,7 @@ fun UserDto.toDomain(): User = User(
     phone = phone,
     referralCodeId = referralCodeId,
     office = office,
+    idGsoft = idGsoft,
     officeName = officeName,
     lastName = lastName,
     isSuperuser = isSuperuser

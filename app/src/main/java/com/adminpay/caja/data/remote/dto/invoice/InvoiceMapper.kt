@@ -1,8 +1,6 @@
 package com.adminpay.caja.data.remote.dto.invoice
 
-import com.adminpay.caja.domain.model.invoice.InvoiceItemModel
-import com.adminpay.caja.domain.model.invoice.InvoiceModel
-
+import com.adminpay.caja.domain.model.invoice.*
 
 fun InvoiceDto.toDomain(): InvoiceModel {
     return InvoiceModel(
@@ -17,7 +15,7 @@ fun InvoiceDto.toDomain(): InvoiceModel {
         amount = amount,
         charged = charged,
         chargedBs = chargedBs,
-        amountBs = amountBs,
+        amountBs = amountBs.toDomain(),
         month = month,
         year = year,
         debt = debt,
@@ -28,6 +26,14 @@ fun InvoiceDto.toDomain(): InvoiceModel {
         statusName = statusName,
         paymentAvailable = paymentAvailable,
         invoiceItems = invoiceItemsGsoft.map { it.toDomain() }
+    )
+}
+
+fun AmountBsDto.toDomain(): AmountBsModel {
+    return AmountBsModel(
+        amount = amount,
+        subTotal = subTotal,
+        ivaAmount = ivaAmount
     )
 }
 

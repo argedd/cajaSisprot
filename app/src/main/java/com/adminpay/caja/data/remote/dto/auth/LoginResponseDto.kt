@@ -16,6 +16,7 @@ data class UserDto(
     val phone: String,
     @SerializedName("referral_code_id") val referralCodeId: String,
     val office: Int,
+    @SerializedName("id_gsoft") val idGsoft: Int,
     @SerializedName("office_name") val officeName: String,
     @SerializedName("last_name") val lastName: String,
     @SerializedName("is_superuser") val isSuperuser: Boolean

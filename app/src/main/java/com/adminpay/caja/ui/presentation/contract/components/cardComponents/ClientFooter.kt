@@ -8,14 +8,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.adminpay.caja.domain.model.contract.Contract
-import com.adminpay.caja.domain.model.invoice.FacturaModel
 import com.adminpay.caja.ui.presentation.components.AppModalComponent
 import com.adminpay.caja.ui.presentation.invoices.FacturasModalContent
 
 @Composable
 fun ClienteFooter(
     cliente: Contract,
-    facturas: List<FacturaModel>,
     navController: NavHostController
 ) {
     var showModal by remember { mutableStateOf(false) }
@@ -40,7 +38,7 @@ fun ClienteFooter(
     if (showModal) {
         AppModalComponent(onDismiss = { showModal = false }) {
             FacturasModalContent(
-                facturas = facturas,
+                contract = cliente.id.toString(),
                 onPagarClick = {
                     showModal = false
                     navController.navigate("checkout_screen")

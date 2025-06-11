@@ -7,6 +7,7 @@ data class User(
     val role: String,
     val phone: String,
     val referralCodeId: String,
+    val idGsoft: Int,
     val office: Int,
     val officeName: String,
     val lastName: String,

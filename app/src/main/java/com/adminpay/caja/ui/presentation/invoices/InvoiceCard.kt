@@ -14,11 +14,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.adminpay.caja.domain.model.invoice.FacturaModel
+import com.adminpay.caja.domain.model.invoice.InvoiceModel
 
 @Composable
 fun FacturaCard(
-    factura: FacturaModel,
+    factura: InvoiceModel,
     enabled: Boolean,
     onPagarClick: () -> Unit
 ) {
@@ -56,12 +56,12 @@ fun FacturaCard(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            RowItem(icon = Icons.Default.DateRange, label = "Emisión", value = factura.date_emission)
-            RowItem(icon = Icons.Default.CalendarMonth, label = "Corte", value = factura.date_expiration)
+            RowItem(icon = Icons.Default.DateRange, label = "Emisión", value = factura.dateEmission)
+            RowItem(icon = Icons.Default.CalendarMonth, label = "Corte", value = factura.dateExpiration)
             RowItem(
                 icon = Icons.Default.AttachMoney,
                 label = "Monto",
-                value = "Bs ${"%.2f".format(factura.amount_bs.amount)}"
+                value = "Bs ${"%.2f".format(factura.amountBs.amount)}"
             )
 
             Spacer(modifier = Modifier.height(12.dp))
