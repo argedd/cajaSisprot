@@ -1,7 +1,6 @@
 package com.adminpay.caja.data.repository.invoice
 
 import com.adminpay.caja.data.remote.api.InvoiceApi
-import com.adminpay.caja.data.remote.dto.contract.toDomain
 import com.adminpay.caja.data.remote.dto.invoice.toDomain
 import com.adminpay.caja.domain.model.invoice.InvoiceModel
 import com.adminpay.caja.domain.repository.invoice.InvoiceRepository
