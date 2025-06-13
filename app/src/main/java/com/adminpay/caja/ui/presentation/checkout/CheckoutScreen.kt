@@ -51,6 +51,7 @@ fun CheckoutScreen(
             ) {
                 PaymentMethodsScreen(
                     screen = screen,
+                    selectedInvoice = selectedInvoice
                 )
             }
 

@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.adminpay.caja.domain.model.invoice.InvoiceModel
 import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.bancaNacional.BancaNacionalScreen
 import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.efectivo.EfectivoScreen
 import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.medioDigital.MedioDigitalScreen
@@ -26,6 +27,7 @@ import com.adminpay.caja.utils.ScreenDimensions
 @Composable
 fun PaymentMethodsScreen(
     screen: ScreenDimensions,
+    selectedInvoice: InvoiceModel?,
 ) {
     var selectedMethod by remember { mutableStateOf(PaymentMethod.BANCA_NACIONAL) }
 
