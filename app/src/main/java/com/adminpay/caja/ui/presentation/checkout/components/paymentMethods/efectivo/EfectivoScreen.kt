@@ -12,17 +12,39 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.adminpay.caja.ui.presentation.checkout.CheckoutSharedViewModel
+import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.efectivo.components.CashDollarBillComponent
+import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.efectivo.viewModels.EfectivoBsViewModel
+import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.efectivo.viewModels.EfectivoUsdViewModel
 import com.adminpay.caja.ui.presentation.components.AppModalComponent
 import com.adminpay.caja.ui.presentation.components.InputComponent
 
 @Composable
-fun EfectivoScreen() {
+fun EfectivoScreen(
+    sharedViewModel: CheckoutSharedViewModel,
+    bsViewModel: EfectivoBsViewModel = hiltViewModel(),
+    usdViewModel: EfectivoUsdViewModel = hiltViewModel()
+) {
     var selectedCurrency by remember { mutableStateOf("BS") }
-    var amount by remember { mutableStateOf("") }
     var showModal by remember { mutableStateOf(false) }
-    var seriales by remember { mutableStateOf(listOf<SerialEntry>()) }
+    var showError by remember { mutableStateOf(false) }
+
+    // Limpiar ambos viewmodels al cambiar de tipo de efectivo
+    LaunchedEffect(selectedCurrency) {
+        bsViewModel.clearForm()
+        usdViewModel.clearForm()
+        showError = false
+    }
+
+    val amount = if (selectedCurrency == "BS") bsViewModel.amount else usdViewModel.amount
+    val cashBills = usdViewModel.cashBills
+    val selectedInvoice = sharedViewModel.selectedInvoice
+    println("selectedInvoice: $selectedInvoice")
 
     Column(modifier = Modifier.padding(16.dp)) {
+
+        // Selector de tipo
         Row(verticalAlignment = Alignment.CenterVertically) {
             RadioButton(
                 selected = selectedCurrency == "BS",
@@ -39,116 +61,97 @@ fun EfectivoScreen() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Campo de monto
         InputComponent(
             value = amount,
-            onValueChange = { amount = it },
+            onValueChange = {
+                if (selectedCurrency == "BS") bsViewModel.onAmountChange(it)
+                else usdViewModel.onAmountChange(it)
+            },
             placeholder = "Monto",
             keyboardType = KeyboardType.Number,
             modifier = Modifier.fillMaxWidth()
         )
 
+        // Botón para cargar billetes si es USD
         if (selectedCurrency == "USD") {
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = { showModal = true }) {
-                Text("Cargar Seriales")
+                Text("Cargar Billetes")
             }
-        }
 
-        if (seriales.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(16.dp))
-            Text("Billetes Cargados:", style = MaterialTheme.typography.labelMedium)
-            LazyColumn {
-                items(seriales) { entry ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text("Valor: ${entry.valor}, Serial: ${entry.serial}")
-                        IconButton(onClick = {
-                            seriales = seriales - entry
-                        }) {
-                            Icon(Icons.Default.Delete, contentDescription = "Eliminar")
+            // Lista de billetes cargados
+            if (cashBills.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text("Billetes Cargados:", style = MaterialTheme.typography.labelMedium)
+                LazyColumn {
+                    items(cashBills) { bill ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("Valor: ${bill.denomination}, Serial: ${bill.serialCode}")
+                            IconButton(onClick = {
+                                usdViewModel.removeCashBill(bill)
+                            }) {
+                                Icon(Icons.Default.Delete, contentDescription = "Eliminar")
+                            }
                         }
                     }
                 }
             }
+
+            // Error si no hay billetes cargados
+            if (showError && cashBills.isEmpty()) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Debe cargar al menos un billete.",
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
         }
+
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Botón Validar Pago
+        // Botón para registrar el pago
         Button(
             onClick = {
-                // Acción de validación
+                if (selectedCurrency == "BS") {
+                    bsViewModel.addBsPayment(sharedViewModel) {
+                        showError = false
+                    }
+                } else {
+                    if (cashBills.isEmpty()) {
+                        showError = true
+                    } else {
+                        usdViewModel.addUsdPayment(sharedViewModel) {
+                            showError = false
+                        }
+                    }
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 4.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                .padding(horizontal = 4.dp)
         ) {
             Text("Cargar Pago")
         }
+
     }
 
+    // Modal para agregar billetes
     if (showModal) {
         AppModalComponent(onDismiss = { showModal = false }) {
-            SerialEntryComponent(
+            CashDollarBillComponent(
                 onAdd = {
-                    seriales = seriales + it
+                    usdViewModel.addCashBill(it)
                 },
                 onClose = { showModal = false }
             )
         }
     }
 }
-
-@Composable
-fun SerialEntryComponent(onAdd: (SerialEntry) -> Unit, onClose: () -> Unit) {
-    var valor by remember { mutableStateOf("") }
-    var serial by remember { mutableStateOf("") }
-
-    Column(modifier = Modifier.width(300.dp)) {
-        Text("Agregar Billete", style = MaterialTheme.typography.titleMedium)
-        Spacer(modifier = Modifier.height(12.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            InputComponent(
-                value = valor,
-                onValueChange = { valor = it },
-                placeholder = "Valor",
-                keyboardType = KeyboardType.Number,
-                modifier = Modifier.weight(1f)
-            )
-            InputComponent(
-                value = serial,
-                onValueChange = { serial = it },
-                placeholder = "Serial",
-                modifier = Modifier.weight(1f)
-            )
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-        Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
-            TextButton(onClick = onClose) {
-                Text("Cancelar")
-            }
-            Spacer(modifier = Modifier.width(8.dp))
-            IconButton(onClick = {
-                if (valor.isNotBlank() && serial.isNotBlank()) {
-                    onAdd(SerialEntry(valor, serial))
-                    valor = ""
-                    serial = ""
-                }
-            }) {
-                Icon(Icons.Default.Add, contentDescription = "Agregar")
-            }
-        }
-    }
-}
-
-data class SerialEntry(val valor: String, val serial: String)

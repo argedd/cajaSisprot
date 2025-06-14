@@ -1,22 +1,29 @@
 package com.adminpay.caja.ui.presentation.checkout.components.sumary
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Assignment
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.adminpay.caja.domain.model.invoice.InvoiceModel
+import com.adminpay.caja.ui.presentation.checkout.CheckoutSharedViewModel
 import com.adminpay.caja.utils.ScreenDimensions
 
 @Composable
-fun CheckoutSummary(screen: ScreenDimensions, selectedInvoice: InvoiceModel?) {
+fun CheckoutSummary(screen: ScreenDimensions, sharedViewModel: CheckoutSharedViewModel) {
+    val selectedInvoice = sharedViewModel.selectedInvoice
+    val paymentMethods by sharedViewModel.paymentMethods.collectAsState()
+
     if (selectedInvoice == null) {
         Text("No hay factura seleccionada.")
         return
@@ -25,7 +32,9 @@ fun CheckoutSummary(screen: ScreenDimensions, selectedInvoice: InvoiceModel?) {
     val details = selectedInvoice.invoiceItems.firstOrNull()?.details ?: "Sin descripción"
     val totalAmountBs = selectedInvoice.amountBs.amount
     val chargedAmountBs = selectedInvoice.chargedBs
-    val remainingAmountBs = totalAmountBs - chargedAmountBs
+    val additionalPayments = paymentMethods.sumOf { it.amountBs ?: 0.0 }
+    val updatedChargedAmount = chargedAmountBs + additionalPayments
+    val updatedRemainingAmount = totalAmountBs - updatedChargedAmount
 
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
@@ -79,58 +88,68 @@ fun CheckoutSummary(screen: ScreenDimensions, selectedInvoice: InvoiceModel?) {
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
-                Divider()
+                HorizontalDivider()
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Text("Métodos de Pago", style = MaterialTheme.typography.titleSmall)
                 Spacer(modifier = Modifier.height(8.dp))
 
-                data class MetodoPago(val nombre: String, val icon: ImageVector, val monto: String)
-
-                val metodos = listOf(
-                    MetodoPago("Transferencia", Icons.Default.AccountBalance, "100 Bs."),
-                    MetodoPago("Pago Móvil", Icons.Default.PhoneIphone, "100 Bs."),
-                    MetodoPago("Zelle", Icons.Default.AttachMoney, "100 Bs."),
-                    MetodoPago("Punto de Venta", Icons.Default.CreditCard, "100 Bs.")
-                )
-
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    for (i in metodos.indices step 2) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            listOfNotNull(
-                                metodos.getOrNull(i),
-                                metodos.getOrNull(i + 1)
-                            ).forEach { metodo ->
-                                Card(
-                                    modifier = Modifier.weight(1f),
-                                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
+                if (paymentMethods.isEmpty()) {
+                    Text(
+                        text = "Sin métodos de pago",
+                        color = Color.Gray,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                } else {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(max = 300.dp), // Ajusta según el espacio disponible
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(paymentMethods) { metodo ->
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .padding(8.dp),
+                                    horizontalAlignment = Alignment.Start
                                 ) {
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(8.dp),
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
                                         Icon(
-                                            imageVector = metodo.icon,
-                                            contentDescription = metodo.nombre,
+                                            imageVector = Icons.Default.Payments,
+                                            contentDescription = metodo.methodName,
                                             tint = MaterialTheme.colorScheme.secondary,
                                             modifier = Modifier
-                                                .size(28.dp)
-                                                .padding(end = 8.dp)
+                                                .size(20.dp)
+                                                .padding(end = 4.dp)
                                         )
-                                        Column(
-                                            modifier = Modifier
-                                                .weight(1f)
-                                                .padding(end = 8.dp)
+                                        Text(
+                                            metodo.methodName,
+                                            color = Color.White,
+                                            fontSize = 13.sp,
+                                            maxLines = 1
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            "Monto: ${metodo.amountBs ?: 0.0} Bs.",
+                                            color = Color.White,
+                                            fontSize = 12.sp
+                                        )
+                                        IconButton(
+                                            onClick = { sharedViewModel.removePaymentMethodById(metodo.id) },
+                                            modifier = Modifier.size(24.dp)
                                         ) {
-                                            Text(metodo.nombre, color = Color.White, fontSize = 14.sp)
-                                            Text("Monto: ${metodo.monto}", color = Color.White, fontSize = 12.sp)
-                                        }
-                                        IconButton(onClick = { /* eliminar */ }) {
                                             Icon(
                                                 imageVector = Icons.Default.DeleteOutline,
                                                 contentDescription = "Eliminar",
@@ -138,6 +157,7 @@ fun CheckoutSummary(screen: ScreenDimensions, selectedInvoice: InvoiceModel?) {
                                             )
                                         }
                                     }
+
                                 }
                             }
                         }
@@ -145,7 +165,7 @@ fun CheckoutSummary(screen: ScreenDimensions, selectedInvoice: InvoiceModel?) {
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
-                Divider()
+                HorizontalDivider()
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Column(
@@ -154,13 +174,13 @@ fun CheckoutSummary(screen: ScreenDimensions, selectedInvoice: InvoiceModel?) {
                 ) {
                     SummaryLine(
                         label = "Monto cargado",
-                        value = "%.2f Bs.".format(chargedAmountBs),
+                        value = "%.2f Bs.".format(updatedChargedAmount),
                         fontSize = 13,
                         color = Color(0xFF388E3C)
                     )
                     SummaryLine(
                         label = "Monto restante",
-                        value = "%.2f Bs.".format(remainingAmountBs),
+                        value = "%.2f Bs.".format(updatedRemainingAmount),
                         fontSize = 13,
                         color = Color(0xFFB71C1C)
                     )
@@ -174,7 +194,13 @@ fun CheckoutSummary(screen: ScreenDimensions, selectedInvoice: InvoiceModel?) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 4.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                        enabled = updatedRemainingAmount == 0.0,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (updatedRemainingAmount == 0.0)
+                                MaterialTheme.colorScheme.primary
+                            else
+                                Color.Gray
+                        )
                     ) {
                         Text("Pagar", color = Color.White)
                     }
@@ -183,6 +209,7 @@ fun CheckoutSummary(screen: ScreenDimensions, selectedInvoice: InvoiceModel?) {
         }
     }
 }
+
 
 @Composable
 fun SummaryLine(label: String, value: String, fontSize: Int = 14, color: Color = Color.Black) {

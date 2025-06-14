@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.adminpay.caja.domain.model.invoice.InvoiceModel
+import com.adminpay.caja.ui.presentation.checkout.CheckoutSharedViewModel
 import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.bancaNacional.BancaNacionalScreen
 import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.efectivo.EfectivoScreen
 import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.medioDigital.MedioDigitalScreen
@@ -27,9 +27,10 @@ import com.adminpay.caja.utils.ScreenDimensions
 @Composable
 fun PaymentMethodsScreen(
     screen: ScreenDimensions,
-    selectedInvoice: InvoiceModel?,
+    sharedViewModel: CheckoutSharedViewModel
 ) {
     var selectedMethod by remember { mutableStateOf(PaymentMethod.BANCA_NACIONAL) }
+    val selectedInvoice = sharedViewModel.selectedInvoice
 
     Column(
         modifier = Modifier
@@ -114,7 +115,7 @@ fun PaymentMethodsScreen(
                 when (selectedMethod) {
                     PaymentMethod.BANCA_NACIONAL -> BancaNacionalScreen()
                     PaymentMethod.MEDIOS_DIGITALES -> MedioDigitalScreen()
-                    PaymentMethod.EFECTIVO -> EfectivoScreen()
+                    PaymentMethod.EFECTIVO -> EfectivoScreen(sharedViewModel=sharedViewModel)
                     PaymentMethod.PUNTO_VENTA -> PosScreen()
                 }
 

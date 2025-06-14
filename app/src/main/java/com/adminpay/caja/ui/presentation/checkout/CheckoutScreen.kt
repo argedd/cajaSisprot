@@ -30,10 +30,8 @@ fun CheckoutScreen(
     }
     val sharedViewModel: CheckoutSharedViewModel = hiltViewModel(parentEntry)
 
-    val selectedInvoice = sharedViewModel.selectedInvoice
 
 
-    Log.d("CheckoutScreen", "selectedInvoice: $selectedInvoice")
 
     Box(modifier = Modifier.fillMaxSize()) {
         // Contenido principal
@@ -51,7 +49,7 @@ fun CheckoutScreen(
             ) {
                 PaymentMethodsScreen(
                     screen = screen,
-                    selectedInvoice = selectedInvoice
+                    sharedViewModel = sharedViewModel
                 )
             }
 
@@ -64,7 +62,7 @@ fun CheckoutScreen(
                     .fillMaxHeight(),
                 contentAlignment = Alignment.TopCenter
             ) {
-                CheckoutSummary(screen = screen, selectedInvoice = selectedInvoice)
+                CheckoutSummary(screen = screen, sharedViewModel = sharedViewModel)
             }
         }
 
