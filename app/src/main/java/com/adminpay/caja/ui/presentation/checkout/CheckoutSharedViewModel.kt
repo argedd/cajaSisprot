@@ -16,30 +16,61 @@ import javax.inject.Inject
 class CheckoutSharedViewModel @Inject constructor() : ViewModel() {
 
     var selectedInvoice: InvoiceModel? = null
-    var bankAssociated: BankAssociated? = null
 
-    // Métodos de pago
+
+
+    var bankAssociated: BankAssociated? = null
+    private var methodAutoId = 1
+
     private val _paymentMethods = MutableStateFlow<List<ModelMethod>>(emptyList())
     val paymentMethods: StateFlow<List<ModelMethod>> = _paymentMethods.asStateFlow()
 
-    // Agregar método de pago
+    private val _chargedAmountBs = MutableStateFlow(0.0)
+    val chargedAmountBs: StateFlow<Double> = _chargedAmountBs.asStateFlow()
+
+    private val _remainingAmountBs = MutableStateFlow(0.0)
+    val remainingAmountBs: StateFlow<Double> = _remainingAmountBs.asStateFlow()
+
+    // ✅ Agrega método con ID autoincremental y actualiza montos
     fun addPaymentMethod(method: ModelMethod) {
         viewModelScope.launch {
-            _paymentMethods.value += method
+            val methodWithId = method.copy(id = methodAutoId++)
+            _paymentMethods.value += methodWithId
+            updateAmounts()
         }
     }
 
-    // Eliminar método de pago por ID
+    // ✅ Elimina método por ID y actualiza montos
     fun removePaymentMethodById(id: Int) {
         viewModelScope.launch {
             _paymentMethods.value = _paymentMethods.value.filterNot { it.id == id }
+            updateAmounts()
         }
     }
 
-    // Opcional: Limpiar todos
+    // ✅ Limpia todos los métodos de pago
     fun clearPaymentMethods() {
         viewModelScope.launch {
             _paymentMethods.value = emptyList()
+            updateAmounts()
         }
+    }
+
+    // ✅ Calcula y actualiza los montos cargados y restantes
+    fun updateAmounts() {
+        val invoice = selectedInvoice ?: return
+        val total = invoice.amountBs.amount
+        val initialCharged = invoice.chargedBs
+        val additionalPayments = _paymentMethods.value.sumOf { it.amountBs ?: 0.0 }
+        val updatedCharged = initialCharged + additionalPayments
+        val updatedRemaining = total - updatedCharged
+
+        _chargedAmountBs.value = updatedCharged
+        _remainingAmountBs.value = updatedRemaining
+    }
+
+   fun clearAmounts() {
+        _chargedAmountBs.value = 0.0
+        _remainingAmountBs.value = 0.0
     }
 }

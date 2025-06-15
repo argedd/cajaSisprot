@@ -23,6 +23,8 @@ import com.adminpay.caja.utils.ScreenDimensions
 fun CheckoutSummary(screen: ScreenDimensions, sharedViewModel: CheckoutSharedViewModel) {
     val selectedInvoice = sharedViewModel.selectedInvoice
     val paymentMethods by sharedViewModel.paymentMethods.collectAsState()
+    val chargedAmountBs by sharedViewModel.chargedAmountBs.collectAsState()
+    val remainingAmountBs by sharedViewModel.remainingAmountBs.collectAsState()
 
     if (selectedInvoice == null) {
         Text("No hay factura seleccionada.")
@@ -31,10 +33,6 @@ fun CheckoutSummary(screen: ScreenDimensions, sharedViewModel: CheckoutSharedVie
 
     val details = selectedInvoice.invoiceItems.firstOrNull()?.details ?: "Sin descripción"
     val totalAmountBs = selectedInvoice.amountBs.amount
-    val chargedAmountBs = selectedInvoice.chargedBs
-    val additionalPayments = paymentMethods.sumOf { it.amountBs ?: 0.0 }
-    val updatedChargedAmount = chargedAmountBs + additionalPayments
-    val updatedRemainingAmount = totalAmountBs - updatedChargedAmount
 
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
@@ -105,7 +103,7 @@ fun CheckoutSummary(screen: ScreenDimensions, sharedViewModel: CheckoutSharedVie
                         columns = GridCells.Fixed(2),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .heightIn(max = 300.dp), // Ajusta según el espacio disponible
+                            .heightIn(max = 300.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
@@ -115,8 +113,7 @@ fun CheckoutSummary(screen: ScreenDimensions, sharedViewModel: CheckoutSharedVie
                                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
                             ) {
                                 Column(
-                                    modifier = Modifier
-                                        .padding(8.dp),
+                                    modifier = Modifier.padding(8.dp),
                                     horizontalAlignment = Alignment.Start
                                 ) {
                                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -157,7 +154,6 @@ fun CheckoutSummary(screen: ScreenDimensions, sharedViewModel: CheckoutSharedVie
                                             )
                                         }
                                     }
-
                                 }
                             }
                         }
@@ -174,16 +170,18 @@ fun CheckoutSummary(screen: ScreenDimensions, sharedViewModel: CheckoutSharedVie
                 ) {
                     SummaryLine(
                         label = "Monto cargado",
-                        value = "%.2f Bs.".format(updatedChargedAmount),
+                        value = "%.2f Bs.".format(chargedAmountBs),
                         fontSize = 13,
                         color = Color(0xFF388E3C)
                     )
-                    SummaryLine(
-                        label = "Monto restante",
-                        value = "%.2f Bs.".format(updatedRemainingAmount),
-                        fontSize = 13,
-                        color = Color(0xFFB71C1C)
-                    )
+                    if (remainingAmountBs > 0.0) {
+                        SummaryLine(
+                            label = "Monto restante",
+                            value = "%.2f Bs.".format(remainingAmountBs),
+                            fontSize = 13,
+                            color = Color(0xFFB71C1C)
+                        )
+                    }
                     AmountComponent(monto = totalAmountBs, screen = screen)
                     Spacer(modifier = Modifier.height(12.dp))
 
@@ -194,9 +192,9 @@ fun CheckoutSummary(screen: ScreenDimensions, sharedViewModel: CheckoutSharedVie
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 4.dp),
-                        enabled = updatedRemainingAmount == 0.0,
+                        enabled = remainingAmountBs <= 0.0,
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = if (updatedRemainingAmount == 0.0)
+                            containerColor = if (remainingAmountBs <= 0.0)
                                 MaterialTheme.colorScheme.primary
                             else
                                 Color.Gray
@@ -209,7 +207,6 @@ fun CheckoutSummary(screen: ScreenDimensions, sharedViewModel: CheckoutSharedVie
         }
     }
 }
-
 
 @Composable
 fun SummaryLine(label: String, value: String, fontSize: Int = 14, color: Color = Color.Black) {

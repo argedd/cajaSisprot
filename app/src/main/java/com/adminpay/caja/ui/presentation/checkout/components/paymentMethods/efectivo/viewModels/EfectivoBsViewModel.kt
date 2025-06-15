@@ -28,8 +28,8 @@ class EfectivoBsViewModel @Inject constructor(
 
         sharedViewModel.addPaymentMethod(
             ModelMethod(
-                id = 1,
-                idMethod = 7,
+                id = 0,
+                idMethod = 8,
                 type = 2,
                 methodName = "Efectivo BS",
                 amountBs = parsedAmount,
