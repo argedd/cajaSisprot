@@ -19,7 +19,7 @@ fun ContractDto.toDomain(): Contract {
         debtBs = debtBs,
         bankAssociated = BankAssociated(
             nroCta = bankAssociated.nroCta,
-            rlf = bankAssociated.rlf,
+            tlf = bankAssociated.rlf,
             bankName = bankAssociated.bankName,
             bankCode = bankAssociated.bankCode,
             identification = bankAssociated.identification

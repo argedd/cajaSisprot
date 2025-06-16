@@ -53,6 +53,7 @@ fun ClienteFooter(
                 onPagarClick = { factura ->
                     showModal = false
                     sharedViewModel.selectedInvoice = factura // ✅ aquí se guarda
+                    sharedViewModel.bankAssociated = cliente.bankAssociated
                     navController.navigate("checkout_screen")
                 }
             )

@@ -20,6 +20,7 @@ class CheckoutSharedViewModel @Inject constructor() : ViewModel() {
 
 
     var bankAssociated: BankAssociated? = null
+
     private var methodAutoId = 1
 
     private val _paymentMethods = MutableStateFlow<List<ModelMethod>>(emptyList())

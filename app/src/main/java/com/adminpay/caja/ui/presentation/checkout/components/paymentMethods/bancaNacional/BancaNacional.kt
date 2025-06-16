@@ -2,13 +2,10 @@ package com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.ban
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalance
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.Money
 import androidx.compose.material.icons.filled.Numbers
 import androidx.compose.material.icons.filled.Smartphone
 import androidx.compose.material3.*
@@ -20,13 +17,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.adminpay.caja.R
+import com.adminpay.caja.ui.presentation.checkout.CheckoutSharedViewModel
 import com.adminpay.caja.ui.presentation.components.InputComponent
+import com.adminpay.caja.utils.getBankDrawableId
 
 @Composable
-fun BancaNacionalScreen() {
+fun BancaNacionalScreen(sharedViewModel: CheckoutSharedViewModel) {
     var fecha by remember { mutableStateOf("") }
     var referencia by remember { mutableStateOf("") }
+    val selectedInvoice = sharedViewModel.selectedInvoice
+    val selectedBank = sharedViewModel.bankAssociated
 
     Column(
         modifier = Modifier
@@ -38,7 +38,7 @@ fun BancaNacionalScreen() {
         Card(
             modifier = Modifier.fillMaxWidth(),
             elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White)
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
             Row(
                 modifier = Modifier
@@ -47,8 +47,8 @@ fun BancaNacionalScreen() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.b0191),
-                    contentDescription = null,
+                    painter = painterResource(id = getBankDrawableId(selectedBank?.bankCode)),
+                    contentDescription = "Logo del banco ${selectedBank?.bankCode}",
                     modifier = Modifier.size(40.dp)
                 )
 
@@ -56,10 +56,10 @@ fun BancaNacionalScreen() {
 
                 Column(modifier = Modifier.fillMaxWidth()) {
                     val items = listOf(
-                        Pair(Icons.Default.AccountBalance, "Banco XYZ"),
-                        Pair(Icons.Default.AccountBalance, "V-12345678"),
-                        Pair(Icons.Default.Smartphone, "0414-1234567"),
-                        Pair(Icons.Default.Money, "0102-0123-4567-8912")
+                        Pair(Icons.Default.AccountBalance, "${selectedBank?.bankName}"),
+                        Pair(Icons.Default.AccountBox, "${selectedBank?.identification}"),
+                        Pair(Icons.Default.Smartphone, "${selectedBank?.tlf}"),
+                        Pair(Icons.Default.Numbers, "${selectedBank?.nroCta}")
                     )
 
                     for (i in items.indices step 2) {
@@ -72,9 +72,9 @@ fun BancaNacionalScreen() {
                                     verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier.weight(1f)
                                 ) {
-                                    Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                                    Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.secondary)
                                     Spacer(modifier = Modifier.width(8.dp))
-                                    Text(value, fontSize = 14.sp)
+                                    Text(value, fontSize = 13.sp)
                                 }
                             }
                         }

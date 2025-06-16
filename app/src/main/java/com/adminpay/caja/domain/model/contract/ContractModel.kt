@@ -21,7 +21,7 @@ data class Contract(
 
 data class BankAssociated(
     val nroCta: String,
-    val rlf: String,
+    val tlf: String,
     val bankName: String,
     val bankCode: String,
     val identification: String

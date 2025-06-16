@@ -32,7 +32,7 @@ fun PaymentMethodsScreen(
     tasa: ModelTasa?
 ) {
     var selectedMethod by remember { mutableStateOf(PaymentMethod.BANCA_NACIONAL) }
-    val selectedInvoice = sharedViewModel.selectedInvoice
+
 
     Column(
         modifier = Modifier
@@ -115,7 +115,7 @@ fun PaymentMethodsScreen(
 
                 // Aquí colocarías las pantallas asociadas
                 when (selectedMethod) {
-                    PaymentMethod.BANCA_NACIONAL -> BancaNacionalScreen()
+                    PaymentMethod.BANCA_NACIONAL -> BancaNacionalScreen(sharedViewModel = sharedViewModel)
                     PaymentMethod.MEDIOS_DIGITALES -> MedioDigitalScreen()
                     PaymentMethod.EFECTIVO -> EfectivoScreen(sharedViewModel=sharedViewModel, tasa = tasa)
                     PaymentMethod.PUNTO_VENTA -> PosScreen()
