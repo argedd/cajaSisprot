@@ -83,11 +83,10 @@ fun MedioDigitalScreen() {
             value = fecha,
             onValueChange = { fecha = it },
             placeholder = "Fecha de la operación",
-            keyboardType = KeyboardType.Text,
             leadingIcon = Icons.Default.CalendarToday,
             onTrailingIconClick = {
                 // Mostrar DatePickerDialog
-            }
+            },
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -95,11 +94,10 @@ fun MedioDigitalScreen() {
             value = titular,
             onValueChange = { titular = it },
             placeholder = "Titular de la cuenta",
-            keyboardType = KeyboardType.Text,
             leadingIcon = Icons.Default.AccountCircle,
             onTrailingIconClick = {
                 // Mostrar DatePickerDialog
-            }
+            },
         )
 
         Spacer(modifier = Modifier.height(16.dp))

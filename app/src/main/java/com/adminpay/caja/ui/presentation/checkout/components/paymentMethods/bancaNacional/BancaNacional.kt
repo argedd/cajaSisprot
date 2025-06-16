@@ -1,5 +1,6 @@
 package com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.bancaNacional
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -13,20 +14,37 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.adminpay.caja.domain.model.payment.validate.RequestPaymentValidateModel
 import com.adminpay.caja.ui.presentation.checkout.CheckoutSharedViewModel
 import com.adminpay.caja.ui.presentation.components.InputComponent
 import com.adminpay.caja.utils.getBankDrawableId
+import com.adminpay.caja.utils.rememberDatePicker
 
 @Composable
-fun BancaNacionalScreen(sharedViewModel: CheckoutSharedViewModel) {
+fun BancaNacionalScreen(
+    sharedViewModel: CheckoutSharedViewModel,
+    viewModel: BancaNacionalViewModel = hiltViewModel()
+) {
     var fecha by remember { mutableStateOf("") }
     var referencia by remember { mutableStateOf("") }
     val selectedInvoice = sharedViewModel.selectedInvoice
     val selectedBank = sharedViewModel.bankAssociated
+
+    var paymentOption by remember { mutableStateOf("pagomovil") }
+
+    val context = LocalContext.current
+    val datePicker = rememberDatePicker(context) { selectedDate ->
+        fecha = selectedDate
+    }
+
+    val uiState by viewModel.uiState.collectAsState()
+
 
     Column(
         modifier = Modifier
@@ -72,7 +90,11 @@ fun BancaNacionalScreen(sharedViewModel: CheckoutSharedViewModel) {
                                     verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier.weight(1f)
                                 ) {
-                                    Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.secondary)
+                                    Icon(
+                                        icon,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.secondary
+                                    )
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Text(value, fontSize = 13.sp)
                                 }
@@ -86,19 +108,44 @@ fun BancaNacionalScreen(sharedViewModel: CheckoutSharedViewModel) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Título centrado
         Row(
             modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(Icons.Default.AccountBalance, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("Transferencia", fontSize = 16.sp)
-            Spacer(modifier = Modifier.width(16.dp))
-            Icon(Icons.Default.Smartphone, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("Pago Móvil", fontSize = 16.sp)
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                RadioButton(
+                    selected = paymentOption == "pagomovil",
+                    onClick = { paymentOption = "pagomovil" },
+                    colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.primary)
+                )
+                Text("Pago Móvil", fontSize = 16.sp)
+                Spacer(modifier = Modifier.width(6.dp))
+                Icon(
+                    Icons.Default.Smartphone,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                RadioButton(
+                    selected = paymentOption == "transferencia",
+                    onClick = { paymentOption = "transferencia" },
+                    colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.primary)
+                )
+                Text("Transferencia", fontSize = 16.sp)
+                Spacer(modifier = Modifier.width(6.dp))
+                Icon(
+                    Icons.Default.AccountBalance,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -109,10 +156,11 @@ fun BancaNacionalScreen(sharedViewModel: CheckoutSharedViewModel) {
             onValueChange = { fecha = it },
             placeholder = "Fecha de la operación",
             keyboardType = KeyboardType.Text,
-            leadingIcon = Icons.Default.CalendarToday,
+            trailingIcon = Icons.Default.CalendarToday, // ← AGREGAR ESTO
             onTrailingIconClick = {
-                // Mostrar DatePickerDialog
-            }
+                datePicker.show()
+            },
+            readOnly = true
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -133,7 +181,23 @@ fun BancaNacionalScreen(sharedViewModel: CheckoutSharedViewModel) {
         // Botón Validar Pago
         Button(
             onClick = {
-                // Acción de validación
+                if (referencia.length != 8 || !referencia.all { it.isDigit() }) {
+                    Toast.makeText(context, "Referencia inválida", Toast.LENGTH_SHORT).show()
+                    return@Button
+                }
+                if (fecha.isBlank()) {
+                    Toast.makeText(context, "Seleccione la fecha", Toast.LENGTH_SHORT).show()
+                    return@Button
+                }
+
+                val request = RequestPaymentValidateModel(
+                    sender = selectedBank?.tlf ?: "",
+                    reference = referencia,
+                    date = fecha,
+                    paymentMethod = paymentOption,
+                    invoiceId = selectedInvoice?.id ?: 0
+                )
+                viewModel.validatePayment(request)
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -142,6 +206,15 @@ fun BancaNacionalScreen(sharedViewModel: CheckoutSharedViewModel) {
         ) {
             Text("Validar Pago", color = Color.White)
         }
+
+        if (uiState.error != null) {
+            Text("Error: ${uiState.error}", color = Color.Red)
+        }
+
+        if (uiState.success != null) {
+            Text("Validación exitosa", color = Color.Green)
+        }
+
     }
 }
 

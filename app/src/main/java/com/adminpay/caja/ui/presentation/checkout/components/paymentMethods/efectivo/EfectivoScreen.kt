@@ -82,9 +82,9 @@ fun EfectivoScreen(
                     if (selectedCurrency == "BS") bsViewModel.onAmountChange(it)
                     else usdViewModel.onAmountChange(it)
                 },
+                modifier = Modifier.fillMaxWidth(),
                 placeholder = "Monto",
                 keyboardType = KeyboardType.Number,
-                modifier = Modifier.fillMaxWidth()
             )
 
             if (selectedCurrency == "USD") {

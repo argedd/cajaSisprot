@@ -134,11 +134,11 @@ fun AuthScreen(authViewModel: AuthViewModel) {
                                 InputComponent(
                                     value = username,
                                     onValueChange = { username = it },
+                                    modifier = Modifier.fillMaxWidth(),
                                     placeholder = "Correo electrónico",
                                     keyboardType = KeyboardType.Email,
+                                    error = emailError,
                                     leadingIcon = Icons.Default.Person,
-                                    modifier = Modifier.fillMaxWidth(),
-                                    error = emailError
                                 )
 
                                 Spacer(modifier = Modifier.height(20.dp))
@@ -146,16 +146,16 @@ fun AuthScreen(authViewModel: AuthViewModel) {
                                 InputComponent(
                                     value = password,
                                     onValueChange = { password = it },
+                                    modifier = Modifier.fillMaxWidth(),
                                     placeholder = "Contraseña",
                                     keyboardType = if (passwordVisible) KeyboardType.Text else KeyboardType.Password,
+                                    error = passwordError,
+                                    isPassword = !passwordVisible,
                                     leadingIcon = Icons.Default.Lock,
                                     trailingIcon = if (passwordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
                                     onTrailingIconClick = {
                                         passwordVisible = !passwordVisible
                                     },
-                                    modifier = Modifier.fillMaxWidth(),
-                                    isPassword = !passwordVisible,
-                                    error = passwordError
                                 )
 
                                 Spacer(modifier = Modifier.height(32.dp))

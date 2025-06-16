@@ -48,7 +48,9 @@ fun InputComponent(
     cornerRadius: Int = 12,
     textStyle: TextStyle = TextStyle.Default,
     placeholderStyle: TextStyle = TextStyle.Default,
-    onTrailingIconClick: () -> Unit = {}
+    onTrailingIconClick: () -> Unit = {},
+    readOnly: Boolean = false
+
 ) {
     val focusRequester = remember { FocusRequester() }
 
@@ -94,6 +96,7 @@ fun InputComponent(
                             .weight(1f)
                             .focusRequester(focusRequester),
                         singleLine = singleLine,
+                        readOnly = readOnly ,
                         textStyle = textStyle.copy(
                             color = if (isError) MaterialTheme.colorScheme.error
                             else MaterialTheme.colorScheme.onSurface,
