@@ -32,7 +32,6 @@ class CheckoutSharedViewModel @Inject constructor() : ViewModel() {
     private val _remainingAmountBs = MutableStateFlow(0.0)
     val remainingAmountBs: StateFlow<Double> = _remainingAmountBs.asStateFlow()
 
-    // ✅ Agrega método con ID autoincremental y actualiza montos
     fun addPaymentMethod(method: ModelMethod) {
         viewModelScope.launch {
             val methodWithId = method.copy(id = methodAutoId++)
@@ -41,7 +40,13 @@ class CheckoutSharedViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    // ✅ Elimina método por ID y actualiza montos
+    fun hasPaymentMethodWith(reference: String, idMethod: Int): Boolean {
+        return _paymentMethods.value.any {
+            it.reference == reference && it.idMethod == idMethod
+        }
+    }
+
+
     fun removePaymentMethodById(id: Int) {
         viewModelScope.launch {
             _paymentMethods.value = _paymentMethods.value.filterNot { it.id == id }

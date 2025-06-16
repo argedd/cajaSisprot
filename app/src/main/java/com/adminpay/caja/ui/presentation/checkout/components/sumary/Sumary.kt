@@ -116,7 +116,11 @@ fun CheckoutSummary(screen: ScreenDimensions, sharedViewModel: CheckoutSharedVie
                                     modifier = Modifier.padding(8.dp),
                                     horizontalAlignment = Alignment.Start
                                 ) {
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Row(
+
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                    ) {
                                         Icon(
                                             imageVector = Icons.Default.Payments,
                                             contentDescription = metodo.methodName,
@@ -131,6 +135,30 @@ fun CheckoutSummary(screen: ScreenDimensions, sharedViewModel: CheckoutSharedVie
                                             fontSize = 13.sp,
                                             maxLines = 1
                                         )
+                                        Spacer(modifier = Modifier.weight(1f)) // Empuja a la derecha si hay referencia
+
+                                        if (!metodo.reference.isNullOrBlank()) {
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.End
+                                            ) {
+                                                Icon(
+                                                    imageVector = Icons.Default.Numbers,
+                                                    contentDescription = "Referencia",
+                                                    tint = MaterialTheme.colorScheme.secondary,
+                                                    modifier = Modifier
+                                                        .size(20.dp)
+                                                        .padding(end = 4.dp)
+                                                )
+                                                Text(
+                                                    text = "ref: ${metodo.reference}",
+                                                    color = Color.White,
+                                                    fontSize = 13.sp,
+                                                    maxLines = 1
+                                                )
+                                            }
+                                        }
+
                                     }
                                     Spacer(modifier = Modifier.height(4.dp))
                                     Row(
@@ -144,7 +172,11 @@ fun CheckoutSummary(screen: ScreenDimensions, sharedViewModel: CheckoutSharedVie
                                             fontSize = 12.sp
                                         )
                                         IconButton(
-                                            onClick = { sharedViewModel.removePaymentMethodById(metodo.id) },
+                                            onClick = {
+                                                sharedViewModel.removePaymentMethodById(
+                                                    metodo.id
+                                                )
+                                            },
                                             modifier = Modifier.size(24.dp)
                                         ) {
                                             Icon(

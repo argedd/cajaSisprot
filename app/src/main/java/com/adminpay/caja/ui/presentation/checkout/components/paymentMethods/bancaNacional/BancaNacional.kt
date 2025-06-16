@@ -22,9 +22,13 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.adminpay.caja.domain.model.payment.validate.RequestPaymentValidateModel
 import com.adminpay.caja.ui.presentation.checkout.CheckoutSharedViewModel
+import com.adminpay.caja.ui.presentation.components.AppModalComponent
+import com.adminpay.caja.ui.presentation.components.ErrorComponent
 import com.adminpay.caja.ui.presentation.components.InputComponent
 import com.adminpay.caja.utils.getBankDrawableId
 import com.adminpay.caja.utils.rememberDatePicker
+import com.adminpay.caja.utils.rememberScreenDimensions
+import com.movilpay.autopago.utils.formatFecha
 
 @Composable
 fun BancaNacionalScreen(
@@ -33,6 +37,9 @@ fun BancaNacionalScreen(
 ) {
     var fecha by remember { mutableStateOf("") }
     var referencia by remember { mutableStateOf("") }
+    var fechaError by remember { mutableStateOf<String?>(null) }
+    var referenciaError by remember { mutableStateOf<String?>(null) }
+
     val selectedInvoice = sharedViewModel.selectedInvoice
     val selectedBank = sharedViewModel.bankAssociated
 
@@ -44,6 +51,33 @@ fun BancaNacionalScreen(
     }
 
     val uiState by viewModel.uiState.collectAsState()
+    var showErrorModal by remember { mutableStateOf(false) }
+    val screen = rememberScreenDimensions()
+
+    val remainingAmountBs by sharedViewModel.remainingAmountBs.collectAsState()
+    val isButtonEnabled = remainingAmountBs > 0.0
+
+
+    LaunchedEffect(uiState) {
+        if (uiState is BancaNacionalUiState.Error) {
+            showErrorModal = true
+        }
+    }
+    if (showErrorModal && uiState is BancaNacionalUiState.Error) {
+        AppModalComponent(onDismiss = {
+            showErrorModal = false
+            viewModel.resetState()
+        }) {
+            ErrorComponent(
+                message = (uiState as BancaNacionalUiState.Error).message,
+                screen = screen,
+                onClose = {
+                    showErrorModal = false
+                    viewModel.resetState()
+                }
+            )
+        }
+    }
 
 
     Column(
@@ -152,7 +186,7 @@ fun BancaNacionalScreen(
 
         // Formulario
         InputComponent(
-            value = fecha,
+            value = fecha.formatFecha(),
             onValueChange = { fecha = it },
             placeholder = "Fecha de la operación",
             keyboardType = KeyboardType.Text,
@@ -162,6 +196,9 @@ fun BancaNacionalScreen(
             },
             readOnly = true
         )
+        fechaError?.let {
+            Text(it, color = Color.Red, fontSize = 12.sp)
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -175,30 +212,41 @@ fun BancaNacionalScreen(
             leadingIcon = Icons.Default.Numbers,
 
             )
+        referenciaError?.let {
+            Text(it, color = Color.Red, fontSize = 12.sp)
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
 
         // Botón Validar Pago
         Button(
             onClick = {
-                if (referencia.length != 8 || !referencia.all { it.isDigit() }) {
-                    Toast.makeText(context, "Referencia inválida", Toast.LENGTH_SHORT).show()
-                    return@Button
-                }
-                if (fecha.isBlank()) {
-                    Toast.makeText(context, "Seleccione la fecha", Toast.LENGTH_SHORT).show()
-                    return@Button
+                var hasError = false
+
+                if (referencia.length != 8) {
+                    referenciaError = "La referencia debe tener 8 dígitos"
+                    hasError = true
                 }
 
+                if (fecha.isBlank()) {
+                    fechaError = "Seleccione una fecha"
+                    hasError = true
+                }
+
+                if (hasError) return@Button
+
                 val request = RequestPaymentValidateModel(
-                    sender = selectedBank?.tlf ?: "",
+                    sender = null,
                     reference = referencia,
                     date = fecha,
                     paymentMethod = paymentOption,
                     invoiceId = selectedInvoice?.id ?: 0
                 )
-                viewModel.validatePayment(request)
+                viewModel.validatePayment(
+                    request, sharedViewModel,
+                )
             },
+            enabled = isButtonEnabled,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 4.dp),
@@ -207,13 +255,6 @@ fun BancaNacionalScreen(
             Text("Validar Pago", color = Color.White)
         }
 
-        if (uiState.error != null) {
-            Text("Error: ${uiState.error}", color = Color.Red)
-        }
-
-        if (uiState.success != null) {
-            Text("Validación exitosa", color = Color.Green)
-        }
 
     }
 }

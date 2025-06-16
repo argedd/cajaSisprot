@@ -30,3 +30,17 @@ fun currentTimeVenezuela(): String {
 
     return time.value
 }
+
+
+
+fun String.formatFecha(fromFormat: String = "yyyy-MM-dd", toFormat: String = "dd-MM-yyyy"): String {
+    return try {
+        val parser = SimpleDateFormat(fromFormat, Locale.getDefault())
+        val formatter = SimpleDateFormat(toFormat, Locale.getDefault())
+        val date = parser.parse(this)
+        formatter.format(date ?: return this)
+    } catch (e: Exception) {
+        this
+    }
+}
+
