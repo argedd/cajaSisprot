@@ -116,7 +116,7 @@ fun PaymentMethodsScreen(
                 // Aquí colocarías las pantallas asociadas
                 when (selectedMethod) {
                     PaymentMethod.BANCA_NACIONAL -> BancaNacionalScreen(sharedViewModel = sharedViewModel)
-                    PaymentMethod.MEDIOS_DIGITALES -> MedioDigitalScreen()
+                    PaymentMethod.MEDIOS_DIGITALES -> MedioDigitalScreen(sharedViewModel=sharedViewModel)
                     PaymentMethod.EFECTIVO -> EfectivoScreen(sharedViewModel=sharedViewModel, tasa = tasa)
                     PaymentMethod.PUNTO_VENTA -> PosScreen()
                 }

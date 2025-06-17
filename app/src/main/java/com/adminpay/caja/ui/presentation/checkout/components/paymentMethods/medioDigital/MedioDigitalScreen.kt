@@ -17,33 +17,84 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.adminpay.caja.R
+import com.adminpay.caja.domain.model.payment.validate.PaymentMetadataModel
+import com.adminpay.caja.domain.model.payment.validate.RequestPaymentValidateModel
+import com.adminpay.caja.ui.presentation.checkout.CheckoutSharedViewModel
+import com.adminpay.caja.ui.presentation.components.AppModalComponent
+import com.adminpay.caja.ui.presentation.components.ErrorComponent
 import com.adminpay.caja.ui.presentation.components.InputComponent
+import com.adminpay.caja.utils.rememberDatePicker
+import com.adminpay.caja.utils.rememberScreenDimensions
+import com.movilpay.autopago.utils.formatFecha
 
 @Composable
-fun MedioDigitalScreen() {
+fun MedioDigitalScreen(
+    sharedViewModel: CheckoutSharedViewModel,
+    viewModel: MedioDigitalViewModel = hiltViewModel()
+) {
     val options = listOf(
-        MedioDigital("Binance", painterResource(id = R.drawable.binance)),
-        MedioDigital("PayPal", painterResource(id = R.drawable.paypal)),
         MedioDigital("Zelle", painterResource(id = R.drawable.zelle)),
     )
 
     var selectedOption by remember { mutableStateOf(options[0].name) }
+    val selectedInvoice = sharedViewModel.selectedInvoice
+
     var titular by remember { mutableStateOf("") }
+    val titularError by remember { mutableStateOf<String?>(null) }
     var fecha by remember { mutableStateOf("") }
-    var monto by remember { mutableStateOf("") }
+    var referencia by remember { mutableStateOf("") }
+    var fechaError by remember { mutableStateOf<String?>(null) }
+    var referenciaError by remember { mutableStateOf<String?>(null) }
+
+    val context = LocalContext.current
+    val datePicker = rememberDatePicker(context) { selectedDate ->
+        fecha = selectedDate
+    }
+    val uiState by viewModel.uiState.collectAsState()
+    var showErrorModal by remember { mutableStateOf(false) }
+    val screen = rememberScreenDimensions()
+
+    val remainingAmountBs by sharedViewModel.remainingAmountBs.collectAsState()
+    val isButtonEnabled = remainingAmountBs > 0.0
+
+
+    LaunchedEffect(uiState) {
+        if (uiState is MedioDigitalUiState.Error) {
+            showErrorModal = true
+        }
+    }
+    if (showErrorModal && uiState is MedioDigitalUiState.Error) {
+        AppModalComponent(onDismiss = {
+            showErrorModal = false
+            viewModel.resetState()
+        }) {
+            ErrorComponent(
+                message = (uiState as MedioDigitalUiState.Error).message,
+                screen = screen,
+                onClose = {
+                    showErrorModal = false
+                    viewModel.resetState()
+                }
+            )
+        }
+    }
+
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal=16.dp)
+            .padding(horizontal = 16.dp)
     ) {
         val rows = options.chunked(3)
 
-        Column() {
+        Column {
             rows.forEach { row ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -78,16 +129,20 @@ fun MedioDigitalScreen() {
             }
         }
 
-        // Formulario
         InputComponent(
-            value = fecha,
+            value = fecha.formatFecha(),
             onValueChange = { fecha = it },
             placeholder = "Fecha de la operación",
-            leadingIcon = Icons.Default.CalendarToday,
+            keyboardType = KeyboardType.Text,
+            trailingIcon = Icons.Default.CalendarToday, // ← AGREGAR ESTO
             onTrailingIconClick = {
-                // Mostrar DatePickerDialog
+                datePicker.show()
             },
+            readOnly = true
         )
+        fechaError?.let {
+            Text(it, color = Color.Red, fontSize = 12.sp)
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
         InputComponent(
@@ -99,33 +154,67 @@ fun MedioDigitalScreen() {
                 // Mostrar DatePickerDialog
             },
         )
+        titularError?.let {
+            Text(it, color = Color.Red, fontSize = 12.sp)
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         InputComponent(
-            value = monto,
+            value = referencia,
             onValueChange = {
-                if (it.length <= 8 && it.all { c -> c.isDigit() }) monto = it
+                if (it.length <= 8 && it.all { c -> c.isDigit() }) referencia = it
             },
             placeholder = "Referencia (8 dígitos)",
             keyboardType = KeyboardType.Number,
             leadingIcon = Icons.Default.Numbers,
 
             )
+        referenciaError?.let {
+            Text(it, color = Color.Red, fontSize = 12.sp)
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
 
         // Botón Validar Pago
         Button(
             onClick = {
-                // Acción de validación
+                var hasError = false
+
+                if (referencia.length != 8) {
+                    referenciaError = "La referencia debe tener 8 dígitos"
+                    hasError = true
+                }
+
+                if (fecha.isBlank()) {
+                    fechaError = "Seleccione una fecha"
+                    hasError = true
+                }
+
+                if (hasError) return@Button
+
+                val request = RequestPaymentValidateModel(
+                    sender = titular,
+                    reference = null,
+                    date = fecha,
+                    paymentMethod = "zelle",
+                    invoiceId = selectedInvoice?.id ?: 0,
+                    metadata = PaymentMetadataModel(
+                        confirmationCode = referencia
+                    )
+
+                )
+                viewModel.validatePayment(
+                    request, sharedViewModel,
+                )
             },
+            enabled = isButtonEnabled,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 4.dp),
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
-            Text("Cargar Pago", color = Color.White)
+            Text("Validar Pago", color = Color.White)
         }
     }
 }

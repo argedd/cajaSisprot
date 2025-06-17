@@ -1,4 +1,4 @@
-package com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.bancaNacional
+package com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.medioDigital
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -17,43 +17,43 @@ import retrofit2.HttpException
 import com.adminpay.caja.utils.parseHttpErrorMessage
 import com.movilpay.autopago.utils.LoadingController
 
-sealed class BancaNacionalUiState {
-    data object Idle : BancaNacionalUiState()
-    data class Success(val success: ResponsePaymentValidateModel? = null) : BancaNacionalUiState()
-    data class Error(val message: String) : BancaNacionalUiState()
+sealed class MedioDigitalUiState {
+    data object Idle : MedioDigitalUiState()
+    data class Success(val success: ResponsePaymentValidateModel? = null) : MedioDigitalUiState()
+    data class Error(val message: String) : MedioDigitalUiState()
 
 }
 
 @HiltViewModel
-class BancaNacionalViewModel @Inject constructor(
+class MedioDigitalViewModel @Inject constructor(
     private val validatePaymentUseCase: ValidatePaymentUseCase,
     private val loadingController: LoadingController,
 
     ) : ViewModel() {
 
-    private val _uiState: MutableStateFlow<BancaNacionalUiState> =
-        MutableStateFlow(BancaNacionalUiState.Idle)
-    val uiState: StateFlow<BancaNacionalUiState> = _uiState
+    private val _uiState: MutableStateFlow<MedioDigitalUiState> =
+        MutableStateFlow(MedioDigitalUiState.Idle)
+    val uiState: StateFlow<MedioDigitalUiState> = _uiState
 
     fun validatePayment(
         request: RequestPaymentValidateModel, sharedViewModel: CheckoutSharedViewModel,
     ) {
-        Log.i("BancaNacionalViewModel", "Validando pago: $request")
+        Log.i("MedioDigitalViewModel", "Validando pago: $request")
         val exists = sharedViewModel.hasPaymentMethodWith(
             request.reference.toString(),
             3
         )
         if (exists) {
             _uiState.value =
-                BancaNacionalUiState.Error("Ya existe un método de pago con esta referencia")
+                MedioDigitalUiState.Error("Ya existe un método de pago con esta referencia")
         } else {
             loadingController.show()
 
             viewModelScope.launch {
-                _uiState.value = BancaNacionalUiState.Idle
+                _uiState.value = MedioDigitalUiState.Idle
                 try {
                     val response = validatePaymentUseCase(request)
-                    _uiState.value = BancaNacionalUiState.Success(response)
+                    _uiState.value = MedioDigitalUiState.Success(response)
 
                     sharedViewModel.addPaymentMethod(
                         ModelMethod(
@@ -73,7 +73,7 @@ class BancaNacionalViewModel @Inject constructor(
                     } else {
                         e.message ?: "Error desconocido"
                     }
-                    _uiState.value = BancaNacionalUiState.Error(errorMessage)
+                    _uiState.value = MedioDigitalUiState.Error(errorMessage)
                 } finally {
                     loadingController.hide()
 
@@ -83,6 +83,6 @@ class BancaNacionalViewModel @Inject constructor(
     }
 
     fun resetState() {
-        _uiState.value = BancaNacionalUiState.Idle
+        _uiState.value = MedioDigitalUiState.Idle
     }
 }
