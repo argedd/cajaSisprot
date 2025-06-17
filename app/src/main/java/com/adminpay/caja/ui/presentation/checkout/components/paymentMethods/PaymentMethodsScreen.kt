@@ -118,7 +118,7 @@ fun PaymentMethodsScreen(
                     PaymentMethod.BANCA_NACIONAL -> BancaNacionalScreen(sharedViewModel = sharedViewModel)
                     PaymentMethod.MEDIOS_DIGITALES -> MedioDigitalScreen(sharedViewModel=sharedViewModel)
                     PaymentMethod.EFECTIVO -> EfectivoScreen(sharedViewModel=sharedViewModel, tasa = tasa)
-                    PaymentMethod.PUNTO_VENTA -> PosScreen()
+                    PaymentMethod.PUNTO_VENTA -> PosScreen(sharedViewModel=sharedViewModel)
                 }
 
 

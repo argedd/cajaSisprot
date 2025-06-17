@@ -14,10 +14,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.adminpay.caja.R
+import com.adminpay.caja.ui.presentation.checkout.CheckoutSharedViewModel
 import com.adminpay.caja.ui.presentation.components.InputComponent
 
 @Composable
-fun PosScreen() {
+fun PosScreen(sharedViewModel: CheckoutSharedViewModel) {
     var cedula by remember { mutableStateOf("") }
 
     Column(
