@@ -47,7 +47,7 @@ fun MedioDigitalScreen(
     val selectedInvoice = sharedViewModel.selectedInvoice
 
     var titular by remember { mutableStateOf("") }
-    val titularError by remember { mutableStateOf<String?>(null) }
+    var titularError by remember { mutableStateOf<String?>(null) }
     var fecha by remember { mutableStateOf("") }
     var referencia by remember { mutableStateOf("") }
     var fechaError by remember { mutableStateOf<String?>(null) }
@@ -150,9 +150,7 @@ fun MedioDigitalScreen(
             onValueChange = { titular = it },
             placeholder = "Titular de la cuenta",
             leadingIcon = Icons.Default.AccountCircle,
-            onTrailingIconClick = {
-                // Mostrar DatePickerDialog
-            },
+
         )
         titularError?.let {
             Text(it, color = Color.Red, fontSize = 12.sp)
@@ -163,9 +161,9 @@ fun MedioDigitalScreen(
         InputComponent(
             value = referencia,
             onValueChange = {
-                if (it.length <= 8 && it.all { c -> c.isDigit() }) referencia = it
+              referencia = it
             },
-            placeholder = "Referencia (8 dígitos)",
+            placeholder = "Referencia",
             keyboardType = KeyboardType.Number,
             leadingIcon = Icons.Default.Numbers,
 
@@ -181,13 +179,18 @@ fun MedioDigitalScreen(
             onClick = {
                 var hasError = false
 
-                if (referencia.length != 8) {
-                    referenciaError = "La referencia debe tener 8 dígitos"
+                if (referencia.isBlank()) {
+                    referenciaError = "La referencia es requerida"
                     hasError = true
                 }
 
                 if (fecha.isBlank()) {
                     fechaError = "Seleccione una fecha"
+                    hasError = true
+                }
+
+                if (titular.isBlank()) {
+                    titularError = "Ingrese el titular de la cuenta"
                     hasError = true
                 }
 
