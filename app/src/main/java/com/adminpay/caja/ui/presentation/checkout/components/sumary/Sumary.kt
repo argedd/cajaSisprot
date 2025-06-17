@@ -122,7 +122,7 @@ fun CheckoutSummary(screen: ScreenDimensions, sharedViewModel: CheckoutSharedVie
                                         horizontalArrangement = Arrangement.SpaceBetween,
                                     ) {
                                         Icon(
-                                            imageVector = Icons.Default.Payments,
+                                            imageVector = Icons.Default.Wallet,
                                             contentDescription = metodo.methodName,
                                             tint = MaterialTheme.colorScheme.secondary,
                                             modifier = Modifier
