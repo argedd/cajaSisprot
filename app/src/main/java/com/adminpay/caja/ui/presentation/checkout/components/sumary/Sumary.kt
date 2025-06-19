@@ -219,7 +219,7 @@ fun CheckoutSummary(screen: ScreenDimensions, sharedViewModel: CheckoutSharedVie
 
                     Button(
                         onClick = {
-                            // Acción de validación
+                            sharedViewModel.registerPayment(selectedInvoice, paymentMethods)
                         },
                         modifier = Modifier
                             .fillMaxWidth()

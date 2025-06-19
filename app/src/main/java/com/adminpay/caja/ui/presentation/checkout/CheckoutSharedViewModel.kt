@@ -4,7 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.adminpay.caja.domain.model.contract.BankAssociated
 import com.adminpay.caja.domain.model.invoice.InvoiceModel
+import com.adminpay.caja.domain.model.payment.register.CashDollarBillModel
+import com.adminpay.caja.domain.model.payment.register.NewPaymentModel
+import com.adminpay.caja.domain.model.payment.register.RequestPaymentRegisterModel
 import com.adminpay.caja.domain.model.paymentMethods.ModelMethod
+import com.adminpay.caja.domain.useCase.RegisterPaymentUseCase
+import com.movilpay.autopago.utils.LoadingController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,7 +18,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CheckoutSharedViewModel @Inject constructor() : ViewModel() {
+class CheckoutSharedViewModel @Inject constructor(
+    private val loadingController: LoadingController,
+    private val registerPaymentUseCase: RegisterPaymentUseCase
+) : ViewModel() {
 
     var selectedInvoice: InvoiceModel? = null
 
@@ -61,6 +69,63 @@ class CheckoutSharedViewModel @Inject constructor() : ViewModel() {
             updateAmounts()
         }
     }
+
+    fun registerPayment(selectedInvoice: InvoiceModel, paymentMethods: List<ModelMethod>) {
+        val payments = paymentMethods
+            .filter { it.type == 1 }
+            .mapNotNull { it.idPayment }
+
+        val newPayments = paymentMethods
+            .filter { it.type == 2 }
+            .mapNotNull {
+                val amount = if (it.idMethod == 3) it.amount else it.amountBs
+                val reference = it.reference
+                val methodId = it.idMethod
+
+                if (amount != null ) {
+                    NewPaymentModel(
+                        methodId = methodId,
+                        amount = amount,
+                        reference = reference.orEmpty()
+                    )
+                } else null
+            }
+
+
+        val cashDollarBill = paymentMethods
+            .flatMap { it.cashDollarBill.orEmpty() }
+            .mapNotNull { bill ->
+                val denom = bill.denomination
+                val serial = bill.serialCode
+                if (denom != null && serial != null) {
+                    CashDollarBillModel(
+                        denomination = denom,
+                        serialCode = serial
+                    )
+                } else null
+            }
+
+        val payload = RequestPaymentRegisterModel(
+            payments = payments,
+            invoices = listOf(selectedInvoice.id),
+            newPayments = newPayments,
+            cashDollarBill = cashDollarBill
+        )
+
+        // Aquí puedes llamar al use case
+        viewModelScope.launch {
+            loadingController.show()
+            try {
+                registerPaymentUseCase(payload)
+                // manejar éxito si es necesario
+            } catch (e: Exception) {
+                // manejar error si es necesario
+            } finally {
+                loadingController.hide()
+            }
+        }
+    }
+
 
     // ✅ Calcula y actualiza los montos cargados y restantes
     fun updateAmounts() {
