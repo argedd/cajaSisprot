@@ -44,14 +44,12 @@ fun CashDollarBillComponent(onAdd: (CashDollarBill) -> Unit, onClose: () -> Unit
                 modifier = Modifier.weight(1f),
                 placeholder = "Denominación",
                 keyboardType = KeyboardType.Number,
-                readOnly = true
             )
             InputComponent(
                 value = serial,
                 onValueChange = { serial = it },
                 modifier = Modifier.weight(1f),
                 placeholder = "Serial",
-                readOnly = true
             )
         }
 

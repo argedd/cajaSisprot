@@ -1,5 +1,6 @@
 package com.adminpay.caja.ui.presentation.checkout
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.adminpay.caja.domain.model.contract.BankAssociated
@@ -11,10 +12,12 @@ import com.adminpay.caja.domain.model.paymentMethods.ModelMethod
 import com.adminpay.caja.domain.useCase.RegisterPaymentUseCase
 import com.movilpay.autopago.utils.LoadingController
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -70,7 +73,11 @@ class CheckoutSharedViewModel @Inject constructor(
         }
     }
 
-    fun registerPayment(selectedInvoice: InvoiceModel, paymentMethods: List<ModelMethod>) {
+    fun registerPayment(
+        selectedInvoice: InvoiceModel,
+        paymentMethods: List<ModelMethod>,
+        finish: () -> Unit
+    ) {
         val payments = paymentMethods
             .filter { it.type == 1 }
             .mapNotNull { it.idPayment }
@@ -78,7 +85,7 @@ class CheckoutSharedViewModel @Inject constructor(
         val newPayments = paymentMethods
             .filter { it.type == 2 }
             .mapNotNull {
-                val amount = if (it.idMethod == 3) it.amount else it.amountBs
+                val amount = if (it.idMethod == 2) it.amount else it.amountBs
                 val reference = it.reference
                 val methodId = it.idMethod
 
@@ -112,11 +119,16 @@ class CheckoutSharedViewModel @Inject constructor(
             cashDollarBill = cashDollarBill
         )
 
+        Log.d("payload", payload.toString())
+
         // Aquí puedes llamar al use case
         viewModelScope.launch {
             loadingController.show()
             try {
                 registerPaymentUseCase(payload)
+                withContext(Dispatchers.Main) {
+                    finish() // ✅ ahora en el hilo principal
+                }
                 // manejar éxito si es necesario
             } catch (e: Exception) {
                 // manejar error si es necesario

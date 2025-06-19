@@ -38,7 +38,7 @@ fun AppNavHost(
             AuthState.Idle -> {
                 // Al iniciar la app, asegúrate de estar en AuthScreen
                 navController.navigate(Routes.AuthScreen.route) {
-                    popUpTo(0) // limpiar todo si es necesario
+                    popUpTo(0)
                 }
             }
             else -> {}

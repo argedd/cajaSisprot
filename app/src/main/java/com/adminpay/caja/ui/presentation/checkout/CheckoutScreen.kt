@@ -74,7 +74,11 @@ fun CheckoutScreen(
                     .fillMaxHeight(),
                 contentAlignment = Alignment.TopCenter
             ) {
-                CheckoutSummary(screen = screen, sharedViewModel = sharedViewModel)
+                CheckoutSummary(
+                    screen = screen,
+                    sharedViewModel = sharedViewModel,
+                    finish = { navController.navigate("finish_screen") } // Usa tu route real aquí si es diferente
+                )
             }
         }
 

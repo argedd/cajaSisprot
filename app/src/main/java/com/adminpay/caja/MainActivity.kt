@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.adminpay.caja.domain.model.socket.TcpSocketModel
 import com.adminpay.caja.ui.navigation.AppNavHost
+import com.adminpay.caja.ui.presentation.components.HideNavigationBar
 import com.adminpay.caja.ui.presentation.components.LoadingComponent
 import com.adminpay.caja.ui.theme.CajaTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,6 +27,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CajaTheme {
+                HideNavigationBar()
                 AppNavHost()
                 LoadingComponent()
 

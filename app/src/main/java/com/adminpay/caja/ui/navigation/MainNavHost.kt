@@ -7,13 +7,14 @@ import androidx.navigation.compose.composable
 import com.adminpay.caja.ui.presentation.box.BoxScreen
 import com.adminpay.caja.ui.presentation.checkout.CheckoutScreen
 import com.adminpay.caja.ui.presentation.contract.ContractScreen
+import com.adminpay.caja.ui.presentation.finish.FinishScreen
 import com.adminpay.caja.utils.rememberScreenDimensions
 
 @Composable
 fun MainNavHost(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = Routes.ContractScreen.route
+        startDestination = Routes.FinishScreen.route
     ) {
         composable(Routes.ContractScreen.route) { ContractScreen(navController) }
         composable(Routes.BoxScreen.route) { BoxScreen() }
@@ -21,6 +22,8 @@ fun MainNavHost(navController: NavHostController) {
             navController=navController,
             screen = rememberScreenDimensions(),
         ) }
-        // Aquí agregas más pantallas internas si las necesitas
+        composable(Routes.FinishScreen.route) {
+            FinishScreen(navController= navController)
+        }
     }
 }

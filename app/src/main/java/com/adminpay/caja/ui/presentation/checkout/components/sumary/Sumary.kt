@@ -20,7 +20,11 @@ import com.adminpay.caja.ui.presentation.checkout.CheckoutSharedViewModel
 import com.adminpay.caja.utils.ScreenDimensions
 
 @Composable
-fun CheckoutSummary(screen: ScreenDimensions, sharedViewModel: CheckoutSharedViewModel) {
+fun CheckoutSummary(
+    screen: ScreenDimensions,
+    sharedViewModel: CheckoutSharedViewModel,
+    finish: () -> Unit
+) {
     val selectedInvoice = sharedViewModel.selectedInvoice
     val paymentMethods by sharedViewModel.paymentMethods.collectAsState()
     val chargedAmountBs by sharedViewModel.chargedAmountBs.collectAsState()
@@ -219,7 +223,7 @@ fun CheckoutSummary(screen: ScreenDimensions, sharedViewModel: CheckoutSharedVie
 
                     Button(
                         onClick = {
-                            sharedViewModel.registerPayment(selectedInvoice, paymentMethods)
+                            sharedViewModel.registerPayment(selectedInvoice, paymentMethods, finish)
                         },
                         modifier = Modifier
                             .fillMaxWidth()

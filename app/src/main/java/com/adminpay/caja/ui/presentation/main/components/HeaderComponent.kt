@@ -73,7 +73,7 @@ fun HeaderContent(
                         modifier = Modifier.padding(top = 12.dp)
                     ) {
                         Text(
-                            text = "Fecha: $fecha : ",
+                            text = "Fecha: $fecha : ${currentTimeVenezuela()} ",
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 color = Color.White,
                                 fontWeight = FontWeight.Bold,

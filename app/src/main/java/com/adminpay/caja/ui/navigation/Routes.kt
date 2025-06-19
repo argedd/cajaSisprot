@@ -9,6 +9,8 @@ sealed class Routes(val route: String) {
     object ContractScreen : Routes("contract_screen")
     object BoxScreen : Routes("box_screen")
     object CheckoutScreen : Routes("checkout_screen")
+    object FinishScreen : Routes("finish_screen")
+
 
 
     fun withArgs(vararg args: String): String {
