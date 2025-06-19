@@ -3,12 +3,9 @@ package com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.pos
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.Badge
 import androidx.compose.material.icons.filled.CreditCard
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.EditNote
-import androidx.compose.material.icons.filled.Money
 import androidx.compose.material.icons.filled.Numbers
 import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material3.*
@@ -18,18 +15,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.adminpay.caja.R
 import com.adminpay.caja.ui.presentation.checkout.CheckoutSharedViewModel
+import com.adminpay.caja.ui.presentation.components.AppModalComponent
+import com.adminpay.caja.ui.presentation.components.ErrorComponent
 import com.adminpay.caja.ui.presentation.components.InputComponent
+import com.adminpay.caja.utils.rememberScreenDimensions
 
 @Composable
 fun PosScreen(sharedViewModel: CheckoutSharedViewModel, viewModel: PosViewModel = hiltViewModel()) {
     var paymentType by remember { mutableStateOf("pos") }
     val remainingAmountBs by sharedViewModel.remainingAmountBs.collectAsState()
+    val isButtonEnabled = remainingAmountBs > 0.0
+    val screen = rememberScreenDimensions()
 
     var cedula by remember { mutableStateOf("") }
     var referencia by remember { mutableStateOf("") }
@@ -38,6 +38,38 @@ fun PosScreen(sharedViewModel: CheckoutSharedViewModel, viewModel: PosViewModel 
     var cedulaError by remember { mutableStateOf<String?>(null) }
     var referenciaError by remember { mutableStateOf<String?>(null) }
     var montoError by remember { mutableStateOf<String?>(null) }
+
+    val uiState by viewModel.uiState.collectAsState()
+    val isConnected by viewModel.connectedClients.collectAsState()
+    var showErrorModal by remember { mutableStateOf(false) }
+
+    LaunchedEffect(remainingAmountBs) {
+        monto = "%.2f".format(remainingAmountBs)
+    }
+
+
+    LaunchedEffect(uiState, isConnected) {
+        if (uiState is PosUiState.Error) {
+            showErrorModal = true
+        }
+    }
+
+    if (showErrorModal && uiState is PosUiState.Error) {
+        AppModalComponent(onDismiss = {
+            showErrorModal = false
+            viewModel.resetState()
+        }) {
+            ErrorComponent(
+                message = (uiState as PosUiState.Error).message,
+                screen = screen,
+                onClose = {
+                    showErrorModal = false
+                    viewModel.resetState()
+                }
+            )
+        }
+    }
+
 
     Column(
         modifier = Modifier
@@ -151,20 +183,26 @@ fun PosScreen(sharedViewModel: CheckoutSharedViewModel, viewModel: PosViewModel 
                     }
                 }
 
-                if (monto.isBlank() || monto.toFloatOrNull() == null) {
+                val montoValue = monto.toFloatOrNull()
+                if (monto.isBlank() || montoValue == null) {
                     montoError = "Monto inválido"
                     valid = false
+                } else if (montoValue > remainingAmountBs.toFloat()) {
+                    montoError = "El monto no puede ser mayor al restante"
+                    valid = false
                 }
+
 
                 if (valid) {
                     // Aquí llamas a sharedViewModel o navegas
                     if (paymentType == "pos") {
-
+                        viewModel.sendPayment(cedula = cedula, monto = monto.toDouble(), sharedViewModel)
                     }else{
                         viewModel.chargedManualPayment(amount = monto.toDouble(), reference = referencia, sharedViewModel)
                     }
                 }
             },
+            enabled = isButtonEnabled,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 4.dp),
