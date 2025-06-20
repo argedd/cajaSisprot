@@ -30,7 +30,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-
+import androidx.compose.ui.unit.sp
+import com.adminpay.caja.utils.rememberScreenDimensions
 @Composable
 fun InputComponent(
     value: String,
@@ -44,33 +45,38 @@ fun InputComponent(
     leadingIcon: ImageVector? = null,
     trailingIcon: ImageVector? = null,
     singleLine: Boolean = true,
-    height: Int = 48,
-    cornerRadius: Int = 12,
+    height: Int = 48, // Ignorado, lo adaptamos con screen
+    cornerRadius: Int = 1,
     textStyle: TextStyle = TextStyle.Default,
     placeholderStyle: TextStyle = TextStyle.Default,
     onTrailingIconClick: () -> Unit = {},
     readOnly: Boolean = false
-
 ) {
     val focusRequester = remember { FocusRequester() }
+    val screen = rememberScreenDimensions()
+
+    val dynamicHeight = screen.heightPercentage(0.06f) // ~48.dp en tablets
+    val iconSize = screen.widthPercentage(0.02f) // ~20.dp
+    val spacing = screen.widthPercentage(0.02f)   // ~8.dp
+    val paddingHorizontal = screen.widthPercentage(0.02f) // ~16.dp
 
     Column(modifier = modifier) {
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(height.dp),
-            shape = RoundedCornerShape(cornerRadius.dp),
+                .height(dynamicHeight),
+            shape = RoundedCornerShape(screen.widthPercentage(cornerRadius / 100f)),
             color = Color.White,
             border = BorderStroke(
-                1.dp,
-                if (isError) MaterialTheme.colorScheme.error
+                width = screen.widthPercentage(0.002f), // ~1.dp
+                color = if (isError) MaterialTheme.colorScheme.error
                 else MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
             ),
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = paddingHorizontal),
                 contentAlignment = Alignment.CenterStart
             ) {
                 Row(
@@ -83,9 +89,9 @@ fun InputComponent(
                             contentDescription = null,
                             tint = if (isError) MaterialTheme.colorScheme.error
                             else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(iconSize)
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(spacing))
                     }
 
                     // Text Field
@@ -96,10 +102,11 @@ fun InputComponent(
                             .weight(1f)
                             .focusRequester(focusRequester),
                         singleLine = singleLine,
-                        readOnly = readOnly ,
+                        readOnly = readOnly,
                         textStyle = textStyle.copy(
                             color = if (isError) MaterialTheme.colorScheme.error
                             else MaterialTheme.colorScheme.onSurface,
+                            fontSize = (screen.width.value * 0.014).sp, // ~16.sp
                             textAlign = TextAlign.Start
                         ),
                         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
@@ -113,6 +120,7 @@ fun InputComponent(
                                     Text(
                                         text = placeholder,
                                         style = placeholderStyle.copy(
+                                            fontSize = (screen.width.value * 0.014).sp,
                                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                                         )
                                     )
@@ -124,14 +132,14 @@ fun InputComponent(
 
                     // Trailing Icon
                     trailingIcon?.let {
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(spacing))
                         Icon(
                             imageVector = it,
                             contentDescription = null,
                             tint = if (isError) MaterialTheme.colorScheme.error
                             else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                             modifier = Modifier
-                                .size(20.dp)
+                                .size(iconSize)
                                 .clickable { onTrailingIconClick() }
                         )
                     }
@@ -144,10 +152,13 @@ fun InputComponent(
             Text(
                 text = error,
                 color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodySmall.copy(
+                    fontSize = (screen.width.value * 0.013f).sp // ~14.sp
+                ),
                 modifier = Modifier
-                    .padding(start = 8.dp, top = 4.dp)
+                    .padding(start = screen.widthPercentage(0.02f), top = screen.heightPercentage(0.005f))
             )
         }
     }
 }
+

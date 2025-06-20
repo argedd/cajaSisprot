@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.adminpay.caja.R
 import com.adminpay.caja.ui.presentation.components.InputComponent
 import com.adminpay.caja.utils.rememberScreenDimensions
@@ -51,7 +52,8 @@ fun AuthScreen(authViewModel: AuthViewModel) {
     // Validación en tiempo real
     LaunchedEffect(username, password) {
         emailError = if (username.isNotBlank() && !isEmailValid) "Correo inválido" else null
-        passwordError = if (password.isNotBlank() && !isPasswordValid) "Mínimo 6 caracteres" else null
+        passwordError =
+            if (password.isNotBlank() && !isPasswordValid) "Mínimo 6 caracteres" else null
     }
 
     // Mostrar Snackbar si hay error
@@ -92,8 +94,8 @@ fun AuthScreen(authViewModel: AuthViewModel) {
                         painter = painterResource(id = R.drawable.sgflogo),
                         contentDescription = "Logo",
                         modifier = Modifier
-                            .size(screen.widthPercentage(0.5f))
-                            .padding(top = 400.dp)
+                            .size(screen.widthPercentage(0.4f))
+                            .padding(top = screen.heightPercentage(0.4f))
                     )
                 }
 
@@ -111,15 +113,18 @@ fun AuthScreen(authViewModel: AuthViewModel) {
                     ) {
                         Text(
                             text = "Sistema de Gestión Financiera",
-                            style = MaterialTheme.typography.headlineMedium.copy(color = Color.White),
-                            modifier = Modifier.padding(bottom = 24.dp)
+                            style = MaterialTheme.typography.headlineMedium.copy(
+                                color = Color.White,
+                                fontSize = (screen.width.value * 0.02).sp // 4% del ancho de pantalla
+                            ),
+                            modifier = Modifier.padding(bottom = screen.heightPercentage(0.03f))
                         )
 
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .border(
-                                    width = 2.dp,
+                                    width = (screen.widthPercentage(0.002f)), // 0.2% del ancho como borde
                                     color = Color(0xFFFCA311),
                                     shape = MaterialTheme.shapes.extraLarge
                                 )
@@ -127,7 +132,7 @@ fun AuthScreen(authViewModel: AuthViewModel) {
                                     color = Color.White,
                                     shape = MaterialTheme.shapes.extraLarge
                                 )
-                                .padding(32.dp),
+                                .padding(screen.widthPercentage(0.04f)), // padding dinámico (~32.dp en tablets)
                             contentAlignment = Alignment.Center
                         ) {
                             Column {
@@ -141,7 +146,7 @@ fun AuthScreen(authViewModel: AuthViewModel) {
                                     leadingIcon = Icons.Default.Person,
                                 )
 
-                                Spacer(modifier = Modifier.height(20.dp))
+                                Spacer(modifier = Modifier.height(screen.heightPercentage(0.02f))) // ~20.dp
 
                                 InputComponent(
                                     value = password,
@@ -158,7 +163,7 @@ fun AuthScreen(authViewModel: AuthViewModel) {
                                     },
                                 )
 
-                                Spacer(modifier = Modifier.height(32.dp))
+                                Spacer(modifier = Modifier.height(screen.heightPercentage(0.03f))) // ~32.dp
 
                                 Button(
                                     onClick = {
@@ -167,7 +172,7 @@ fun AuthScreen(authViewModel: AuthViewModel) {
                                     enabled = isFormValid,
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .height(46.dp),
+                                        .height(screen.heightPercentage(0.055f)), // Altura proporcional (~46.dp)
                                     shape = MaterialTheme.shapes.medium,
                                     colors = ButtonDefaults.buttonColors(
                                         containerColor = if (isFormValid)
@@ -177,10 +182,16 @@ fun AuthScreen(authViewModel: AuthViewModel) {
                                         contentColor = MaterialTheme.colorScheme.onPrimary
                                     )
                                 ) {
-                                    Text("Iniciar sesión", style = MaterialTheme.typography.labelLarge)
+                                    Text(
+                                        "Iniciar sesión",
+                                        style = MaterialTheme.typography.labelLarge.copy(
+                                            fontSize = (screen.width.value * 0.016).sp // Tamaño adaptado
+                                        )
+                                    )
                                 }
                             }
                         }
+
                     }
                 }
             }
