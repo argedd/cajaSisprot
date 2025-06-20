@@ -14,7 +14,7 @@ import com.adminpay.caja.utils.rememberScreenDimensions
 fun MainNavHost(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = Routes.FinishScreen.route
+        startDestination = Routes.ContractScreen.route
     ) {
         composable(Routes.ContractScreen.route) { ContractScreen(navController) }
         composable(Routes.BoxScreen.route) { BoxScreen() }

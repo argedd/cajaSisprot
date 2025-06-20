@@ -133,7 +133,9 @@ fun PosScreen(sharedViewModel: CheckoutSharedViewModel, viewModel: PosViewModel 
                 placeholder = "Cédula de la Tarjeta",
                 leadingIcon = Icons.Default.Badge,
                 isError = cedulaError != null,
-                error = cedulaError
+                error = cedulaError,
+                keyboardType = KeyboardType.Number
+
             )
             Spacer(modifier = Modifier.height(8.dp))
         } else {
@@ -146,7 +148,8 @@ fun PosScreen(sharedViewModel: CheckoutSharedViewModel, viewModel: PosViewModel 
                 placeholder = "Referencia",
                 leadingIcon = Icons.Default.Numbers,
                 isError = referenciaError != null,
-                error = referenciaError
+                error = referenciaError,
+                keyboardType = KeyboardType.Number
             )
             Spacer(modifier = Modifier.height(8.dp))
         }
