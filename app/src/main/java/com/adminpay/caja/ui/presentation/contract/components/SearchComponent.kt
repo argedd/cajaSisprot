@@ -14,7 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.adminpay.caja.utils.rememberScreenDimensions
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,38 +28,62 @@ fun Buscador(
 ) {
     val tipos = listOf("V", "E", "J", "G", "P")
     var expanded by remember { mutableStateOf(false) }
+    val screen = rememberScreenDimensions()
+
+    val paddingHorizontal = screen.widthPercentage(0.2f)
+    val fieldHeight = screen.heightPercentage(0.07f)
+    val dropdownWidth = screen.widthPercentage(0.08f)
+    val spacing = screen.widthPercentage(0.01f)
+
+    // Nuevas dimensiones para iconos y textos
+    val iconSize = screen.widthPercentage(0.022f)
+
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(vertical = 26.dp, horizontal = 250.dp)
+        modifier = Modifier.padding(
+            vertical = screen.heightPercentage(0.03f),
+            horizontal = paddingHorizontal
+        )
     ) {
-        // 🟦 Tipo con menú desplegable (más ancho y misma altura que el TextField)
+        // 🟦 Menú desplegable de tipo
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = { expanded = !expanded },
             modifier = Modifier
-                .width(100.dp)
-                .height(56.dp)
+                .width(dropdownWidth)
+                .height(fieldHeight)
         ) {
             TextField(
                 value = selectedTipo,
                 onValueChange = {},
                 readOnly = true,
-                label = { Text("Tipo") },
-                trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                label = {
+                    Text(
+                        "Tipo",
+                        fontSize = (screen.width.value * 0.012).sp
+                    )
                 },
-                shape = RoundedCornerShape(8.dp),
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(
+                        expanded = expanded,
+                        modifier = Modifier.size(iconSize)
+                    )
+                },
+                shape = RoundedCornerShape(screen.widthPercentage(0.01f)),
                 colors = TextFieldDefaults.colors(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     focusedContainerColor = Color(0xfffafafa),
                     unfocusedContainerColor = Color.White
                 ),
+                textStyle = LocalTextStyle.current.copy(
+                    fontSize = (screen.width.value * 0.015).sp
+                ),
                 modifier = Modifier
                     .menuAnchor()
-                    .fillMaxHeight() // 🔄 igual altura que el padre
-                    .border(1.dp, Color(0xFF004C72), RoundedCornerShape(8.dp))
+                    .fillMaxHeight()
+                    .border(screen.widthPercentage(0.0008f), Color(0xFF004C72), RoundedCornerShape(screen.widthPercentage(0.01f)))
             )
 
             ExposedDropdownMenu(
@@ -67,7 +92,12 @@ fun Buscador(
             ) {
                 tipos.forEach { tipo ->
                     DropdownMenuItem(
-                        text = { Text(tipo) },
+                        text = {
+                            Text(
+                                text = tipo,
+                                fontSize = (screen.width.value * 0.02).sp
+                            )
+                        },
                         onClick = {
                             onTipoSelected(tipo)
                             expanded = false
@@ -77,37 +107,55 @@ fun Buscador(
             }
         }
 
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(spacing))
 
         // 🧾 Campo de cédula o RIF
         TextField(
             value = cedula,
             onValueChange = onCedulaChange,
-            placeholder = { Text("Cédula o RIF") },
+            placeholder = {
+                Text(
+                    "Cédula o RIF",
+                    fontSize = (screen.width.value * 0.014).sp
+                )
+            },
             singleLine = true,
-            leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
+            leadingIcon = {
+                Icon(
+                    Icons.Default.Person,
+                    contentDescription = null,
+                    modifier = Modifier.padding(start = screen.widthPercentage(0.01f)).size(iconSize)
+                )
+            },
             trailingIcon = {
                 Icon(
                     Icons.Default.Search,
                     contentDescription = "Buscar",
                     tint = Color(0xFF004C72),
-                    modifier = Modifier.clickable { onBuscarClick() }
+                    modifier = Modifier
+                        .padding(end = screen.widthPercentage(0.01f))
+                        .size(iconSize)
+                        .clickable { onBuscarClick() }
                 )
             },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-            shape = RoundedCornerShape(8.dp),
+            shape = RoundedCornerShape(screen.widthPercentage(0.01f)),
             colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 focusedContainerColor = Color(0xfffafafa),
                 unfocusedContainerColor = Color.White
             ),
+            textStyle = LocalTextStyle.current.copy(
+                fontSize = (screen.width.value * 0.014).sp
+            ),
             modifier = Modifier
-                .height(56.dp)
+                .height(fieldHeight)
                 .weight(1f)
-                .border(1.dp, Color(0xFF004C72), RoundedCornerShape(8.dp))
+                .border(screen.widthPercentage(0.0008f), Color(0xFF004C72), RoundedCornerShape(screen.widthPercentage(0.01f)))
         )
     }
 }
+
 
 
