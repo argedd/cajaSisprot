@@ -52,7 +52,7 @@ class PosViewModel @Inject constructor(
                     id = 0,
                     idMethod = 5,
                     type = 2,
-                    methodName = "POS",
+                    methodName = "POS-Manual",
                     amountBs = amount,
                     reference = reference
                 )

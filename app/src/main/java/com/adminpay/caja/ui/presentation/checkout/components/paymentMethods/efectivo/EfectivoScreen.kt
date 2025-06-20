@@ -179,14 +179,20 @@ fun EfectivoScreen(
         }
     }
 
-    // Modal para agregar billetes
     if (showModal) {
         AppModalComponent(onDismiss = { showModal = false }) {
+            val totalCurrent = cashBills.sumOf { it.denomination ?: 0 }
+
             CashDollarBillComponent(
-                onAdd = { usdViewModel.addCashBill(it) },
-                onClose = { showModal = false }
+                onAdd = { newBill ->
+                    usdViewModel.addCashBill(newBill)
+                },
+                onClose = { showModal = false },
+                maxAmount = usdViewModel.amount.toDoubleOrNull() ?: 0.0,
+                currentTotal = totalCurrent.toDouble() // ✅ nuevo parámetro
             )
         }
     }
+
 }
 

@@ -9,26 +9,67 @@ import androidx.compose.material.icons.automirrored.filled.Assignment
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.adminpay.caja.domain.model.auth.User
+import com.adminpay.caja.ui.presentation.auth.AuthState
+import com.adminpay.caja.ui.presentation.auth.AuthViewModel
 import com.adminpay.caja.ui.presentation.checkout.CheckoutSharedViewModel
+import com.adminpay.caja.ui.presentation.checkout.CheckoutUiState
+import com.adminpay.caja.ui.presentation.components.AppModalComponent
+import com.adminpay.caja.ui.presentation.components.ErrorComponent
 import com.adminpay.caja.utils.ScreenDimensions
+import com.adminpay.caja.utils.rememberScreenDimensions
 
 @Composable
 fun CheckoutSummary(
     screen: ScreenDimensions,
     sharedViewModel: CheckoutSharedViewModel,
-    finish: () -> Unit
+    finish: () -> Unit,
+    authViewModel: AuthViewModel
 ) {
     val selectedInvoice = sharedViewModel.selectedInvoice
     val paymentMethods by sharedViewModel.paymentMethods.collectAsState()
     val chargedAmountBs by sharedViewModel.chargedAmountBs.collectAsState()
     val remainingAmountBs by sharedViewModel.remainingAmountBs.collectAsState()
+    val authState by authViewModel.authState.collectAsState()
+
+    val user: User? = (authState as? AuthState.Success)?.user?.getOrNull()
+
+    val uiState by sharedViewModel.uiState.collectAsState()
+    var showErrorModal by remember { mutableStateOf(false) }
+    val screen = rememberScreenDimensions()
+
+    LaunchedEffect(uiState) {
+        if (uiState is CheckoutUiState.Error) {
+            showErrorModal = true
+        }
+    }
+    if (showErrorModal && uiState is CheckoutUiState.Error) {
+        AppModalComponent(onDismiss = {
+            showErrorModal = false
+            sharedViewModel.resetState()
+        }) {
+            ErrorComponent(
+                message = (uiState as CheckoutUiState.Error).message,
+                screen = screen,
+                onClose = {
+                    showErrorModal = false
+                    sharedViewModel.resetState()
+                }
+            )
+        }
+    }
+
 
     if (selectedInvoice == null) {
         Text("No hay factura seleccionada.")
@@ -221,23 +262,38 @@ fun CheckoutSummary(
                     AmountComponent(monto = totalAmountBs, screen = screen)
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    Button(
-                        onClick = {
-                            sharedViewModel.registerPayment(selectedInvoice, paymentMethods, finish)
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 4.dp),
-                        enabled = remainingAmountBs <= 0.0,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = if (remainingAmountBs <= 0.0)
-                                MaterialTheme.colorScheme.primary
-                            else
-                                Color.Gray
+                    if (user?.idGsoft == null) {
+                        Text(
+                            text = "Usuario no autorizado para pagar",
+                            color = Color.Red,
+                            fontSize = 14.sp,
+                            modifier = Modifier.padding(horizontal = 4.dp)
                         )
-                    ) {
-                        Text("Pagar", color = Color.White)
+                    } else {
+                        Button(
+                            onClick = {
+                                sharedViewModel.registerPayment(
+                                    selectedInvoice,
+                                    paymentMethods,
+                                    finish
+                                )
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 4.dp),
+                            enabled = remainingAmountBs <= 0.0,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = if (remainingAmountBs <= 0.0)
+                                    MaterialTheme.colorScheme.primary
+                                else
+                                    Color.Gray
+                            )
+                        ) {
+                            Text("Pagar", color = Color.White)
+                        }
                     }
+
+
                 }
             }
         }

@@ -23,7 +23,7 @@ fun ClienteFooter(
     navController: NavHostController
 ) {
     var showModal by remember { mutableStateOf(false) }
-    val tieneDeuda = cliente.debtBs > 0f
+    val tieneDeuda = cliente.debtBs > 0f && (cliente.status == 19 || cliente.status == 16)
     val parentEntry = remember {
         navController.getBackStackEntry(Routes.ContractScreen.route)
     }

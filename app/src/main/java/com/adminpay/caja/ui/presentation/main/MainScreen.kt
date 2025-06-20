@@ -28,7 +28,6 @@ fun MainScreen(navController: NavHostController, authViewModel: AuthViewModel) {
     val authState by authViewModel.authState.collectAsState()
 
     val user: User? = (authState as? AuthState.Success)?.user?.getOrNull()
-    Log.d("MainScreen", "User: $user")
 
     // NavController interno para navegación dentro del layout principal
     val internalNavController = rememberNavController()
@@ -72,7 +71,7 @@ fun MainScreen(navController: NavHostController, authViewModel: AuthViewModel) {
                     .padding(padding)
                     .background(Color.White)
             ) {
-                MainNavHost(navController = internalNavController)
+                MainNavHost(navController = internalNavController, authViewModel = authViewModel)
             }
         }
     }

@@ -40,7 +40,7 @@ fun ErrorComponent(
 
         Text(
             text = message,
-            color = Color.White,
+            color = Color.Black,
             fontSize = fontSize,
             style = MaterialTheme.typography.bodyMedium,
             lineHeight = fontSize * 1.4, // importante para evitar montado

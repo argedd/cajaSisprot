@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.adminpay.caja.ui.navigation.Routes
+import com.adminpay.caja.ui.presentation.auth.AuthViewModel
 import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.PaymentMethodsScreen
 import com.adminpay.caja.ui.presentation.checkout.components.sumary.CheckoutSummary
 import com.adminpay.caja.ui.presentation.main.components.tasa.TasaViewModel
@@ -25,7 +26,8 @@ import com.adminpay.caja.utils.ScreenDimensions
 @Composable
 fun CheckoutScreen(
     screen: ScreenDimensions,
-    navController: NavHostController
+    navController: NavHostController,
+    authViewModel: AuthViewModel
 ) {
 
     val parentEntry = remember {
@@ -77,7 +79,8 @@ fun CheckoutScreen(
                 CheckoutSummary(
                     screen = screen,
                     sharedViewModel = sharedViewModel,
-                    finish = { navController.navigate("finish_screen") } // Usa tu route real aquí si es diferente
+                    finish = { navController.navigate("finish_screen") }, // Usa tu route real aquí si es diferente
+                    authViewModel = authViewModel
                 )
             }
         }

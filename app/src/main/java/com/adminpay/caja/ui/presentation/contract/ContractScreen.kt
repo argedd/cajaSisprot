@@ -15,8 +15,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.adminpay.caja.R
+import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.medioDigital.MedioDigitalUiState
+import com.adminpay.caja.ui.presentation.components.AppModalComponent
+import com.adminpay.caja.ui.presentation.components.ErrorComponent
 import com.adminpay.caja.ui.presentation.contract.components.Buscador
 import com.adminpay.caja.ui.presentation.contract.components.ClienteCard
+import com.adminpay.caja.utils.rememberScreenDimensions
 
 @Composable
 fun ContractScreen(
@@ -24,6 +28,21 @@ fun ContractScreen(
     viewModel: ContractViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+
+    var showErrorModal by remember { mutableStateOf(false) }
+    val screen = rememberScreenDimensions()
+    // Mostrar el modal solo cuando hay un mensaje de error
+    if (state.errorMessage != null) {
+        AppModalComponent(
+            onDismiss = { viewModel.clearError() } // Al cerrar, reinicia error
+        ) {
+            ErrorComponent(
+                message = state.errorMessage ?: "Error desconocido",
+                screen = screen,
+                onClose = { viewModel.clearError() }
+            )
+        }
+    }
 
     Column(
         modifier = Modifier

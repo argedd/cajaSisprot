@@ -30,7 +30,7 @@ fun Buscador(
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(vertical = 16.dp, horizontal = 32.dp)
+        modifier = Modifier.padding(vertical = 26.dp, horizontal = 250.dp)
     ) {
         // 🟦 Tipo con menú desplegable (más ancho y misma altura que el TextField)
         ExposedDropdownMenuBox(

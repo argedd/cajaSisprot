@@ -10,6 +10,8 @@ import com.adminpay.caja.domain.model.payment.register.NewPaymentModel
 import com.adminpay.caja.domain.model.payment.register.RequestPaymentRegisterModel
 import com.adminpay.caja.domain.model.paymentMethods.ModelMethod
 import com.adminpay.caja.domain.useCase.RegisterPaymentUseCase
+import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.bancaNacional.BancaNacionalUiState
+import com.adminpay.caja.utils.parseHttpErrorMessage
 import com.movilpay.autopago.utils.LoadingController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -18,6 +20,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -42,6 +45,10 @@ class CheckoutSharedViewModel @Inject constructor(
 
     private val _remainingAmountBs = MutableStateFlow(0.0)
     val remainingAmountBs: StateFlow<Double> = _remainingAmountBs.asStateFlow()
+
+    private val _uiState = MutableStateFlow<CheckoutUiState>(CheckoutUiState.Idle)
+    val uiState: StateFlow<CheckoutUiState> = _uiState
+
 
     fun addPaymentMethod(method: ModelMethod) {
         viewModelScope.launch {
@@ -121,21 +128,27 @@ class CheckoutSharedViewModel @Inject constructor(
 
         Log.d("payload", payload.toString())
 
-        // Aquí puedes llamar al use case
         viewModelScope.launch {
             loadingController.show()
             try {
                 registerPaymentUseCase(payload)
                 withContext(Dispatchers.Main) {
-                    finish() // ✅ ahora en el hilo principal
+                    finish()
                 }
-                // manejar éxito si es necesario
+                _uiState.value = CheckoutUiState.Success("Pago registrado con éxito")
             } catch (e: Exception) {
-                // manejar error si es necesario
+                val errorMessage = if (e is HttpException) {
+                    parseHttpErrorMessage(e)
+                } else {
+                    e.message ?: "Error desconocido"
+                }
+
+                _uiState.value = CheckoutUiState.Error(errorMessage)
             } finally {
                 loadingController.hide()
             }
         }
+
     }
 
 
@@ -156,4 +169,14 @@ class CheckoutSharedViewModel @Inject constructor(
         _chargedAmountBs.value = 0.0
         _remainingAmountBs.value = 0.0
     }
+    fun resetState() {
+        _uiState.value = CheckoutUiState.Idle
+    }
 }
+
+sealed class CheckoutUiState {
+    data object Idle : CheckoutUiState()
+    data class Success(val message: String? = null) : CheckoutUiState()
+    data class Error(val message: String) : CheckoutUiState()
+}
+
