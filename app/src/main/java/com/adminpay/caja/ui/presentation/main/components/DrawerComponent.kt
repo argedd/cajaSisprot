@@ -19,9 +19,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.adminpay.caja.R
 import com.adminpay.caja.domain.model.auth.User
+import com.adminpay.caja.utils.ScreenDimensions
+import com.adminpay.caja.utils.rememberScreenDimensions
 
 
 @Composable
@@ -30,65 +35,90 @@ fun DrawerContent(
     onDestinationClicked: (String) -> Unit,
     user: User?
 ) {
+    val screen = rememberScreenDimensions()
+
+    val drawerWidth = screen.widthPercentage(0.22f)
+    val logoSize = screen.widthPercentage(0.12f)
+    val iconSize = screen.widthPercentage(0.02f)
+    val textSize = (screen.width.value * 0.014f).sp // Escalado de texto
+    val paddingVertical = screen.heightPercentage(0.015f)
+    val spacing = screen.widthPercentage(0.01f)
+
     Column(
         modifier = Modifier
             .fillMaxHeight()
-            .width(260.dp)
+            .width(drawerWidth)
             .background(Color.White),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column {
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(paddingVertical))
             Image(
                 painter = painterResource(id = R.drawable.logocolor),
                 contentDescription = "Logo",
                 modifier = Modifier
-                    .size(120.dp)
+                    .size(logoSize)
                     .align(Alignment.CenterHorizontally)
             )
-            HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
+            HorizontalDivider(modifier = Modifier.padding(vertical = paddingVertical))
 
-            DrawerItem("Facturación", Icons.Default.RequestPage, "contract_screen", selectedRoute, onDestinationClicked)
-            DrawerItem("Caja", Icons.Default.PointOfSale, "box_screen", selectedRoute, onDestinationClicked)
+            DrawerItem(
+                title = "Facturación",
+                icon = Icons.Default.RequestPage,
+                route = "contract_screen",
+                selectedRoute = selectedRoute,
+                onDestinationClicked = onDestinationClicked,
+                iconSize = iconSize,
+                textSize = textSize
+            )
+            DrawerItem(
+                title = "Caja",
+                icon = Icons.Default.PointOfSale,
+                route = "box_screen",
+                selectedRoute = selectedRoute,
+                onDestinationClicked = onDestinationClicked,
+                iconSize = iconSize,
+                textSize = textSize
+            )
         }
 
-        Column(
-            modifier = Modifier.padding(12.dp)
-        ) {
+        Column(modifier = Modifier.padding(spacing)) {
             if (user != null) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    modifier = Modifier.padding(bottom = spacing)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Apartment, // Puedes usar un ícono personalizado si deseas
+                        imageVector = Icons.Default.Apartment,
                         contentDescription = "Sucursal",
-                        tint = Color.Gray
+                        tint = Color.Gray,
+                        modifier = Modifier.size(iconSize)
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(spacing))
                     Text(
-                        text = user.officeName, // ejemplo: "Sucursal Caracas"
-                        style = MaterialTheme.typography.bodySmall
+                        text = user.officeName,
+                        style = MaterialTheme.typography.bodySmall.copy(fontSize = textSize)
                     )
                 }
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    modifier = Modifier.padding(bottom = spacing)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.SupervisedUserCircle, // Puedes cambiar este ícono también
+                        imageVector = Icons.Default.SupervisedUserCircle,
                         contentDescription = "Rol",
-                        tint = Color.Gray
+                        tint = Color.Gray,
+                        modifier = Modifier.size(iconSize)
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(spacing))
                     Text(
-                        text = user.role, // ejemplo: "Administrador"
-                        style = MaterialTheme.typography.bodySmall
+                        text = user.role,
+                        style = MaterialTheme.typography.bodySmall.copy(fontSize = textSize)
                     )
                 }
 
-                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                HorizontalDivider(modifier = Modifier.padding(vertical = paddingVertical))
             }
 
             DrawerItem(
@@ -96,12 +126,13 @@ fun DrawerContent(
                 icon = Icons.AutoMirrored.Filled.ExitToApp,
                 route = "logout",
                 selectedRoute = selectedRoute,
-                onDestinationClicked = onDestinationClicked
+                onDestinationClicked = onDestinationClicked,
+                iconSize = iconSize,
+                textSize = textSize
             )
         }
     }
 }
-
 
 @Composable
 fun DrawerItem(
@@ -109,7 +140,10 @@ fun DrawerItem(
     icon: ImageVector,
     route: String,
     selectedRoute: String,
-    onDestinationClicked: (String) -> Unit
+    onDestinationClicked: (String) -> Unit,
+    iconSize: Dp,
+    textSize: TextUnit,
+    screen: ScreenDimensions = rememberScreenDimensions()
 ) {
     val isSelected = route == selectedRoute
 
@@ -117,24 +151,28 @@ fun DrawerItem(
         label = {
             Text(
                 text = title,
-                color = if (isSelected) Color.White else Color.Black
+                fontSize = textSize,
+                color = if (isSelected) Color.White else Color.Black,
+                modifier = Modifier.padding(vertical = screen.heightPercentage(0.015f))
             )
         },
         icon = {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = if (isSelected) Color(0xFFFCA311) else Color.Black
+                tint = if (isSelected) Color(0xFFFCA311) else Color.Black,
+                modifier = Modifier.size(iconSize)
             )
         },
         selected = isSelected,
         onClick = { onDestinationClicked(route) },
         modifier = Modifier
-            .padding(horizontal = 12.dp, vertical = 4.dp)
-            .clip(RoundedCornerShape(12.dp)),
+            .padding(horizontal = iconSize, vertical = iconSize / 4)
+            .clip(RoundedCornerShape(iconSize / 2)),
         colors = NavigationDrawerItemDefaults.colors(
             selectedContainerColor = Color(0xFF004C72),
             unselectedContainerColor = Color.Transparent
         )
     )
 }
+

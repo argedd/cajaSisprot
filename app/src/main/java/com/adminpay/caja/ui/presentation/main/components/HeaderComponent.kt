@@ -47,14 +47,15 @@ fun HeaderContent(
 
     TopAppBar(
         title = {
-            Box(modifier = Modifier.fillMaxWidth().padding(top = 32.dp)) {
+            Box(modifier = Modifier.fillMaxWidth().padding(top = screen.widthPercentage(0.0002f))) {
                 Icon(
                     imageVector = Icons.Default.Menu,
                     contentDescription = "Menú",
                     tint = Color.Black,
                     modifier = Modifier
                         .align(Alignment.CenterStart)
-                        .padding(start = 8.dp)
+                        .size(screen.widthPercentage(0.03f))
+                        .padding(start = screen.widthPercentage(0.01f))
                         .clickable { onMenuClick() }
                 )
 
@@ -63,14 +64,14 @@ fun HeaderContent(
                         .align(Alignment.Center)
                         .background(
                             color = Color(0xFF004C72),
-                            shape = RoundedCornerShape(bottomStart = 28.dp, bottomEnd = 28.dp)
+                            shape = RoundedCornerShape(bottomStart = screen.widthPercentage(0.01f), bottomEnd = screen.widthPercentage(0.01f))
                         )
-                        .padding(horizontal = 200.dp)
+                        .padding(horizontal = screen.widthPercentage(0.08f))
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier.padding(top = 12.dp)
+                        modifier = Modifier.padding(top = screen.heightPercentage(0.005f), bottom = screen.heightPercentage(0.005f))
                     ) {
                         Text(
                             text = "Fecha: $fecha : ${currentTimeVenezuela()} ",
@@ -90,7 +91,7 @@ fun HeaderContent(
 
                 Text(
                     text = "Bienvenido, $userName",
-                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold, fontSize = screen.heightPercentage(0.020f).value.sp),
                     color = Color.Black,
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
