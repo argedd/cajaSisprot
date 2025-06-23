@@ -25,10 +25,10 @@ import com.adminpay.caja.ui.presentation.checkout.CheckoutSharedViewModel
 import com.adminpay.caja.ui.presentation.components.AppModalComponent
 import com.adminpay.caja.ui.presentation.components.ErrorComponent
 import com.adminpay.caja.ui.presentation.components.InputComponent
+import com.adminpay.caja.utils.formatFecha
 import com.adminpay.caja.utils.getBankDrawableId
 import com.adminpay.caja.utils.rememberDatePicker
 import com.adminpay.caja.utils.rememberScreenDimensions
-import com.movilpay.autopago.utils.formatFecha
 
 @Composable
 fun BancaNacionalScreen(

@@ -29,6 +29,7 @@ class MainActivity : ComponentActivity() {
             CajaTheme {
                 HideNavigationBar()
                 AppNavHost()
+//                DesingScreen()
                 LoadingComponent()
 
             }

@@ -53,21 +53,21 @@ fun CheckoutScreen(
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            // Parte izquierda: Métodos de pago
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
-                contentAlignment = Alignment.TopCenter
-            ) {
-                PaymentMethodsScreen(
-                    screen = screen,
-                    sharedViewModel = sharedViewModel,
-                    tasa = tasa
-                )
-            }
-
-            Spacer(modifier = Modifier.width(16.dp))
+//            // Parte izquierda: Métodos de pago
+//            Box(
+//                modifier = Modifier
+//                    .weight(1f)
+//                    .fillMaxHeight(),
+//                contentAlignment = Alignment.TopCenter
+//            ) {
+//                PaymentMethodsScreen(
+//                    screen = screen,
+//                    sharedViewModel = sharedViewModel,
+//                    tasa = tasa
+//                )
+//            }
+//
+//            Spacer(modifier = Modifier.width(16.dp))
 
             // Parte derecha: Resumen de compra
             Box(

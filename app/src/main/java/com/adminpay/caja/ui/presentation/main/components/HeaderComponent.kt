@@ -18,11 +18,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.adminpay.caja.domain.model.auth.User
-import com.adminpay.caja.ui.presentation.main.components.tasa.TasaBcv
+import com.adminpay.caja.ui.presentation.main.components.tasa.TasaBcvWidgetCard
+import com.adminpay.caja.utils.TimeVenezuelaWidgetCard
 import com.adminpay.caja.utils.rememberScreenDimensions
-import com.movilpay.autopago.utils.currentTimeVenezuela
-import java.text.SimpleDateFormat
-import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,80 +28,52 @@ fun HeaderContent(
     onMenuClick: () -> Unit,
     user: User?
 ) {
-    val fecha = remember {
-        SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
-    }
-
-    val userName = if (user != null) {
-        "${user.name.replaceFirstChar { it.uppercase() }} ${user.lastName.replaceFirstChar { it.uppercase() }}"
-    } else {
-        "Usuario"
-    }
-
     val screen = rememberScreenDimensions()
 
-
-    Log.d("HeaderContent", "User: $userName")
-
-    TopAppBar(
-        title = {
-            Box(modifier = Modifier.fillMaxWidth().padding(top = screen.widthPercentage(0.0002f))) {
-                Icon(
-                    imageVector = Icons.Default.Menu,
-                    contentDescription = "Menú",
-                    tint = Color.Black,
-                    modifier = Modifier
-                        .align(Alignment.CenterStart)
-                        .size(screen.widthPercentage(0.03f))
-                        .padding(start = screen.widthPercentage(0.01f))
-                        .clickable { onMenuClick() }
-                )
-
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .background(
-                            color = Color(0xFF004C72),
-                            shape = RoundedCornerShape(bottomStart = screen.widthPercentage(0.01f), bottomEnd = screen.widthPercentage(0.01f))
-                        )
-                        .padding(horizontal = screen.widthPercentage(0.08f))
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier.padding(top = screen.heightPercentage(0.005f), bottom = screen.heightPercentage(0.005f))
-                    ) {
-                        Text(
-                            text = "Fecha: $fecha : ${currentTimeVenezuela()} ",
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                color = Color.White,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = screen.heightPercentage(0.020f).value.sp
-                            ),
-                            modifier = Modifier.padding(end = 12.dp)
-                        )
-                        TasaBcv()
-
-
-
-                    }
-                }
-
+    Column {
+        TopAppBar(
+            title = {
                 Text(
-                    text = "Bienvenido, $userName",
-                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold, fontSize = screen.heightPercentage(0.020f).value.sp),
-                    color = Color.Black,
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(end = 12.dp)
+                    text = "Bienvenido, ${
+                        user?.let { "${it.name.replaceFirstChar { c -> c.uppercase() }} ${it.lastName.replaceFirstChar { c -> c.uppercase() }}" }
+                            ?: "Usuario"
+                    }",
+                    fontSize = screen.heightPercentage(0.020f).value.sp,
+                    fontWeight = FontWeight.Bold
                 )
-            }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.White,
-            titleContentColor = Color.Black
+            },
+            navigationIcon = {
+                IconButton(onClick = onMenuClick) {
+                    Icon(
+                        imageVector = Icons.Default.Menu,
+                        contentDescription = "Menú"
+                    )
+                }
+            },
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = Color.White,
+                titleContentColor = Color.Black
+            )
         )
-    )
+
+        // Aquí van los widgets tipo tarjeta
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp, horizontal = 16.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TimeVenezuelaWidgetCard(modifier = Modifier.weight(0.5f))
+                Spacer(modifier = Modifier.width(8.dp))
+                TasaBcvWidgetCard(modifier = Modifier.weight(0.5f))
+            }
+        }
+    }
 }
+
 
 

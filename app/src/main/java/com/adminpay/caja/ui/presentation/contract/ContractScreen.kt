@@ -20,6 +20,7 @@ import com.adminpay.caja.ui.presentation.components.AppModalComponent
 import com.adminpay.caja.ui.presentation.components.ErrorComponent
 import com.adminpay.caja.ui.presentation.contract.components.Buscador
 import com.adminpay.caja.ui.presentation.contract.components.ClienteCard
+import com.adminpay.caja.utils.TimeVenezuelaWidgetCard
 import com.adminpay.caja.utils.rememberScreenDimensions
 
 @Composable
@@ -50,6 +51,7 @@ fun ContractScreen(
             .background(Color.White)
             .padding(12.dp)
     ) {
+
         Buscador(
             selectedTipo = state.tipo,
             cedula = state.cedula,
