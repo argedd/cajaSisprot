@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.adminpay.caja.utils.rememberScreenDimensions
 
 
 @Composable
@@ -16,26 +17,30 @@ fun AppModalComponent(
     onDismiss: () -> Unit,
     content: @Composable () -> Unit
 ) {
+    val screen = rememberScreenDimensions()
+    val padding = screen.widthPercentage(0.04f)
+    val shapeSize = screen.widthPercentage(0.02f)
+    val maxModalWidth = screen.widthPercentage(0.9f) // máx 90% del ancho
+
     Dialog(onDismissRequest = onDismiss) {
         Surface(
             modifier = Modifier
-
-                .wrapContentWidth()
-                .wrapContentHeight()
-                .padding(16.dp),
-            shape = RoundedCornerShape(24.dp),
+                .widthIn(max = maxModalWidth) // importante
+                .wrapContentHeight(),
+            shape = RoundedCornerShape(shapeSize),
             tonalElevation = 8.dp,
             color = Color.LightGray
         ) {
             Box(
                 modifier = Modifier
-                    .padding(16.dp)
-                    .wrapContentWidth()
+                    .padding(padding)
+                    .fillMaxWidth()
                     .wrapContentHeight()
-
             ) {
                 content()
             }
         }
     }
 }
+
+

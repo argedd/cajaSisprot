@@ -19,14 +19,16 @@ fun ErrorComponent(
     screen: ScreenDimensions,
     onClose: () -> Unit
 ) {
-    val iconSize = (screen.width.value * 0.08).dp
-    val spacing = (screen.height.value * 0.02).dp
-    val fontSize = kotlin.comparisons.maxOf(screen.width.value * 0.020f, 12f).sp
+    val iconSize = screen.widthPercentage(0.08f)
+    val spacing = screen.heightPercentage(0.025f)
+    val fontSize = (screen.width.value * 0.02).sp
+    val buttonHeight = screen.heightPercentage(0.07f)
+    val horizontalPadding = screen.widthPercentage(0.1f)
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .padding(horizontal = (screen.width.value * 0.08).dp)
+            .padding(horizontal = horizontalPadding)
             .fillMaxWidth()
     ) {
         Icon(
@@ -43,8 +45,8 @@ fun ErrorComponent(
             color = Color.Black,
             fontSize = fontSize,
             style = MaterialTheme.typography.bodyMedium,
-            lineHeight = fontSize * 1.4, // importante para evitar montado
-            textAlign = TextAlign.Center, // ✅ centra el texto
+            lineHeight = fontSize,
+            textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -55,12 +57,12 @@ fun ErrorComponent(
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
             modifier = Modifier
                 .fillMaxWidth()
-                .height((screen.height.value * 0.07).dp),
-            shape = MaterialTheme.shapes.medium,
-
-            ) {
+                .height(buttonHeight),
+            shape = MaterialTheme.shapes.medium
+        ) {
             Text("Cerrar", fontSize = fontSize)
         }
     }
 }
+
 
