@@ -46,7 +46,8 @@ fun HeaderContent(
                 IconButton(onClick = onMenuClick) {
                     Icon(
                         imageVector = Icons.Default.Menu,
-                        contentDescription = "Menú"
+                        contentDescription = "Menú",
+                        modifier = Modifier.size(screen.widthPercentage(0.03f))
                     )
                 }
             },
@@ -59,6 +60,7 @@ fun HeaderContent(
         // Aquí van los widgets tipo tarjeta
         Box(
             modifier = Modifier
+                .background(Color.White)
                 .fillMaxWidth()
                 .padding(vertical = 8.dp, horizontal = 16.dp)
         ) {

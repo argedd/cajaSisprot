@@ -26,13 +26,20 @@ fun TasaBcvWidgetCard(
     val coroutineScope = rememberCoroutineScope()
     var isLoading by remember { mutableStateOf(false) }
 
+    val titleFontSize = (screen.width.value * 0.015).sp
+    val amountFontSize = (screen.width.value * 0.02).sp
+    val iconSize = screen.widthPercentage(0.03f)
+    val smallPadding = screen.heightPercentage(0.005f)
+    val mediumPadding = screen.heightPercentage(0.015f)
+    val horizontalPadding = screen.widthPercentage(0.01f)
+
     LaunchedEffect(Unit) {
         viewModel.loadCurrentDayTasa()
     }
 
     Card(
         modifier = modifier
-            .padding(8.dp)
+            .padding(horizontal = horizontalPadding, vertical = smallPadding)
             .fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E)),
         elevation = CardDefaults.cardElevation(6.dp),
@@ -40,7 +47,7 @@ fun TasaBcvWidgetCard(
     ) {
         Row(
             modifier = Modifier
-                .padding(16.dp)
+                .padding(horizontal = horizontalPadding, vertical = mediumPadding)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -48,19 +55,22 @@ fun TasaBcvWidgetCard(
                 imageVector = Icons.Default.AttachMoney,
                 contentDescription = "Icono de tasa",
                 tint = Color(0xFF00FFAA),
-                modifier = Modifier.size(36.dp)
+                modifier = Modifier.size(iconSize)
             )
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(screen.widthPercentage(0.04f)))
 
             Column(
                 modifier = Modifier.weight(0.5f)
             ) {
                 Text(
                     text = "Tasa BCV",
-                    style = MaterialTheme.typography.titleMedium.copy(color = Color.White)
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        color = Color.White,
+                        fontSize = titleFontSize
+                    )
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(smallPadding))
                 val tasaText = state.tasas.firstOrNull()?.let {
                     "${it.amount} BS"
                 } ?: "No disponible"
@@ -68,20 +78,19 @@ fun TasaBcvWidgetCard(
                     text = tasaText,
                     style = MaterialTheme.typography.displaySmall.copy(
                         color = Color(0xFF00FFAA),
-                        fontSize = 32.sp
+                        fontSize = amountFontSize
                     )
                 )
             }
 
-            // Loader o botón de actualizar
             Box(
-                modifier = Modifier.padding(start = 8.dp)
+                modifier = Modifier.padding(start = screen.widthPercentage(0.02f))
             ) {
                 if (isLoading) {
                     CircularProgressIndicator(
                         color = Color.White,
                         strokeWidth = 2.dp,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(screen.widthPercentage(0.06f))
                     )
                 } else {
                     IconButton(onClick = {
@@ -95,7 +104,8 @@ fun TasaBcvWidgetCard(
                         Icon(
                             imageVector = Icons.Default.Refresh,
                             contentDescription = "Actualizar tasa",
-                            tint = Color.White
+                            tint = Color.White,
+                            modifier = Modifier.size(screen.widthPercentage(0.03f))
                         )
                     }
                 }
@@ -103,3 +113,4 @@ fun TasaBcvWidgetCard(
         }
     }
 }
+

@@ -24,6 +24,7 @@ fun TimeVenezuelaWidgetCard(
     val venezuelaZone = remember { ZoneId.of("America/Caracas") }
     val formatter = remember { DateTimeFormatter.ofPattern("hh:mm:ss a") }
     val time = remember { mutableStateOf(formatter.format(ZonedDateTime.now(venezuelaZone))) }
+    val screen = rememberScreenDimensions()
 
     LaunchedEffect(Unit) {
         while (true) {
@@ -32,9 +33,14 @@ fun TimeVenezuelaWidgetCard(
         }
     }
 
+    val horizontalPadding = screen.widthPercentage(0.02f)
+    val iconSize = screen.widthPercentage(0.03f)
+    val titleFontSize = (screen.width.value * 0.015).sp
+    val timeFontSize = (screen.width.value * 0.02).sp
+
     Card(
         modifier = modifier
-            .padding(8.dp)
+            .padding(horizontal = horizontalPadding, vertical = screen.heightPercentage(0.01f))
             .fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E)),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
@@ -42,7 +48,7 @@ fun TimeVenezuelaWidgetCard(
     ) {
         Row(
             modifier = Modifier
-                .padding(16.dp)
+                .padding(horizontal = horizontalPadding, vertical = screen.heightPercentage(0.015f))
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -50,28 +56,32 @@ fun TimeVenezuelaWidgetCard(
                 imageVector = Icons.Default.AccessTime,
                 contentDescription = "Icono de hora",
                 tint = MaterialTheme.colorScheme.secondary,
-                modifier = Modifier.size(36.dp)
+                modifier = Modifier.size(iconSize)
             )
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(screen.widthPercentage(0.04f)))
 
             Column {
                 Text(
                     text = "Hora Venezuela",
-                    style = MaterialTheme.typography.titleMedium.copy(color = Color.White)
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        color = Color.White,
+                        fontSize = titleFontSize
+                    )
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(screen.heightPercentage(0.005f)))
                 Text(
                     text = time.value,
                     style = MaterialTheme.typography.displaySmall.copy(
                         color = MaterialTheme.colorScheme.secondary,
-                        fontSize = 32.sp
+                        fontSize = timeFontSize
                     )
                 )
             }
         }
     }
 }
+
 
 fun String.formatFecha(fromFormat: String = "yyyy-MM-dd", toFormat: String = "dd-MM-yyyy"): String {
     return try {
