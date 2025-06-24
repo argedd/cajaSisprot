@@ -3,9 +3,8 @@ package com.adminpay.caja.ui.presentation.contract
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,12 +14,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.adminpay.caja.R
-import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.medioDigital.MedioDigitalUiState
 import com.adminpay.caja.ui.presentation.components.AppModalComponent
 import com.adminpay.caja.ui.presentation.components.ErrorComponent
 import com.adminpay.caja.ui.presentation.contract.components.Buscador
 import com.adminpay.caja.ui.presentation.contract.components.ClienteCard
-import com.adminpay.caja.utils.TimeVenezuelaWidgetCard
 import com.adminpay.caja.utils.rememberScreenDimensions
 
 @Composable
@@ -78,16 +75,20 @@ fun ContractScreen(
                 )
             }
         } else {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.fillMaxSize()
+            LazyRow(
+                contentPadding = PaddingValues(horizontal = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxWidth()
             ) {
                 items(state.contratos) { contrato ->
-                    ClienteCard(contrato, navController)
+                    ClienteCard(
+                        cliente = contrato,
+                        navController = navController,
+
+                    )
                 }
             }
+
         }
     }
 }

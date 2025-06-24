@@ -40,7 +40,7 @@ fun FacturasModalContent(
 
         else -> {
             LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
+                columns = GridCells.Fixed(count = if(state.invoices.size == 1) 1 else 2),
                 contentPadding = PaddingValues(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),

@@ -45,6 +45,16 @@ fun ClienteBody(cliente: Contract) {
                 textSizeValue = textSizeValue,
                 modifier = Modifier.weight(1f)
             )
+            Spacer(modifier = Modifier.width(8.dp))
+            GridItem(
+                icon = Icons.Default.SignalWifiStatusbar4Bar,
+                label = "Estado",
+                value = cliente.statusName,
+                labelColor = labelColor,
+                textSizeLabel = textSizeLabel,
+                textSizeValue = textSizeValue,
+                modifier = Modifier.weight(1f)
+            )
 
         }
 
@@ -60,6 +70,16 @@ fun ClienteBody(cliente: Contract) {
                 icon = Icons.Default.Money,
                 label = "Deuda",
                 value = "${cliente.debtBs} Bs",
+                labelColor = labelColor,
+                textSizeLabel = textSizeLabel,
+                textSizeValue = textSizeValue,
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            GridItem(
+                icon = Icons.Default.LocationCity,
+                label = "Sector",
+                value = cliente.sectorName,
                 labelColor = labelColor,
                 textSizeLabel = textSizeLabel,
                 textSizeValue = textSizeValue,

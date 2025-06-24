@@ -38,11 +38,12 @@ fun ClienteFooter(
             enabled = tieneDeuda, // ✅ Solo habilitado si hay deuda
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (tieneDeuda) Color(0xFFFCA311) else Color.LightGray,
+                containerColor = Color(0xFFFCA311),
+                disabledContainerColor = Color.LightGray,
                 contentColor = Color.White
             )
         ) {
-            Text("Ver Facturas")
+            Text("Ver Detalles")
         }
     }
 

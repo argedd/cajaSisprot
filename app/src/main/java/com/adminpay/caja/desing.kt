@@ -1,243 +1,205 @@
 package com.adminpay.caja
 
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.*
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
+import com.adminpay.caja.utils.rememberScreenDimensions
 
 
 @Composable
-fun DesingScreen() {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+fun CCCardComponent(
+    cliente: String = "Juan Pérez",
+    contrato: String = "123456",
+    estatus: String = "Activo",
+    migrado: String = "Sí",
+    sector: String = "Comercial",
+    deuda: String = "$120.00",
+    direccion: String = "Av. Principal #123, Caracas",
+    onVerDetalles: () -> Unit
+) {
+    val screen = rememberScreenDimensions()
+    val padding = screen.widthPercentage(0.04f)
+    val iconSize = screen.widthPercentage(0.14f) // REDUCIDO
+    val smallText = (screen.width.value * 0.032).sp
+    val mediumText = (screen.width.value * 0.038).sp
+    val titleText = (screen.width.value * 0.045).sp
+    val iconLabelSize = screen.widthPercentage(0.045f)
 
-    val gradientColors = listOf(Color(0xFF6A11CB), Color(0xFF2575FC))
-    val secondaryColor = MaterialTheme.colorScheme.secondary
-
-    Box(
+    Card(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black)
+            .padding(padding)
+            .fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF1A1A1A)),
+        shape = RoundedCornerShape(screen.widthPercentage(0.03f)),
+        elevation = CardDefaults.cardElevation(6.dp)
     ) {
-        // Círculo esquina superior derecha
-        Canvas(
-            modifier = Modifier
-                .fillMaxSize()
-                .zIndex(-1f)
-        ) {
-            drawCircle(
-                color = secondaryColor.copy(alpha = 0.4f),
-                radius = size.minDimension / 3,
-                center = Offset(size.width, 0f)
-            )
-            drawCircle(
-                color = secondaryColor.copy(alpha = 0.25f),
-                radius = size.minDimension / 5,
-                center = Offset(size.width * 0.75f, size.minDimension * 0.15f)
-            )
-        }
-
-        // Círculo esquina inferior izquierda
-        Canvas(
-            modifier = Modifier
-                .fillMaxSize()
-                .zIndex(-1f)
-        ) {
-            drawCircle(
-                color = secondaryColor.copy(alpha = 0.35f),
-                radius = size.minDimension / 3.5f,
-                center = Offset(0f, size.height)
-            )
-            drawCircle(
-                color = secondaryColor.copy(alpha = 0.2f),
-                radius = size.minDimension / 6,
-                center = Offset(size.minDimension * 0.2f, size.height * 0.85f)
-            )
-        }
-
-        // Contenido central (formulario)
         Column(
             modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .align(Alignment.Center)
-                .padding(32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .padding(padding)
+                .fillMaxWidth()
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                contentDescription = "App Logo",
-                modifier = Modifier
-                    .size(120.dp)
-                    .padding(bottom = 32.dp)
-            )
-
-
-
-            OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
-                label = { Text("Email") },
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
-                shape = RoundedCornerShape(12.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp)
-            )
-
-            OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
-                label = { Text("Password") },
-                visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
-                shape = RoundedCornerShape(12.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 24.dp)
-            )
-
-            Button(
-                onClick = { /* Lógica de login */ },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Transparent,
-                    contentColor = Color.White
-                ),
-                elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = 0.dp,
-                    pressedElevation = 0.dp
-                )
+            // Header
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.Top
             ) {
+                // Imagen circular reducida
                 Box(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            brush = Brush.horizontalGradient(gradientColors),
-                            shape = RoundedCornerShape(12.dp)
-                        ),
-                    contentAlignment = Alignment.Center
+                        .size(iconSize)
+                        .clip(CircleShape)
+                        .background(Color.Gray)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = "Foto cliente",
+                        tint = Color.White,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(screen.widthPercentage(0.03f)))
+
+                Column(
+                    modifier = Modifier.weight(1f)
                 ) {
                     Text(
-                        text = "Login",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold
+                        text = cliente,
+                        fontSize = titleText,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color.White
                     )
+                    Text(
+                        text = "Contrato Nº $contrato",
+                        fontSize = smallText,
+                        color = Color.LightGray
+                    )
+                }
+
+                Column(horizontalAlignment = Alignment.End) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.CheckCircle,
+                            contentDescription = "Estatus",
+                            tint = Color.Green,
+                            modifier = Modifier.size(iconLabelSize)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = estatus,
+                            fontSize = smallText,
+                            color = Color.White
+                        )
+                    }
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(screen.heightPercentage(0.015f)))
 
-            ClickableText(
-                text = AnnotatedString("Need to redeem?"),
-                onClick = { /* Acción */ },
-                style = TextStyle(
-                    color = Color(0xFF6A11CB),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
+            // Fila de migrado, sector, deuda
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                InfoItemWithIcon(
+                    icon = Icons.Default.Info,
+                    label = "Migrado",
+                    value = migrado,
+                    textSize = smallText,
+                    iconSize = iconLabelSize
                 )
+                InfoItemWithIcon(
+                    icon = Icons.Default.Place,
+                    label = "Sector",
+                    value = sector,
+                    textSize = smallText,
+                    iconSize = iconLabelSize
+                )
+                InfoItemWithIcon(
+                    icon = Icons.Default.AttachMoney,
+                    label = "Deuda",
+                    value = deuda,
+                    textSize = smallText,
+                    iconSize = iconLabelSize
+                )
+            }
+
+            Spacer(modifier = Modifier.height(screen.heightPercentage(0.01f)))
+
+            // Dirección
+            Text(
+                text = direccion,
+                fontSize = smallText,
+                color = Color.LightGray,
+                modifier = Modifier.padding(vertical = 4.dp)
             )
+
+            Spacer(modifier = Modifier.height(screen.heightPercentage(0.015f)))
+
+            // Botón centrado
+            Button(
+                onClick = onVerDetalles,
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0FACD4)),
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                shape = RoundedCornerShape(screen.widthPercentage(0.02f))
+            ) {
+                Text("Ver detalles", fontSize = mediumText, color = Color.White)
+            }
         }
     }
 }
-
-
 
 @Composable
-fun SgfLogo(
-    modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.secondary,
-    alpha: Float = 0.7f
+fun InfoItemWithIcon(
+    icon: ImageVector,
+    label: String,
+    value: String,
+    textSize: TextUnit,
+    iconSize: Dp
 ) {
-    Canvas(modifier = modifier) {
-        val w = size.width
-        val h = size.height
-        val strokeWidth = 8f
-
-        val strokeStyle = Stroke(
-            width = strokeWidth,
-            cap = StrokeCap.Round,
-            join = StrokeJoin.Round
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = label,
+                tint = Color.White,
+                modifier = Modifier.size(iconSize)
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(
+                text = label,
+                fontSize = textSize,
+                color = Color.LightGray
+            )
+        }
+        Text(
+            text = value,
+            fontSize = textSize,
+            fontWeight = FontWeight.Bold,
+            color = Color.White
         )
-
-        // Letra S
-        val pathS = Path().apply {
-            moveTo(w * 0.1f, h * 0.2f)
-            cubicTo(
-                w * 0.5f, h * 0.1f,
-                w * 0.5f, h * 0.5f,
-                w * 0.1f, h * 0.5f
-            )
-            cubicTo(
-                w * 0.1f, h * 0.5f,
-                w * 0.9f, h * 0.5f,
-                w * 0.9f, h * 0.8f
-            )
-            cubicTo(
-                w * 0.9f, h * 0.9f,
-                w * 0.3f, h * 0.9f,
-                w * 0.3f, h * 0.7f
-            )
-        }
-        drawPath(pathS, color.copy(alpha = alpha), style = strokeStyle)
-
-        // Letra G
-        val pathG = Path().apply {
-            val centerX = w * 0.6f
-            val centerY = h * 0.5f
-            val radius = h * 0.3f
-            arcTo(
-                rect = Rect(
-                    centerX - radius,
-                    centerY - radius,
-                    centerX + radius,
-                    centerY + radius
-                ),
-                startAngleDegrees = 0f,
-                sweepAngleDegrees = 300f,
-                forceMoveTo = false
-            )
-            moveTo(centerX + radius * 0.5f, centerY)
-            lineTo(centerX, centerY)
-        }
-        drawPath(pathG, color.copy(alpha = alpha), style = strokeStyle)
-
-        // Letra F
-        val pathF = Path().apply {
-            val startX = w * 0.85f
-            val startY = h * 0.2f
-            val endY = h * 0.8f
-            moveTo(startX, startY)
-            lineTo(startX, endY)  // barra vertical
-            moveTo(startX, startY)
-            lineTo(w * 1.05f, startY)  // barra superior horizontal
-            moveTo(startX, h * 0.5f)
-            lineTo(w * 1.0f, h * 0.5f)  // barra media horizontal
-        }
-        drawPath(pathF, color.copy(alpha = alpha), style = strokeStyle)
     }
 }
+
+
+
 
