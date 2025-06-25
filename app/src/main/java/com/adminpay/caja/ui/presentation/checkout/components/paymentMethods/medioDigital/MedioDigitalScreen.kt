@@ -37,7 +37,8 @@ import com.adminpay.caja.utils.rememberScreenDimensions
 @Composable
 fun MedioDigitalScreen(
     sharedViewModel: CheckoutSharedViewModel,
-    viewModel: MedioDigitalViewModel = hiltViewModel()
+    viewModel: MedioDigitalViewModel = hiltViewModel(),
+    onDismiss: () -> Unit
 ) {
     val options = listOf(
         MedioDigital("Zelle", painterResource(id = R.drawable.zelle)),
@@ -208,7 +209,7 @@ fun MedioDigitalScreen(
 
                 )
                 viewModel.validatePayment(
-                    request, sharedViewModel,
+                    request, sharedViewModel,onDismiss
                 )
             },
             enabled = isButtonEnabled,

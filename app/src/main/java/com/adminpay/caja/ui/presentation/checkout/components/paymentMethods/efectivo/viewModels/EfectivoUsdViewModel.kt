@@ -39,7 +39,8 @@ class EfectivoUsdViewModel @Inject constructor(
     fun addUsdPayment(
         sharedViewModel: CheckoutSharedViewModel,
         tasa: ModelTasa?,
-        onSuccess: () -> Unit
+        onSuccess: () -> Unit,
+        onDismiss: () -> Unit
     ) {
         val parsedAmount = amount.toDoubleOrNull() ?: return
         val tasaValue = tasa?.amount?.toDoubleOrNull() ?: return // Evita nulo
@@ -58,6 +59,7 @@ class EfectivoUsdViewModel @Inject constructor(
                 cashDollarBill = cashBills.toList()
             )
         )
+        onDismiss()
         clearForm()
         onSuccess()
     }

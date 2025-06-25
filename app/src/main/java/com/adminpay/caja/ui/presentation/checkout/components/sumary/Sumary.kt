@@ -1,3 +1,5 @@
+
+
 package com.adminpay.caja.ui.presentation.checkout.components.sumary
 
 import androidx.compose.foundation.layout.*
@@ -8,17 +10,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Assignment
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.adminpay.caja.domain.model.auth.User
 import com.adminpay.caja.ui.presentation.auth.AuthState
@@ -28,7 +23,7 @@ import com.adminpay.caja.ui.presentation.checkout.CheckoutUiState
 import com.adminpay.caja.ui.presentation.components.AppModalComponent
 import com.adminpay.caja.ui.presentation.components.ErrorComponent
 import com.adminpay.caja.utils.ScreenDimensions
-import com.adminpay.caja.utils.rememberScreenDimensions
+import com.adminpay.caja.utils.adaptiveFontSize
 
 @Composable
 fun CheckoutSummary(
@@ -47,13 +42,18 @@ fun CheckoutSummary(
 
     val uiState by sharedViewModel.uiState.collectAsState()
     var showErrorModal by remember { mutableStateOf(false) }
-    val screen = rememberScreenDimensions()
+
+    val titleFontSize = adaptiveFontSize(screen, small = 14.sp, medium = 20.sp, large = 28.sp)
+    val bodyFontSize = adaptiveFontSize(screen, small = 12.sp, medium = 14.sp, large = 16.sp)
+    val smallFontSize = adaptiveFontSize(screen, small = 10.sp, medium = 12.sp, large = 14.sp)
+    val buttonFontSize = adaptiveFontSize(screen, small = 12.sp, medium = 14.sp, large = 16.sp)
 
     LaunchedEffect(uiState) {
         if (uiState is CheckoutUiState.Error) {
             showErrorModal = true
         }
     }
+
     if (showErrorModal && uiState is CheckoutUiState.Error) {
         AppModalComponent(onDismiss = {
             showErrorModal = false
@@ -70,9 +70,8 @@ fun CheckoutSummary(
         }
     }
 
-
     if (selectedInvoice == null) {
-        Text("No hay factura seleccionada.")
+        Text("No hay factura seleccionada.", fontSize = bodyFontSize)
         return
     }
 
@@ -82,17 +81,17 @@ fun CheckoutSummary(
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = "Resumen del Pedido",
-            style = MaterialTheme.typography.headlineSmall.copy(fontSize = 20.sp)
+            style = MaterialTheme.typography.headlineSmall.copy(fontSize = titleFontSize)
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(screen.heightPercentage(0.015f)))
 
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(containerColor = Color.White),
-            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = screen.heightPercentage(0.005f))
         ) {
-            Column(modifier = Modifier.padding(16.dp)) {
+            Column(modifier = Modifier.padding(screen.widthPercentage(0.01f))) {
                 val infoItems = listOf(
                     Icons.Default.Person to "Cliente: ${selectedInvoice.clientName}",
                     Icons.Default.Description to "Nota de cobro: #${selectedInvoice.id}",
@@ -110,59 +109,54 @@ fun CheckoutSummary(
                                 Row(
                                     modifier = Modifier
                                         .weight(1f)
-                                        .padding(4.dp),
+                                        .padding(screen.widthPercentage(0.001f)),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Icon(
                                         icon,
                                         contentDescription = null,
                                         tint = MaterialTheme.colorScheme.primary,
-                                        modifier = Modifier.size(20.dp)
+                                        modifier = Modifier.size(screen.widthPercentage(0.020f))
                                     )
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Text(
-                                        text,
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
+                                    Spacer(modifier = Modifier.width(screen.widthPercentage(0.015f)))
+                                    Text(text, fontSize = bodyFontSize)
                                 }
                             }
                         }
                     }
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(screen.heightPercentage(0.015f)))
                 HorizontalDivider()
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(screen.heightPercentage(0.015f)))
 
-                Text("Métodos de Pago", style = MaterialTheme.typography.titleSmall)
-                Spacer(modifier = Modifier.height(8.dp))
+                Text("Métodos de Pago", fontSize = bodyFontSize)
+                Spacer(modifier = Modifier.height(screen.heightPercentage(0.01f)))
 
                 if (paymentMethods.isEmpty()) {
                     Text(
                         text = "Sin métodos de pago",
                         color = Color.Gray,
-                        style = MaterialTheme.typography.bodyMedium
+                        fontSize = bodyFontSize
                     )
                 } else {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .heightIn(max = 300.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                            .heightIn(max = screen.heightPercentage(0.3f)),
+                        horizontalArrangement = Arrangement.spacedBy(screen.widthPercentage(0.01f)),
+                        verticalArrangement = Arrangement.spacedBy(screen.heightPercentage(0.01f))
                     ) {
                         items(paymentMethods) { metodo ->
                             Card(
-                                modifier = Modifier.fillMaxWidth(),
                                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
                             ) {
                                 Column(
-                                    modifier = Modifier.padding(8.dp),
+                                    modifier = Modifier.padding(screen.widthPercentage(0.005f)),
                                     horizontalAlignment = Alignment.Start
                                 ) {
                                     Row(
-
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.SpaceBetween,
                                     ) {
@@ -170,17 +164,15 @@ fun CheckoutSummary(
                                             imageVector = Icons.Default.Wallet,
                                             contentDescription = metodo.methodName,
                                             tint = MaterialTheme.colorScheme.secondary,
-                                            modifier = Modifier
-                                                .size(20.dp)
-                                                .padding(end = 4.dp)
+                                            modifier = Modifier.size(screen.widthPercentage(0.02f))
                                         )
                                         Text(
                                             metodo.methodName,
                                             color = Color.White,
-                                            fontSize = 13.sp,
+                                            fontSize = smallFontSize,
                                             maxLines = 1
                                         )
-                                        Spacer(modifier = Modifier.weight(1f)) // Empuja a la derecha si hay referencia
+                                        Spacer(modifier = Modifier.weight(1f))
 
                                         if (!metodo.reference.isNullOrBlank()) {
                                             Row(
@@ -191,21 +183,18 @@ fun CheckoutSummary(
                                                     imageVector = Icons.Default.Numbers,
                                                     contentDescription = "Referencia",
                                                     tint = MaterialTheme.colorScheme.secondary,
-                                                    modifier = Modifier
-                                                        .size(20.dp)
-                                                        .padding(end = 4.dp)
+                                                    modifier = Modifier.size(screen.widthPercentage(0.02f))
                                                 )
                                                 Text(
                                                     text = "ref: ${metodo.reference}",
                                                     color = Color.White,
-                                                    fontSize = 13.sp,
+                                                    fontSize = smallFontSize,
                                                     maxLines = 1
                                                 )
                                             }
                                         }
-
                                     }
-                                    Spacer(modifier = Modifier.height(4.dp))
+
                                     Row(
                                         modifier = Modifier.fillMaxWidth(),
                                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -214,15 +203,13 @@ fun CheckoutSummary(
                                         Text(
                                             "Monto: ${metodo.amountBs ?: 0.0} Bs.",
                                             color = Color.White,
-                                            fontSize = 12.sp
+                                            fontSize = smallFontSize
                                         )
                                         IconButton(
                                             onClick = {
-                                                sharedViewModel.removePaymentMethodById(
-                                                    metodo.id
-                                                )
+                                                sharedViewModel.removePaymentMethodById(metodo.id)
                                             },
-                                            modifier = Modifier.size(24.dp)
+                                            modifier = Modifier.size(screen.widthPercentage(0.02f))
                                         ) {
                                             Icon(
                                                 imageVector = Icons.Default.DeleteOutline,
@@ -237,37 +224,36 @@ fun CheckoutSummary(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(screen.heightPercentage(0.015f)))
                 HorizontalDivider()
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(screen.heightPercentage(0.015f)))
 
                 Column(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(screen.heightPercentage(0.01f))
                 ) {
                     SummaryLine(
                         label = "Monto cargado",
                         value = "%.2f Bs.".format(chargedAmountBs),
-                        fontSize = 13,
+                        screen = screen,
                         color = Color(0xFF388E3C)
                     )
                     if (remainingAmountBs > 0.0) {
                         SummaryLine(
                             label = "Monto restante",
                             value = "%.2f Bs.".format(remainingAmountBs),
-                            fontSize = 13,
+                            screen = screen,
                             color = Color(0xFFB71C1C)
                         )
                     }
                     AmountComponent(monto = totalAmountBs, screen = screen)
-                    Spacer(modifier = Modifier.height(12.dp))
 
                     if (user?.idGsoft == null) {
                         Text(
                             text = "Usuario no autorizado para pagar",
                             color = Color.Red,
-                            fontSize = 14.sp,
-                            modifier = Modifier.padding(horizontal = 4.dp)
+                            fontSize = bodyFontSize,
+                            modifier = Modifier.padding(horizontal = screen.widthPercentage(0.01f))
                         )
                     } else {
                         Button(
@@ -280,7 +266,7 @@ fun CheckoutSummary(
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 4.dp),
+                                .padding(horizontal = screen.widthPercentage(0.01f)),
                             enabled = remainingAmountBs <= 0.0,
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = if (remainingAmountBs <= 0.0)
@@ -289,11 +275,9 @@ fun CheckoutSummary(
                                     Color.Gray
                             )
                         ) {
-                            Text("Pagar", color = Color.White)
+                            Text("Pagar", color = Color.White, fontSize = buttonFontSize)
                         }
                     }
-
-
                 }
             }
         }
@@ -301,12 +285,15 @@ fun CheckoutSummary(
 }
 
 @Composable
-fun SummaryLine(label: String, value: String, fontSize: Int = 14, color: Color = Color.Black) {
+fun SummaryLine(label: String, value: String, screen: ScreenDimensions, color: Color = Color.Black) {
+    val fontSize = adaptiveFontSize(screen, small = 12.sp, medium = 14.sp, large = 16.sp)
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = label, fontSize = fontSize.sp, color = color)
-        Text(text = value, fontSize = fontSize.sp, color = color)
+        Text(text = label, fontSize = fontSize, color = color)
+        Text(text = value, fontSize = fontSize, color = color)
     }
 }
+
+

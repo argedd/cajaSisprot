@@ -1,20 +1,12 @@
 package com.adminpay.caja.ui.presentation.checkout.components.paymentMethods
 
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.adminpay.caja.R
@@ -28,6 +20,8 @@ import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.medi
 import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.pos.PosScreen
 import com.adminpay.caja.ui.presentation.components.AppModalComponent
 import com.adminpay.caja.utils.ScreenDimensions
+import com.adminpay.caja.utils.adaptiveFontSize
+import com.adminpay.caja.utils.rememberScreenDimensions
 
 @Composable
 fun PaymentMethodsScreen(
@@ -38,6 +32,12 @@ fun PaymentMethodsScreen(
 
     var selectedMethod by remember { mutableStateOf<PaymentMethod?>(null) }
     val showModal = selectedMethod != null
+    val fontSize = adaptiveFontSize(
+        screen = screen,
+        small = 12.sp,
+        medium = 20.sp,
+        large = 28.sp
+    )
 
     val paymentMethods = listOf(
         PaymentMethodUIModel(
@@ -79,7 +79,7 @@ fun PaymentMethodsScreen(
         Text(
             "Seleccione método de pago",
             style = MaterialTheme.typography.headlineSmall.copy(
-                fontSize = minOf(screen.widthPercentage(0.025f).value, 20f).sp
+                fontSize = fontSize
             )
         )
 
@@ -127,10 +127,19 @@ fun PaymentMethodsScreen(
                 if (showModal) {
                     AppModalComponent(onDismiss = { selectedMethod = null }) {
                         when (selectedMethod) {
-                            PaymentMethod.BANCA_NACIONAL -> BancaNacionalScreen(sharedViewModel = sharedViewModel)
-                            PaymentMethod.MEDIOS_DIGITALES -> MedioDigitalScreen(sharedViewModel = sharedViewModel)
-                            PaymentMethod.EFECTIVO -> EfectivoScreen(sharedViewModel = sharedViewModel, tasa = tasa)
-                            PaymentMethod.PUNTO_VENTA -> PosScreen(sharedViewModel = sharedViewModel)
+                            PaymentMethod.BANCA_NACIONAL -> BancaNacionalScreen(sharedViewModel = sharedViewModel) {
+                                selectedMethod = null
+                            }
+
+                            PaymentMethod.MEDIOS_DIGITALES -> MedioDigitalScreen(sharedViewModel = sharedViewModel){
+                                selectedMethod = null
+                            }
+                            PaymentMethod.EFECTIVO -> EfectivoScreen(sharedViewModel = sharedViewModel, tasa = tasa){
+                                selectedMethod = null
+                            }
+                            PaymentMethod.PUNTO_VENTA -> PosScreen(sharedViewModel = sharedViewModel){
+                                selectedMethod = null
+                            }
                             null -> {}
                         }
                     }

@@ -13,8 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.adminpay.caja.domain.model.invoice.InvoiceModel
+import com.adminpay.caja.utils.ScreenDimensions
+import com.adminpay.caja.utils.adaptiveFontSize
+import com.adminpay.caja.utils.rememberScreenDimensions
 
 @Composable
 fun FacturaCard(
@@ -22,88 +25,101 @@ fun FacturaCard(
     enabled: Boolean,
     onPagarClick: () -> Unit
 ) {
+    val screen = rememberScreenDimensions()
+    val fontSize = adaptiveFontSize(
+        screen = screen,
+        small = 12.sp,
+        medium = 18.sp,
+        large = 22.sp
+    )
+
+
+
     Card(
-        shape = RoundedCornerShape(16.dp),
         modifier = Modifier
-            .padding(6.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .padding(screen.widthPercentage(0.01f)),
+        shape = RoundedCornerShape(screen.widthPercentage(0.02f)),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = screen.heightPercentage(0.01f))
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier
+                .padding(screen.widthPercentage(0.025f))
+                .fillMaxWidth()
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     modifier = Modifier
-                        .size(44.dp)
+                        .size(screen.widthPercentage(0.04f))
                         .background(MaterialTheme.colorScheme.secondary, CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = Icons.Default.RequestPage,
-                        contentDescription = "Factura",
-                        tint = Color.White
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(screen.widthPercentage(0.02f))
                     )
                 }
-                Spacer(modifier = Modifier.width(10.dp))
+                Spacer(modifier = Modifier.width(screen.widthPercentage(0.02f)))
                 Text(
                     text = "Nota de Cobro #${factura.id}",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    fontSize = fontSize
                 )
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(screen.heightPercentage(0.015f)))
 
-            RowItem(icon = Icons.Default.DateRange, label = "Emisión", value = factura.dateEmission)
-            RowItem(icon = Icons.Default.CalendarMonth, label = "Corte", value = factura.dateExpiration)
-            RowItem(
-                icon = Icons.Default.AttachMoney,
-                label = "Monto",
-                value = "Bs ${"%.2f".format(factura.amountBs.amount)}"
-            )
+            RowItem(Icons.Default.DateRange, "Emisión", factura.dateEmission, screen)
+            RowItem(Icons.Default.CalendarMonth, "Corte", factura.dateExpiration, screen)
+            RowItem(Icons.Default.AttachMoney, "Monto", "Bs ${"%.2f".format(factura.amountBs.amount)}", screen)
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(screen.heightPercentage(0.015f)))
+
             Button(
                 onClick = onPagarClick,
                 enabled = enabled,
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = Color.White,
-                    disabledContainerColor = Color.LightGray,
-                    disabledContentColor = Color.White
+                    disabledContainerColor = Color.LightGray
                 )
             ) {
-                Text("Pagar")
+                Text("Pagar", fontSize = (screen.width.value * 0.015f).sp)
             }
         }
     }
 }
 
+
+
 @Composable
-private fun RowItem(icon: ImageVector, label: String, value: String) {
+private fun RowItem(icon: ImageVector, label: String, value: String, screen: ScreenDimensions) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(vertical = 2.dp)
+        modifier = Modifier.padding(vertical = screen.heightPercentage(0.005f))
     ) {
         Icon(
             imageVector = icon,
             contentDescription = label,
             tint = MaterialTheme.colorScheme.secondary,
-            modifier = Modifier.size(18.dp)
+            modifier = Modifier.size(screen.widthPercentage(0.02f))
         )
-        Spacer(modifier = Modifier.width(6.dp))
+        Spacer(modifier = Modifier.width(screen.widthPercentage(0.015f)))
         Text(
             text = "$label: ",
             style = MaterialTheme.typography.bodyMedium,
+            fontSize = (screen.width.value * 0.014f).sp,
             color = Color.Gray
         )
         Text(
             text = value,
             style = MaterialTheme.typography.bodyMedium,
+            fontSize = (screen.width.value * 0.014f).sp,
             fontWeight = FontWeight.SemiBold
         )
     }
 }
+

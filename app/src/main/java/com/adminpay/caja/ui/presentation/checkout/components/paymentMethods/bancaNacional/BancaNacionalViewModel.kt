@@ -21,13 +21,14 @@ sealed class BancaNacionalUiState {
     data object Idle : BancaNacionalUiState()
     data class Success(val success: ResponsePaymentValidateModel? = null) : BancaNacionalUiState()
     data class Error(val message: String) : BancaNacionalUiState()
+    data object Loading : BancaNacionalUiState()
+
 
 }
 
 @HiltViewModel
 class BancaNacionalViewModel @Inject constructor(
     private val validatePaymentUseCase: ValidatePaymentUseCase,
-    private val loadingController: LoadingController,
 
     ) : ViewModel() {
 
@@ -36,7 +37,9 @@ class BancaNacionalViewModel @Inject constructor(
     val uiState: StateFlow<BancaNacionalUiState> = _uiState
 
     fun validatePayment(
-        request: RequestPaymentValidateModel, sharedViewModel: CheckoutSharedViewModel,
+        request: RequestPaymentValidateModel,
+        sharedViewModel: CheckoutSharedViewModel,
+        onDismiss: () -> Unit,
     ) {
         Log.i("BancaNacionalViewModel", "Validando pago: $request")
         val exists = sharedViewModel.hasPaymentMethodWith(
@@ -47,10 +50,9 @@ class BancaNacionalViewModel @Inject constructor(
             _uiState.value =
                 BancaNacionalUiState.Error("Ya existe un método de pago con esta referencia")
         } else {
-            loadingController.show()
+            _uiState.value = BancaNacionalUiState.Loading
 
             viewModelScope.launch {
-                _uiState.value = BancaNacionalUiState.Idle
                 try {
                     val response = validatePaymentUseCase(request)
                     _uiState.value = BancaNacionalUiState.Success(response)
@@ -67,6 +69,7 @@ class BancaNacionalViewModel @Inject constructor(
                             reference = response.reference
                         )
                     )
+                    onDismiss()
                 } catch (e: Exception) {
                     val errorMessage = if (e is HttpException) {
                         parseHttpErrorMessage(e)
@@ -75,7 +78,6 @@ class BancaNacionalViewModel @Inject constructor(
                     }
                     _uiState.value = BancaNacionalUiState.Error(errorMessage)
                 } finally {
-                    loadingController.hide()
 
                 }
             }

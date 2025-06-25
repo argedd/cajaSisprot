@@ -1,14 +1,9 @@
 package com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.bancaNacional
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBalance
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.Numbers
-import androidx.compose.material.icons.filled.Smartphone
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,15 +20,13 @@ import com.adminpay.caja.ui.presentation.checkout.CheckoutSharedViewModel
 import com.adminpay.caja.ui.presentation.components.AppModalComponent
 import com.adminpay.caja.ui.presentation.components.ErrorComponent
 import com.adminpay.caja.ui.presentation.components.InputComponent
-import com.adminpay.caja.utils.formatFecha
-import com.adminpay.caja.utils.getBankDrawableId
-import com.adminpay.caja.utils.rememberDatePicker
-import com.adminpay.caja.utils.rememberScreenDimensions
+import com.adminpay.caja.utils.*
 
 @Composable
 fun BancaNacionalScreen(
     sharedViewModel: CheckoutSharedViewModel,
-    viewModel: BancaNacionalViewModel = hiltViewModel()
+    viewModel: BancaNacionalViewModel = hiltViewModel(),
+    onDismiss: () -> Unit
 ) {
     var fecha by remember { mutableStateOf("") }
     var referencia by remember { mutableStateOf("") }
@@ -42,7 +35,6 @@ fun BancaNacionalScreen(
 
     val selectedInvoice = sharedViewModel.selectedInvoice
     val selectedBank = sharedViewModel.bankAssociated
-
     var paymentOption by remember { mutableStateOf("pagomovil") }
 
     val context = LocalContext.current
@@ -51,18 +43,22 @@ fun BancaNacionalScreen(
     }
 
     val uiState by viewModel.uiState.collectAsState()
-    var showErrorModal by remember { mutableStateOf(false) }
+    val isLoading = uiState is BancaNacionalUiState.Loading
     val screen = rememberScreenDimensions()
+    val iconSize = screen.width.times(0.02f)
+    val bodyFontSize = adaptiveFontSize(screen, small = 12.sp, medium = 14.sp, large = 16.sp)
 
     val remainingAmountBs by sharedViewModel.remainingAmountBs.collectAsState()
-    val isButtonEnabled = remainingAmountBs > 0.0
+    val isButtonEnabled = remainingAmountBs > 0.0 && !isLoading
 
+    var showErrorModal by remember { mutableStateOf(false) }
 
     LaunchedEffect(uiState) {
         if (uiState is BancaNacionalUiState.Error) {
             showErrorModal = true
         }
     }
+
     if (showErrorModal && uiState is BancaNacionalUiState.Error) {
         AppModalComponent(onDismiss = {
             showErrorModal = false
@@ -79,47 +75,43 @@ fun BancaNacionalScreen(
         }
     }
 
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(screen.width.times(0.005f))
     ) {
 
-        // Card con imagen y datos en grilla 2x2
         Card(
             modifier = Modifier.fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+            elevation = CardDefaults.cardElevation(1.dp),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(screen.width.times(0.02f)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
                     painter = painterResource(id = getBankDrawableId(selectedBank?.bankCode)),
                     contentDescription = "Logo del banco ${selectedBank?.bankCode}",
-                    modifier = Modifier.size(40.dp)
+                    modifier = Modifier.width(screen.widthPercentage(0.02f))
                 )
+                Spacer(modifier = Modifier.width(screen.width.times(0.01f)))
 
-                Spacer(modifier = Modifier.width(16.dp))
-
-                Column(modifier = Modifier.fillMaxWidth()) {
+                Column {
                     val items = listOf(
-                        Pair(Icons.Default.AccountBalance, "${selectedBank?.bankName}"),
-                        Pair(Icons.Default.AccountBox, "${selectedBank?.identification}"),
-                        Pair(Icons.Default.Smartphone, "${selectedBank?.tlf}"),
-                        Pair(Icons.Default.Numbers, "${selectedBank?.nroCta}")
+                        Icons.Default.AccountBalance to "${selectedBank?.bankName}",
+                        Icons.Default.AccountBox to "${selectedBank?.identification}",
+                        Icons.Default.Smartphone to "${selectedBank?.tlf}",
+                        Icons.Default.Numbers to "${selectedBank?.nroCta}"
                     )
-
-                    for (i in items.indices step 2) {
+                    items.chunked(2).forEach { rowItems ->
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            items.subList(i, i + 2).forEach { (icon, value) ->
+                            rowItems.forEach { (icon, text) ->
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier.weight(1f)
@@ -127,112 +119,83 @@ fun BancaNacionalScreen(
                                     Icon(
                                         icon,
                                         contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.secondary
+                                        tint = MaterialTheme.colorScheme.secondary,
+                                        modifier = Modifier.size(iconSize)
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
-                                    Text(value, fontSize = 13.sp)
+                                    Text(text, fontSize = bodyFontSize)
                                 }
                             }
                         }
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(screen.height.times(0.01f)))
                     }
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(screen.height.times(0.02f)))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                RadioButton(
-                    selected = paymentOption == "pagomovil",
-                    onClick = { paymentOption = "pagomovil" },
-                    colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.primary)
-                )
-                Text("Pago Móvil", fontSize = 16.sp)
-                Spacer(modifier = Modifier.width(6.dp))
-                Icon(
-                    Icons.Default.Smartphone,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                RadioButton(
-                    selected = paymentOption == "transferencia",
-                    onClick = { paymentOption = "transferencia" },
-                    colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.primary)
-                )
-                Text("Transferencia", fontSize = 16.sp)
-                Spacer(modifier = Modifier.width(6.dp))
-                Icon(
-                    Icons.Default.AccountBalance,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
+            listOf("pagomovil" to Icons.Default.Smartphone, "transferencia" to Icons.Default.AccountBalance).forEach { (option, icon) ->
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    RadioButton(
+                        selected = paymentOption == option,
+                        onClick = { paymentOption = option },
+                        colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.primary)
+                    )
+                    Text(option.replaceFirstChar { it.uppercase() }, fontSize = bodyFontSize)
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(iconSize))
+                }
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(screen.height.times(0.03f)))
 
-        // Formulario
         InputComponent(
             value = fecha.formatFecha(),
             onValueChange = { fecha = it },
             placeholder = "Fecha de la operación",
             keyboardType = KeyboardType.Text,
-            trailingIcon = Icons.Default.CalendarToday, // ← AGREGAR ESTO
-            onTrailingIconClick = {
-                datePicker.show()
-            },
+            trailingIcon = Icons.Default.CalendarToday,
+            onTrailingIconClick = { datePicker.show() },
             readOnly = true
         )
         fechaError?.let {
-            Text(it, color = Color.Red, fontSize = 12.sp)
+            Text(it, color = Color.Red, fontSize = bodyFontSize)
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(screen.height.times(0.02f)))
 
         InputComponent(
             value = referencia,
             onValueChange = {
-                if (it.length <= 8 && it.all { c -> c.isDigit() }) referencia = it
+                if (it.length <= 8 && it.all(Char::isDigit)) referencia = it
             },
             placeholder = "Referencia (8 dígitos)",
             keyboardType = KeyboardType.Number,
-            leadingIcon = Icons.Default.Numbers,
-
-            )
+            leadingIcon = Icons.Default.Numbers
+        )
         referenciaError?.let {
-            Text(it, color = Color.Red, fontSize = 12.sp)
+            Text(it, color = Color.Red, fontSize = bodyFontSize)
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(screen.height.times(0.03f)))
 
-        // Botón Validar Pago
         Button(
             onClick = {
                 var hasError = false
-
                 if (referencia.length != 8) {
                     referenciaError = "La referencia debe tener 8 dígitos"
                     hasError = true
                 }
-
                 if (fecha.isBlank()) {
                     fechaError = "Seleccione una fecha"
                     hasError = true
                 }
-
                 if (hasError) return@Button
 
                 val request = RequestPaymentValidateModel(
@@ -242,21 +205,27 @@ fun BancaNacionalScreen(
                     paymentMethod = paymentOption,
                     invoiceId = selectedInvoice?.id ?: 0
                 )
-                viewModel.validatePayment(
-                    request, sharedViewModel,
-                )
+                viewModel.validatePayment(request, sharedViewModel, onDismiss)
             },
             enabled = isButtonEnabled,
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 4.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                .fillMaxWidth().height(screen.heightPercentage(0.05f)),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = if (isButtonEnabled) MaterialTheme.colorScheme.primary else Color.Gray
+            )
         ) {
-            Text("Validar Pago", color = Color.White)
+            if (isLoading) {
+                CircularProgressIndicator(
+                    color = Color.White,
+                    modifier = Modifier
+                        .size(iconSize)
+                        .padding(end = screen.width.times(0.01f)),
+                    strokeWidth = 2.dp
+                )
+                Text("Validando...", color = Color.White, fontSize = bodyFontSize)
+            } else {
+                Text("Validar Pago", color = Color.White, fontSize = bodyFontSize)
+            }
         }
-
-
     }
 }
-
-

@@ -15,6 +15,8 @@ import com.adminpay.caja.ui.presentation.checkout.CheckoutSharedViewModel
 import com.adminpay.caja.ui.presentation.components.AppModalComponent
 import com.adminpay.caja.ui.presentation.invoices.FacturasModalContent
 import androidx.compose.runtime.remember
+import androidx.compose.ui.unit.sp
+import com.adminpay.caja.utils.rememberScreenDimensions
 
 @SuppressLint("UnrememberedGetBackStackEntry")
 @Composable
@@ -28,11 +30,13 @@ fun ClienteFooter(
         navController.getBackStackEntry(Routes.ContractScreen.route)
     }
     val sharedViewModel: CheckoutSharedViewModel = hiltViewModel(parentEntry)
+    val screen = rememberScreenDimensions()
 
 
     Box(modifier = Modifier
         .fillMaxWidth()
-        .padding(12.dp)) {
+        .padding(screen.widthPercentage(0.02f))
+    ) {
         Button(
             onClick = { showModal = true },
             enabled = tieneDeuda, // ✅ Solo habilitado si hay deuda
@@ -43,7 +47,7 @@ fun ClienteFooter(
                 contentColor = Color.White
             )
         ) {
-            Text("Ver Detalles")
+            Text("Ver Detalles",fontSize=(screen.width.value * 0.012).sp, modifier = Modifier.padding(vertical = screen.heightPercentage(0.005f)))
         }
     }
 

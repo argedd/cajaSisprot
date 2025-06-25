@@ -9,7 +9,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.adminpay.caja.utils.ScreenDimensions
 
@@ -19,17 +18,17 @@ fun ErrorComponent(
     screen: ScreenDimensions,
     onClose: () -> Unit
 ) {
-    val iconSize = screen.widthPercentage(0.08f)
-    val spacing = screen.heightPercentage(0.025f)
-    val fontSize = (screen.width.value * 0.02).sp
-    val buttonHeight = screen.heightPercentage(0.07f)
-    val horizontalPadding = screen.widthPercentage(0.1f)
+    val iconSize = screen.widthPercentage(0.05f)
+    val spacing = screen.heightPercentage(0.02f)
+    val fontSize = (screen.width.value * 0.018f).sp
+    val buttonHeight = screen.heightPercentage(0.050f)
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(spacing),
         modifier = Modifier
-            .padding(horizontal = horizontalPadding)
             .fillMaxWidth()
+            .wrapContentHeight()
     ) {
         Icon(
             imageVector = Icons.Default.Error,
@@ -37,8 +36,6 @@ fun ErrorComponent(
             tint = Color(0xFF8D051B),
             modifier = Modifier.size(iconSize)
         )
-
-        Spacer(modifier = Modifier.height(spacing))
 
         Text(
             text = message,
@@ -49,8 +46,6 @@ fun ErrorComponent(
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
         )
-
-        Spacer(modifier = Modifier.height(spacing))
 
         Button(
             onClick = onClose,
@@ -64,5 +59,3 @@ fun ErrorComponent(
         }
     }
 }
-
-

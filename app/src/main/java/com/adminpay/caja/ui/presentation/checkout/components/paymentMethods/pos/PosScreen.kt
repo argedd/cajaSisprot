@@ -25,7 +25,7 @@ import com.adminpay.caja.ui.presentation.components.InputComponent
 import com.adminpay.caja.utils.rememberScreenDimensions
 
 @Composable
-fun PosScreen(sharedViewModel: CheckoutSharedViewModel, viewModel: PosViewModel = hiltViewModel()) {
+fun PosScreen(sharedViewModel: CheckoutSharedViewModel, viewModel: PosViewModel = hiltViewModel(),    onDismiss: () -> Unit) {
     var paymentType by remember { mutableStateOf("pos") }
     val remainingAmountBs by sharedViewModel.remainingAmountBs.collectAsState()
     val isButtonEnabled = remainingAmountBs > 0.0
@@ -199,9 +199,9 @@ fun PosScreen(sharedViewModel: CheckoutSharedViewModel, viewModel: PosViewModel 
                 if (valid) {
                     // Aquí llamas a sharedViewModel o navegas
                     if (paymentType == "pos") {
-                        viewModel.sendPayment(cedula = cedula, monto = monto.toDouble(), sharedViewModel)
+                        viewModel.sendPayment(cedula = cedula, monto = monto.toDouble(), sharedViewModel,onDismiss)
                     }else{
-                        viewModel.chargedManualPayment(amount = monto.toDouble(), reference = referencia, sharedViewModel)
+                        viewModel.chargedManualPayment(amount = monto.toDouble(), reference = referencia, sharedViewModel,onDismiss)
                     }
                 }
             },

@@ -22,7 +22,8 @@ class EfectivoBsViewModel @Inject constructor(
 
     fun addBsPayment(
         sharedViewModel: CheckoutSharedViewModel,
-        onSuccess: () -> Unit
+        onSuccess: () -> Unit,
+        onDismiss: () -> Unit
     ) {
         val parsedAmount = amount.toDoubleOrNull() ?: return
 
@@ -37,6 +38,7 @@ class EfectivoBsViewModel @Inject constructor(
                 cashDollarBill = null // obligatorio
             )
         )
+        onDismiss()
         clearForm()
         onSuccess()
     }

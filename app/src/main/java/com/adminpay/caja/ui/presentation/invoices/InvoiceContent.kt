@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.adminpay.caja.domain.model.invoice.InvoiceModel
+import com.adminpay.caja.utils.rememberScreenDimensions
 
 @Composable
 fun FacturasModalContent(
@@ -20,40 +21,62 @@ fun FacturasModalContent(
     viewModel: InvoicesViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    val screen = rememberScreenDimensions()
 
     LaunchedEffect(contract) {
-        contract.toIntOrNull()?.let { contractId ->
-            viewModel.loadInvoices(contract = contractId.toString())
+        contract.toIntOrNull()?.let {
+            viewModel.loadInvoices(it.toString())
         }
     }
 
     when {
         state.isLoading -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(screen.heightPercentage(0.3f)),
+                contentAlignment = Alignment.Center
+            ) {
                 CircularProgressIndicator()
             }
         }
 
         state.error != null -> {
-            Text("Error: ${state.error}")
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(screen.widthPercentage(0.02f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("Error: ${state.error}")
+            }
         }
 
         else -> {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(count = if(state.invoices.size == 1) 1 else 2),
-                contentPadding = PaddingValues(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.heightIn(max = 600.dp)
-            ) {
-                itemsIndexed(state.invoices.sortedBy { it.dateEmission }) { index, factura ->
-                    FacturaCard(
-                        factura = factura,
-                        enabled = index == 0,
-                        onPagarClick = { onPagarClick(factura) }
-                    )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ){
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(1),
+                    verticalArrangement = Arrangement.spacedBy(screen.heightPercentage(0.015f)),
+                    horizontalArrangement = Arrangement.spacedBy(screen.widthPercentage(0.015f)),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = screen.heightPercentage(0.6f)) // ✅ esto salva el crash
+                ) {
+                    itemsIndexed(state.invoices.sortedBy { it.dateEmission }) { index, factura ->
+                        FacturaCard(
+                            factura = factura,
+                            enabled = index == 0,
+                            onPagarClick = { onPagarClick(factura) }
+                        )
+                    }
                 }
             }
+
         }
     }
 }
+
+

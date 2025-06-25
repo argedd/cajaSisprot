@@ -2,6 +2,7 @@ package com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.com
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -46,7 +47,7 @@ fun PaymentMethodCard(
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
         elevation = CardDefaults.cardElevation(2.dp),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth().clickable { onClick() }
     ) {
         Row(
             modifier = Modifier
@@ -102,6 +103,9 @@ fun PaymentMethodCard(
                     imageVector = Icons.Default.ArrowCircleRight,
                     contentDescription = "Select",
                     tint = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.size(
+                        screen.widthPercentage(0.05f)
+                    )
                 )
             }
         }

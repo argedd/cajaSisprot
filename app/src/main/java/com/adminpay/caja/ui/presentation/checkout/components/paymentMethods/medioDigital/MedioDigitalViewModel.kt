@@ -36,7 +36,9 @@ class MedioDigitalViewModel @Inject constructor(
     val uiState: StateFlow<MedioDigitalUiState> = _uiState
 
     fun validatePayment(
-        request: RequestPaymentValidateModel, sharedViewModel: CheckoutSharedViewModel,
+        request: RequestPaymentValidateModel,
+        sharedViewModel: CheckoutSharedViewModel,
+        onDismiss: () -> Unit,
     ) {
         Log.i("MedioDigitalViewModel", "Validando pago: $request")
         val exists = sharedViewModel.hasPaymentMethodWith(
@@ -67,6 +69,7 @@ class MedioDigitalViewModel @Inject constructor(
                             reference = response.reference
                         )
                     )
+                    onDismiss()
                 } catch (e: Exception) {
                     val errorMessage = if (e is HttpException) {
                         parseHttpErrorMessage(e)

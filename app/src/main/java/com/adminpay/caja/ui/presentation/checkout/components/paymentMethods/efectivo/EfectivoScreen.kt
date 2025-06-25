@@ -3,8 +3,6 @@ package com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.efe
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Money
@@ -22,6 +20,7 @@ import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.efec
 import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.efectivo.viewModels.EfectivoUsdViewModel
 import com.adminpay.caja.ui.presentation.components.AppModalComponent
 import com.adminpay.caja.ui.presentation.components.InputComponent
+import com.adminpay.caja.utils.rememberScreenDimensions
 
 @Composable
 fun EfectivoScreen(
@@ -29,13 +28,14 @@ fun EfectivoScreen(
     bsViewModel: EfectivoBsViewModel = hiltViewModel(),
     usdViewModel: EfectivoUsdViewModel = hiltViewModel(),
     tasa: ModelTasa?,
+    onDismiss: () -> Unit
 ) {
     var selectedCurrency by remember { mutableStateOf("BS") }
     var showModal by remember { mutableStateOf(false) }
     var showError by remember { mutableStateOf(false) }
     val remainingAmountBs by sharedViewModel.remainingAmountBs.collectAsState()
     val isButtonEnabled = remainingAmountBs > 0.0
-
+    val screen = rememberScreenDimensions()
 
     LaunchedEffect(selectedCurrency) {
         bsViewModel.clearForm()
@@ -49,14 +49,13 @@ fun EfectivoScreen(
     println("selectedInvoice: $selectedInvoice")
 
     Column(modifier = Modifier
-        .fillMaxSize()
+        .fillMaxWidth()
         .padding(16.dp)) {
 
         // Contenido scrollable
         Column(
             modifier = Modifier
-                .weight(1f)
-                .verticalScroll(rememberScrollState())
+                .fillMaxWidth()
         ) {
             // Selector de tipo
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -157,14 +156,14 @@ fun EfectivoScreen(
         Button(
             onClick = {
                 if (selectedCurrency == "BS") {
-                    bsViewModel.addBsPayment(sharedViewModel) {
+                    bsViewModel.addBsPayment(sharedViewModel,onDismiss) {
                         showError = false
                     }
                 } else {
                     if (cashBills.isEmpty()) {
                         showError = true
                     } else {
-                        usdViewModel.addUsdPayment(sharedViewModel, tasa) {
+                        usdViewModel.addUsdPayment(sharedViewModel, tasa, onDismiss) {
                             showError = false
                         }
                     }

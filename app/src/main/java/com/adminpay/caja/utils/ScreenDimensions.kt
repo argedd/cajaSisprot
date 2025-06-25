@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 
 /**
@@ -37,4 +38,28 @@ fun rememberScreenDimensions(): ScreenDimensions {
         width = configuration.screenWidthDp.dp,
         height = configuration.screenHeightDp.dp
     )
+}
+
+enum class ScreenCategory {
+    SMALL, MEDIUM, LARGE
+}
+
+fun ScreenDimensions.getCategory(): ScreenCategory = when {
+    width.value < 800f -> ScreenCategory.SMALL
+    width.value < 1400f -> ScreenCategory.MEDIUM
+    else -> ScreenCategory.LARGE
+}
+
+@Composable
+fun adaptiveFontSize(
+    screen: ScreenDimensions,
+    small: TextUnit,
+    medium: TextUnit,
+    large: TextUnit
+): TextUnit {
+    return when (screen.getCategory()) {
+        ScreenCategory.SMALL -> small
+        ScreenCategory.MEDIUM -> medium
+        ScreenCategory.LARGE -> large
+    }
 }

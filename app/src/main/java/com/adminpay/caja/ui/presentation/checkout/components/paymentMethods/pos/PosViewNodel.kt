@@ -41,7 +41,12 @@ class PosViewModel @Inject constructor(
     private val _connectedClients = MutableStateFlow(false)
     val connectedClients: StateFlow<Boolean> = _connectedClients.asStateFlow()
 
-    fun chargedManualPayment(amount: Double, reference:String, sharedViewModel: CheckoutSharedViewModel){
+    fun chargedManualPayment(
+        amount: Double,
+        reference: String,
+        sharedViewModel: CheckoutSharedViewModel,
+        onDismiss: () -> Unit
+    ){
         val exists = findPaymentMethod(reference,sharedViewModel)
         if (exists) {
             _uiState.value =
@@ -57,6 +62,8 @@ class PosViewModel @Inject constructor(
                     reference = reference
                 )
             )
+            onDismiss()
+
         }
     }
 
@@ -74,6 +81,7 @@ class PosViewModel @Inject constructor(
         cedula: String,
         monto: Double,
         sharedViewModel: CheckoutSharedViewModel,
+        onDismiss: () -> Unit,
     ) {
         viewModelScope.launch {
             loadingController.show()
@@ -114,6 +122,8 @@ class PosViewModel @Inject constructor(
                             amountBs = monto
                         )
                     )
+                    onDismiss()
+
                 } else {
                     _uiState.value = PosUiState.Error("Pago rechazado: ${result.message}")
                 }
