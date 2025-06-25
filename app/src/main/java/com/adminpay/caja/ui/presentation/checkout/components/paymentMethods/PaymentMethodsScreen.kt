@@ -17,12 +17,16 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.adminpay.caja.R
+import com.adminpay.caja.domain.model.paymentMethods.PaymentMethodUIModel
 import com.adminpay.caja.domain.model.tasa.ModelTasa
 import com.adminpay.caja.ui.presentation.checkout.CheckoutSharedViewModel
 import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.bancaNacional.BancaNacionalScreen
+import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.components.PaymentMethodCard
 import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.efectivo.EfectivoScreen
 import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.medioDigital.MedioDigitalScreen
 import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.pos.PosScreen
+import com.adminpay.caja.ui.presentation.components.AppModalComponent
 import com.adminpay.caja.utils.ScreenDimensions
 
 @Composable
@@ -31,7 +35,38 @@ fun PaymentMethodsScreen(
     sharedViewModel: CheckoutSharedViewModel,
     tasa: ModelTasa?
 ) {
-    var selectedMethod by remember { mutableStateOf(PaymentMethod.BANCA_NACIONAL) }
+
+    var selectedMethod by remember { mutableStateOf<PaymentMethod?>(null) }
+    val showModal = selectedMethod != null
+
+    val paymentMethods = listOf(
+        PaymentMethodUIModel(
+            title = "Banca Nacional",
+            details = "PagoMóvil Transferencia ",
+            icon = R.drawable.bankicon,
+        ),
+        PaymentMethodUIModel(
+            title = "Efectivo",
+            details = "Bolívares   Dólares",
+            icon = R.drawable.pgefectivo,
+        ),
+        PaymentMethodUIModel(
+            title = "Medios Digitales",
+            details = "Binance Paypal Zelle",
+            icon = R.drawable.iconbz,
+            tag = "Solo Zelle",
+            tagColor = Color(0xFFFFC107)
+        ),
+        PaymentMethodUIModel(
+            title = "Punto de Venta",
+            details = "Débito Crédito",
+            icon = R.drawable.tarjeta_icono,
+
+        )
+    )
+
+
+
 
 
     Column(
@@ -64,106 +99,47 @@ fun PaymentMethodsScreen(
                     .padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(24.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        PaymentMethodIconButton(
-                            icon = Icons.Default.AccountBalance,
-                            label = "Banca Nacional",
-                            isSelected = selectedMethod == PaymentMethod.BANCA_NACIONAL,
-                            onClick = { selectedMethod = PaymentMethod.BANCA_NACIONAL },
-                            iconSize = 40.dp,
-                            boxSize = 64.dp,
-                            fontSize = 14.sp
-                        )
-                        PaymentMethodIconButton(
-                            icon = Icons.Default.PhoneAndroid,
-                            label = "Medios Digitales",
-                            isSelected = selectedMethod == PaymentMethod.MEDIOS_DIGITALES,
-                            onClick = { selectedMethod = PaymentMethod.MEDIOS_DIGITALES },
-                            iconSize = 40.dp,
-                            boxSize = 64.dp,
-                            fontSize = 14.sp
-                        )
-                        PaymentMethodIconButton(
-                            icon = Icons.Default.AttachMoney,
-                            label = "Efectivo",
-                            isSelected = selectedMethod == PaymentMethod.EFECTIVO,
-                            onClick = { selectedMethod = PaymentMethod.EFECTIVO },
-                            iconSize = 40.dp,
-                            boxSize = 64.dp,
-                            fontSize = 14.sp
-                        )
-                        PaymentMethodIconButton(
-                            icon = Icons.Default.CreditCard,
-                            label = "Punto de Venta",
-                            isSelected = selectedMethod == PaymentMethod.PUNTO_VENTA,
-                            onClick = { selectedMethod = PaymentMethod.PUNTO_VENTA },
-                            iconSize = 40.dp,
-                            boxSize = 64.dp,
-                            fontSize = 14.sp
-                        )
+
+
+                paymentMethods.forEach { method ->
+                    val paymentType = when (method.title) {
+                        "Banca Nacional" -> PaymentMethod.BANCA_NACIONAL
+                        "Medios Digitales" -> PaymentMethod.MEDIOS_DIGITALES
+                        "Efectivo" -> PaymentMethod.EFECTIVO
+                        "Punto de Venta" -> PaymentMethod.PUNTO_VENTA
+                        else -> null
                     }
+                    PaymentMethodCard(
+                        method = method,
+                        onClick = {
+                            paymentType?.let {
+                                selectedMethod = it
+                            }
+                        },
+                        screen = screen
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
                 }
 
                 Spacer(modifier = Modifier.height(32.dp))
 
                 // Aquí colocarías las pantallas asociadas
-                when (selectedMethod) {
-                    PaymentMethod.BANCA_NACIONAL -> BancaNacionalScreen(sharedViewModel = sharedViewModel)
-                    PaymentMethod.MEDIOS_DIGITALES -> MedioDigitalScreen(sharedViewModel=sharedViewModel)
-                    PaymentMethod.EFECTIVO -> EfectivoScreen(sharedViewModel=sharedViewModel, tasa = tasa)
-                    PaymentMethod.PUNTO_VENTA -> PosScreen(sharedViewModel=sharedViewModel)
+                if (showModal) {
+                    AppModalComponent(onDismiss = { selectedMethod = null }) {
+                        when (selectedMethod) {
+                            PaymentMethod.BANCA_NACIONAL -> BancaNacionalScreen(sharedViewModel = sharedViewModel)
+                            PaymentMethod.MEDIOS_DIGITALES -> MedioDigitalScreen(sharedViewModel = sharedViewModel)
+                            PaymentMethod.EFECTIVO -> EfectivoScreen(sharedViewModel = sharedViewModel, tasa = tasa)
+                            PaymentMethod.PUNTO_VENTA -> PosScreen(sharedViewModel = sharedViewModel)
+                            null -> {}
+                        }
+                    }
                 }
+
 
 
             }
         }
-    }
-}
-
-
-@Composable
-fun PaymentMethodIconButton(
-    icon: ImageVector,
-    label: String,
-    isSelected: Boolean,
-    onClick: () -> Unit,
-    iconSize: Dp,
-    boxSize: Dp,
-    fontSize: TextUnit
-) {
-    val backgroundColor = if (isSelected) MaterialTheme.colorScheme.primary else Color.Gray.copy(alpha = 0.3f)
-    val contentColor = Color.White
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.clickable { onClick() }
-    ) {
-        Box(
-            modifier = Modifier
-                .size(boxSize)
-                .background(backgroundColor, shape = RoundedCornerShape(16.dp)),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = label,
-                tint = contentColor,
-                modifier = Modifier.size(iconSize)
-            )
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = label,
-            fontSize = fontSize,
-            color = MaterialTheme.colorScheme.onBackground
-        )
     }
 }
 

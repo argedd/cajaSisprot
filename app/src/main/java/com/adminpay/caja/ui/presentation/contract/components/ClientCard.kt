@@ -15,16 +15,19 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.HowToReg
 import androidx.compose.material.icons.filled.Money
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.TransferWithinAStation
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -56,7 +59,7 @@ fun ClienteCard(cliente: Contract, navController: NavHostController) {
             .padding(padding)
             .width(screen.widthPercentage(0.4f)),
         shape = RoundedCornerShape(screen.widthPercentage(0.03f)),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF1A1A1A)),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
         elevation = CardDefaults.cardElevation(6.dp)
     ) {
         Column(modifier = Modifier.padding(padding)) {
@@ -89,7 +92,7 @@ fun ClienteCard(cliente: Contract, navController: NavHostController) {
                         color = Color.White
                     )
                     Text(
-                        text = "CI: ${cliente.identification}",
+                        text = "Contrato: ${cliente.id}",
                         fontSize = smallText,
                         color = Color.LightGray
                     )
@@ -128,7 +131,14 @@ fun ClienteCard(cliente: Contract, navController: NavHostController) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 InfoItemWithIcon(
-                    icon = Icons.Default.HowToReg,
+                    icon = Icons.Default.CalendarMonth,
+                    label = "Ciclo",
+                    value = if (cliente.retainingClient) "15" else "25",
+                    textSize = smallText,
+                    iconSize = iconLabelSize
+                )
+                InfoItemWithIcon(
+                    icon = Icons.Default.TransferWithinAStation,
                     label = "Migrado",
                     value = if (cliente.retainingClient) "Sí" else "No",
                     textSize = smallText,
