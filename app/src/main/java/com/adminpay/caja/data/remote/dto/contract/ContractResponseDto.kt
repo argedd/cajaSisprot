@@ -56,7 +56,10 @@ data class ContractDto(
     val parishName: String,
 
     @SerializedName("retaining_client")
-    val retainingClient: Boolean
+    val retainingClient: Boolean,
+
+    val cycle: Int,
+    val migrated: Boolean
 )
 
 data class BankAssociatedDto(

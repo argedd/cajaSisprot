@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.adminpay.caja.R
-import com.adminpay.caja.ui.presentation.components.AppModalComponent
+import com.adminpay.caja.ui.presentation.components.AppModalNotificationComponent
 import com.adminpay.caja.ui.presentation.components.ErrorComponent
 import com.adminpay.caja.ui.presentation.contract.components.Buscador
 import com.adminpay.caja.ui.presentation.contract.components.ClienteCard
@@ -31,7 +31,7 @@ fun ContractScreen(
     val screen = rememberScreenDimensions()
     // Mostrar el modal solo cuando hay un mensaje de error
     if (state.errorMessage != null) {
-        AppModalComponent(
+        AppModalNotificationComponent (
             onDismiss = { viewModel.clearError() } // Al cerrar, reinicia error
         ) {
             ErrorComponent(

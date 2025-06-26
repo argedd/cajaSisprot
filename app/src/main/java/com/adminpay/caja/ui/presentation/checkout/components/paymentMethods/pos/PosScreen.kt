@@ -16,12 +16,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.adminpay.caja.R
 import com.adminpay.caja.ui.presentation.checkout.CheckoutSharedViewModel
-import com.adminpay.caja.ui.presentation.components.AppModalComponent
+import com.adminpay.caja.ui.presentation.components.AppModalNotificationComponent
 import com.adminpay.caja.ui.presentation.components.ErrorComponent
 import com.adminpay.caja.ui.presentation.components.InputComponent
+import com.adminpay.caja.utils.adaptiveFontSize
 import com.adminpay.caja.utils.rememberScreenDimensions
 
 @Composable
@@ -30,6 +32,8 @@ fun PosScreen(sharedViewModel: CheckoutSharedViewModel, viewModel: PosViewModel 
     val remainingAmountBs by sharedViewModel.remainingAmountBs.collectAsState()
     val isButtonEnabled = remainingAmountBs > 0.0
     val screen = rememberScreenDimensions()
+    val bodyFontSize = adaptiveFontSize(screen, small = 12.sp, medium = 16.sp, large = 26.sp)
+
 
     var cedula by remember { mutableStateOf("") }
     var referencia by remember { mutableStateOf("") }
@@ -55,7 +59,7 @@ fun PosScreen(sharedViewModel: CheckoutSharedViewModel, viewModel: PosViewModel 
     }
 
     if (showErrorModal && uiState is PosUiState.Error) {
-        AppModalComponent(onDismiss = {
+        AppModalNotificationComponent (onDismiss = {
             showErrorModal = false
             viewModel.resetState()
         }) {
@@ -80,11 +84,10 @@ fun PosScreen(sharedViewModel: CheckoutSharedViewModel, viewModel: PosViewModel 
 
         // Imagen
         Image(
-            painter = painterResource(id = R.drawable.tarjetas),
+            painter = painterResource(id = R.drawable.imgtarjetas),
             contentDescription = "Confirmación de tarjeta",
             modifier = Modifier
-                .height(50.dp)
-                .padding(vertical = 8.dp)
+                .width(screen.widthPercentage(0.30f))
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -100,7 +103,7 @@ fun PosScreen(sharedViewModel: CheckoutSharedViewModel, viewModel: PosViewModel 
                     onClick = { paymentType = "pos" },
                     colors = RadioButtonDefaults.colors(MaterialTheme.colorScheme.primary)
                 )
-                Text("POS")
+                Text("POS",fontSize = bodyFontSize)
                 Spacer(modifier = Modifier.width(4.dp))
                 Icon(Icons.Default.CreditCard, contentDescription = null, tint = MaterialTheme.colorScheme.primary )
 
@@ -112,7 +115,7 @@ fun PosScreen(sharedViewModel: CheckoutSharedViewModel, viewModel: PosViewModel 
                     onClick = { paymentType = "manual" },
                     colors = RadioButtonDefaults.colors(MaterialTheme.colorScheme.primary)
                 )
-                Text("Manual")
+                Text("Manual", fontSize = bodyFontSize)
                 Spacer(modifier = Modifier.width(4.dp))
                 Icon(Icons.Default.EditNote, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
 
@@ -211,7 +214,7 @@ fun PosScreen(sharedViewModel: CheckoutSharedViewModel, viewModel: PosViewModel 
                 .padding(horizontal = 4.dp),
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
-            Text("Cargar Pago", color = Color.White)
+            Text("Cargar Pago", color = Color.White, fontSize = bodyFontSize)
         }
     }
 }

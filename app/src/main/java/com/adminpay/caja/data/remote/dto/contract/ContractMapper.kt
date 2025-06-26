@@ -26,6 +26,8 @@ fun ContractDto.toDomain(): Contract {
         ),
         sectorName = sectorName,
         parishName = parishName,
-        retainingClient = retainingClient
+        retainingClient = retainingClient,
+        cycle = cycle,
+        migrated = migrated
     )
 }

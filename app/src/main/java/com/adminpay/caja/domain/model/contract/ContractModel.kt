@@ -16,7 +16,9 @@ data class Contract(
     val bankAssociated: BankAssociated,
     val sectorName: String,
     val parishName: String,
-    val retainingClient: Boolean
+    val retainingClient: Boolean,
+    val cycle: Int,
+    val migrated: Boolean,
 )
 
 data class BankAssociated(

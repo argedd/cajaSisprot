@@ -28,8 +28,7 @@ import com.adminpay.caja.R
 import com.adminpay.caja.domain.model.payment.validate.PaymentMetadataModel
 import com.adminpay.caja.domain.model.payment.validate.RequestPaymentValidateModel
 import com.adminpay.caja.ui.presentation.checkout.CheckoutSharedViewModel
-import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.bancaNacional.BancaNacionalUiState
-import com.adminpay.caja.ui.presentation.components.AppModalComponent
+import com.adminpay.caja.ui.presentation.components.AppModalNotificationComponent
 import com.adminpay.caja.ui.presentation.components.ErrorComponent
 import com.adminpay.caja.ui.presentation.components.InputComponent
 import com.adminpay.caja.utils.adaptiveFontSize
@@ -66,7 +65,7 @@ fun MedioDigitalScreen(
     val isLoading = uiState is MedioDigitalUiState.Loading
     val screen = rememberScreenDimensions()
     val iconSize = screen.width.times(0.02f)
-    val bodyFontSize = adaptiveFontSize(screen, small = 12.sp, medium = 14.sp, large = 16.sp)
+    val bodyFontSize = adaptiveFontSize(screen, small = 12.sp, medium = 16.sp, large = 26.sp)
 
     val remainingAmountBs by sharedViewModel.remainingAmountBs.collectAsState()
     val isButtonEnabled = remainingAmountBs > 0.0  && !isLoading
@@ -78,7 +77,7 @@ fun MedioDigitalScreen(
         }
     }
     if (showErrorModal && uiState is MedioDigitalUiState.Error) {
-        AppModalComponent(onDismiss = {
+        AppModalNotificationComponent(onDismiss = {
             showErrorModal = false
             viewModel.resetState()
         }) {
@@ -122,7 +121,7 @@ fun MedioDigitalScreen(
                             Image(
                                 painter = option.image,
                                 contentDescription = option.name,
-                                modifier = Modifier.size(120.dp)
+                                modifier = Modifier.width(screen.widthPercentage(0.1f)).padding(bottom = 8.dp)
                             )
 
                         }

@@ -29,7 +29,6 @@ sealed class MedioDigitalUiState {
 @HiltViewModel
 class MedioDigitalViewModel @Inject constructor(
     private val validatePaymentUseCase: ValidatePaymentUseCase,
-    private val loadingController: LoadingController,
 
     ) : ViewModel() {
 

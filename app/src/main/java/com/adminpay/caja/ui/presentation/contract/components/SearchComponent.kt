@@ -3,6 +3,7 @@ package com.adminpay.caja.ui.presentation.contract.components
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -70,7 +71,7 @@ fun Buscador(
                         modifier = Modifier.size(iconSize)
                     )
                 },
-                shape = RoundedCornerShape(screen.widthPercentage(0.01f)),
+                shape = RoundedCornerShape(screen.widthPercentage(0.03f)),
                 colors = TextFieldDefaults.colors(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
@@ -83,7 +84,11 @@ fun Buscador(
                 modifier = Modifier
                     .menuAnchor()
                     .fillMaxHeight()
-                    .border(screen.widthPercentage(0.0008f), Color(0xFF004C72), RoundedCornerShape(screen.widthPercentage(0.01f)))
+                    .border(
+                        screen.widthPercentage(0.0005f),
+                        Color.LightGray,
+                        RoundedCornerShape(screen.widthPercentage(0.03f))
+                    )
             )
 
             ExposedDropdownMenu(
@@ -124,22 +129,36 @@ fun Buscador(
                 Icon(
                     Icons.Default.Person,
                     contentDescription = null,
-                    modifier = Modifier.padding(start = screen.widthPercentage(0.01f)).size(iconSize)
+                    modifier = Modifier
+                        .padding(start = screen.widthPercentage(0.01f))
+                        .size(iconSize)
                 )
             },
+
             trailingIcon = {
-                Icon(
-                    Icons.Default.Search,
-                    contentDescription = "Buscar",
-                    tint = Color(0xFF004C72),
+                Box(
                     modifier = Modifier
-                        .padding(end = screen.widthPercentage(0.01f))
-                        .size(iconSize)
-                        .clickable { onBuscarClick() }
-                )
+                        .padding(end = screen.widthPercentage(0.004f))
+                        .size(screen.widthPercentage(0.04f))
+                        .clickable { onBuscarClick() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Surface(
+                        shape = CircleShape,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Buscar",
+                            tint = Color.White,
+                            modifier = Modifier.padding(screen.widthPercentage(0.01f))
+                        )
+                    }
+                }
             },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-            shape = RoundedCornerShape(screen.widthPercentage(0.01f)),
+            shape = RoundedCornerShape(screen.widthPercentage(0.03f)),
             colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
@@ -152,7 +171,11 @@ fun Buscador(
             modifier = Modifier
                 .height(fieldHeight)
                 .weight(1f)
-                .border(screen.widthPercentage(0.0008f), Color(0xFF004C72), RoundedCornerShape(screen.widthPercentage(0.01f)))
+                .border(
+                    screen.widthPercentage(0.0005f),
+                    Color.LightGray,
+                    RoundedCornerShape(screen.widthPercentage(0.03f))
+                )
         )
     }
 }

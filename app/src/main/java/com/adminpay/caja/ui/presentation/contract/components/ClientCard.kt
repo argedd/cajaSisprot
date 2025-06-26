@@ -15,11 +15,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AlternateEmail
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.HowToReg
 import androidx.compose.material.icons.filled.Money
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PhoneAndroid
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.TransferWithinAStation
 import androidx.compose.material3.Button
@@ -126,24 +128,34 @@ fun ClienteCard(cliente: Contract, navController: NavHostController) {
             Spacer(modifier = Modifier.height(screen.heightPercentage(0.015f)))
 
             // Fila con migrado, sector, deuda
+//            Row(
+//                modifier = Modifier.fillMaxWidth(),
+//                horizontalArrangement = Arrangement.SpaceBetween
+//            ) {
+//
+//                InfoItemWithIcon(
+//                    icon = Icons.Default.AlternateEmail,
+//                    label = "Email",
+//                    value = cliente.email,
+//                    textSize = smallText,
+//                    iconSize = iconLabelSize
+//                )
+//                InfoItemWithIcon(
+//                    icon = Icons.Default.PhoneAndroid,
+//                    label = "Teléfono",
+//                    value = cliente.mobile,
+//                    textSize = smallText,
+//                    iconSize = iconLabelSize
+//                )
+//            }
+
+//Spacer(modifier = Modifier.height(screen.heightPercentage(0.015f)))
+
+            // Fila con migrado, sector, deuda
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                InfoItemWithIcon(
-                    icon = Icons.Default.CalendarMonth,
-                    label = "Ciclo",
-                    value = if (cliente.retainingClient) "15" else "25",
-                    textSize = smallText,
-                    iconSize = iconLabelSize
-                )
-                InfoItemWithIcon(
-                    icon = Icons.Default.TransferWithinAStation,
-                    label = "Migrado",
-                    value = if (cliente.retainingClient) "Sí" else "No",
-                    textSize = smallText,
-                    iconSize = iconLabelSize
-                )
                 InfoItemWithIcon(
                     icon = Icons.Default.Place,
                     label = "Sector",
@@ -151,6 +163,21 @@ fun ClienteCard(cliente: Contract, navController: NavHostController) {
                     textSize = smallText,
                     iconSize = iconLabelSize
                 )
+                InfoItemWithIcon(
+                    icon = Icons.Default.CalendarMonth,
+                    label = "Ciclo",
+                    value = cliente.cycle.toString(),
+                    textSize = smallText,
+                    iconSize = iconLabelSize
+                )
+                InfoItemWithIcon(
+                    icon = Icons.Default.TransferWithinAStation,
+                    label = "Migrado",
+                    value = if (cliente.migrated) "Sí" else "No",
+                    textSize = smallText,
+                    iconSize = iconLabelSize
+                )
+
                 InfoItemWithIcon(
                     icon = Icons.Default.Money,
                     label = "Deuda",
@@ -172,10 +199,10 @@ fun ClienteCard(cliente: Contract, navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(screen.heightPercentage(0.015f)))
 
-           ClienteFooter(
-               cliente = cliente,
-               navController = navController
-           )
+            ClienteFooter(
+                cliente = cliente,
+                navController = navController
+            )
         }
     }
 }

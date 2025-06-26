@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.adminpay.caja.domain.model.payment.validate.RequestPaymentValidateModel
 import com.adminpay.caja.ui.presentation.checkout.CheckoutSharedViewModel
-import com.adminpay.caja.ui.presentation.components.AppModalComponent
+import com.adminpay.caja.ui.presentation.components.AppModalNotificationComponent
 import com.adminpay.caja.ui.presentation.components.ErrorComponent
 import com.adminpay.caja.ui.presentation.components.InputComponent
 import com.adminpay.caja.utils.*
@@ -46,7 +46,15 @@ fun BancaNacionalScreen(
     val isLoading = uiState is BancaNacionalUiState.Loading
     val screen = rememberScreenDimensions()
     val iconSize = screen.width.times(0.02f)
-    val bodyFontSize = adaptiveFontSize(screen, small = 12.sp, medium = 14.sp, large = 16.sp)
+    val bodyFontSize = adaptiveFontSize(screen, small = 12.sp, medium = 14.sp, large = 22.sp)
+
+    val category = screen.getCategory()
+
+    val imageWidth = when (category) {
+        ScreenCategory.SMALL -> screen.widthPercentage(0.2f)
+        ScreenCategory.MEDIUM -> screen.widthPercentage(0.04f)
+        ScreenCategory.LARGE -> screen.widthPercentage(0.05f)
+    }
 
     val remainingAmountBs by sharedViewModel.remainingAmountBs.collectAsState()
     val isButtonEnabled = remainingAmountBs > 0.0 && !isLoading
@@ -60,7 +68,7 @@ fun BancaNacionalScreen(
     }
 
     if (showErrorModal && uiState is BancaNacionalUiState.Error) {
-        AppModalComponent(onDismiss = {
+        AppModalNotificationComponent(onDismiss = {
             showErrorModal = false
             viewModel.resetState()
         }) {
@@ -95,7 +103,7 @@ fun BancaNacionalScreen(
                 Image(
                     painter = painterResource(id = getBankDrawableId(selectedBank?.bankCode)),
                     contentDescription = "Logo del banco ${selectedBank?.bankCode}",
-                    modifier = Modifier.width(screen.widthPercentage(0.02f))
+                    modifier = Modifier.width(imageWidth)
                 )
                 Spacer(modifier = Modifier.width(screen.width.times(0.01f)))
 

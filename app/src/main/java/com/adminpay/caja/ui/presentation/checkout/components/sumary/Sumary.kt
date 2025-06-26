@@ -20,7 +20,7 @@ import com.adminpay.caja.ui.presentation.auth.AuthState
 import com.adminpay.caja.ui.presentation.auth.AuthViewModel
 import com.adminpay.caja.ui.presentation.checkout.CheckoutSharedViewModel
 import com.adminpay.caja.ui.presentation.checkout.CheckoutUiState
-import com.adminpay.caja.ui.presentation.components.AppModalComponent
+import com.adminpay.caja.ui.presentation.components.AppModalNotificationComponent
 import com.adminpay.caja.ui.presentation.components.ErrorComponent
 import com.adminpay.caja.utils.ScreenDimensions
 import com.adminpay.caja.utils.adaptiveFontSize
@@ -55,7 +55,7 @@ fun CheckoutSummary(
     }
 
     if (showErrorModal && uiState is CheckoutUiState.Error) {
-        AppModalComponent(onDismiss = {
+        AppModalNotificationComponent(onDismiss = {
             showErrorModal = false
             sharedViewModel.resetState()
         }) {

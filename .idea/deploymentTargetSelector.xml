@@ -4,7 +4,7 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DIALOG" />
-        <DropdownSelection timestamp="2025-06-25T14:38:33.391848Z">
+        <DropdownSelection timestamp="2025-06-26T14:08:07.272911500Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Usuario\.android\avd\tablet_8.avd" />
@@ -15,12 +15,12 @@
           <targets>
             <Target type="DEFAULT_BOOT">
               <handle>
-                <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\ingar\.android\avd\M500.avd" />
+                <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Usuario\.android\avd\F5.avd" />
               </handle>
             </Target>
             <Target type="DEFAULT_BOOT">
               <handle>
-                <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\ingar\.android\avd\tablet_8.avd" />
+                <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Usuario\.android\avd\tablet_8.avd" />
               </handle>
             </Target>
           </targets>

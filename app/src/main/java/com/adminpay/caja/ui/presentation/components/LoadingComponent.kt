@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,6 +16,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import com.adminpay.caja.R
 import com.adminpay.caja.di.LoadingControllerEntryPoint
+import com.adminpay.caja.utils.rememberScreenDimensions
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
 import dagger.hilt.android.EntryPointAccessors
 
 @Composable
@@ -26,20 +32,14 @@ fun LoadingComponent(modifier: Modifier = Modifier) {
             LoadingControllerEntryPoint::class.java
         ).loadingController()
     }
+    val screen = rememberScreenDimensions()
+    val iconSize = screen.widthPercentage(0.2f)
 
     val isLoading by loadingController.isLoading.collectAsState()
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.loader))
 
-    // Animación de zoom
-    val infiniteTransition = rememberInfiniteTransition(label = "zoom")
-    val scale by infiniteTransition.animateFloat(
-        initialValue = 1f,
-        targetValue = 1.1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1200, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "scale"
-    )
+
+
 
     AnimatedVisibility(visible = isLoading) {
         Box(
@@ -49,18 +49,11 @@ fun LoadingComponent(modifier: Modifier = Modifier) {
                 .then(modifier),
             contentAlignment = Alignment.Center
         ) {
-            Image(
-
-                painterResource(id = R.drawable.logocolor),
-                contentDescription = "Loading...",
+            LottieAnimation(
+                composition = composition,
+                iterations = LottieConstants.IterateForever,
                 modifier = Modifier
-                    .fillMaxWidth(0.5f)
-                    .aspectRatio(3f / 1f)
-                    .graphicsLayer {
-                        scaleX = scale
-                        scaleY = scale
-                    },
-                contentScale = ContentScale.Fit
+                    .size(iconSize)
             )
         }
     }

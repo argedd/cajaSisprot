@@ -42,11 +42,15 @@ class BancaNacionalViewModel @Inject constructor(
         onDismiss: () -> Unit,
     ) {
         Log.i("BancaNacionalViewModel", "Validando pago: $request")
-        val exists = sharedViewModel.hasPaymentMethodWith(
+        val existsTrf = sharedViewModel.hasPaymentMethodWith(
             request.reference.toString(),
-            3
+            4
         )
-        if (exists) {
+        val existsPm = sharedViewModel.hasPaymentMethodWith(
+            request.reference.toString(),
+            1
+        )
+        if (existsTrf || existsPm) {
             _uiState.value =
                 BancaNacionalUiState.Error("Ya existe un método de pago con esta referencia")
         } else {
