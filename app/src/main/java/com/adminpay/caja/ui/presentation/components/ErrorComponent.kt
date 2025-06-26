@@ -27,7 +27,6 @@ fun ErrorComponent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(spacing),
         modifier = Modifier
-            .fillMaxWidth()
             .wrapContentHeight()
     ) {
         Icon(
@@ -44,14 +43,13 @@ fun ErrorComponent(
             style = MaterialTheme.typography.bodyMedium,
             lineHeight = fontSize,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
         )
 
         Button(
             onClick = onClose,
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
             modifier = Modifier
-                .fillMaxWidth()
+                .width(screen.widthPercentage(0.5f))
                 .height(buttonHeight),
             shape = MaterialTheme.shapes.medium
         ) {

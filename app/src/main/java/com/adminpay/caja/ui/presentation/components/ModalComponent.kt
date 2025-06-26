@@ -32,9 +32,9 @@ fun AppModalComponent(
     val isLandscape = screen.width.value > screen.height.value
 
     val maxWidth = when {
-        isTablet && isLandscape -> screen.widthPercentage(0.85f)
+        isTablet && isLandscape -> screen.widthPercentage(0.6f)
         isTablet -> screen.widthPercentage(0.8f)
-        else -> screen.widthPercentage(0.95f)
+        else -> screen.widthPercentage(0.7f)
     }
 
     val maxHeight = when {
