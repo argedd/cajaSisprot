@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Numbers
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -27,9 +28,11 @@ import com.adminpay.caja.R
 import com.adminpay.caja.domain.model.payment.validate.PaymentMetadataModel
 import com.adminpay.caja.domain.model.payment.validate.RequestPaymentValidateModel
 import com.adminpay.caja.ui.presentation.checkout.CheckoutSharedViewModel
+import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.bancaNacional.BancaNacionalUiState
 import com.adminpay.caja.ui.presentation.components.AppModalComponent
 import com.adminpay.caja.ui.presentation.components.ErrorComponent
 import com.adminpay.caja.ui.presentation.components.InputComponent
+import com.adminpay.caja.utils.adaptiveFontSize
 import com.adminpay.caja.utils.formatFecha
 import com.adminpay.caja.utils.rememberDatePicker
 import com.adminpay.caja.utils.rememberScreenDimensions
@@ -60,10 +63,13 @@ fun MedioDigitalScreen(
     }
     val uiState by viewModel.uiState.collectAsState()
     var showErrorModal by remember { mutableStateOf(false) }
+    val isLoading = uiState is MedioDigitalUiState.Loading
     val screen = rememberScreenDimensions()
+    val iconSize = screen.width.times(0.02f)
+    val bodyFontSize = adaptiveFontSize(screen, small = 12.sp, medium = 14.sp, large = 16.sp)
 
     val remainingAmountBs by sharedViewModel.remainingAmountBs.collectAsState()
-    val isButtonEnabled = remainingAmountBs > 0.0
+    val isButtonEnabled = remainingAmountBs > 0.0  && !isLoading
 
 
     LaunchedEffect(uiState) {
@@ -142,7 +148,7 @@ fun MedioDigitalScreen(
             readOnly = true
         )
         fechaError?.let {
-            Text(it, color = Color.Red, fontSize = 12.sp)
+            Text(it, color = Color.Red, fontSize = bodyFontSize)
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -154,7 +160,7 @@ fun MedioDigitalScreen(
 
         )
         titularError?.let {
-            Text(it, color = Color.Red, fontSize = 12.sp)
+            Text(it, color = Color.Red, fontSize = bodyFontSize)
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -170,7 +176,7 @@ fun MedioDigitalScreen(
 
             )
         referenciaError?.let {
-            Text(it, color = Color.Red, fontSize = 12.sp)
+            Text(it, color = Color.Red, fontSize = bodyFontSize)
         }
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -216,9 +222,22 @@ fun MedioDigitalScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 4.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+            colors = ButtonDefaults.buttonColors(
+                containerColor = if (isButtonEnabled) MaterialTheme.colorScheme.primary else Color.Gray
+            )
         ) {
-            Text("Validar Pago", color = Color.White)
+            if (isLoading) {
+                CircularProgressIndicator(
+                    color = Color.White,
+                    modifier = Modifier
+                        .size(iconSize)
+                        .padding(end = screen.width.times(0.01f)),
+                    strokeWidth = 2.dp
+                )
+                Text("Validando...", color = Color.White, fontSize = bodyFontSize)
+            } else {
+                Text("Validar Pago", color = Color.White, fontSize = bodyFontSize)
+            }
         }
     }
 }

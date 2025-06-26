@@ -28,6 +28,9 @@ import com.adminpay.caja.domain.model.paymentMethods.CashDollarBill
 import com.adminpay.caja.ui.presentation.components.InputComponent
 import androidx.compose.material3.*
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.sp
+import com.adminpay.caja.utils.adaptiveFontSize
+import com.adminpay.caja.utils.rememberScreenDimensions
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,9 +46,11 @@ fun CashDollarBillComponent(
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
     val options = listOf("1", "5", "10", "20", "50", "100")
+    val screen = rememberScreenDimensions()
+    val bodyFontSize = adaptiveFontSize(screen, small = 12.sp, medium = 14.sp, large = 24.sp)
 
-    Column(modifier = Modifier.width(600.dp)) {
-        Text("Agregar Billete", style = MaterialTheme.typography.titleMedium)
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text("Agregar Billete", fontSize = bodyFontSize)
         Spacer(modifier = Modifier.height(12.dp))
 
         Row(
@@ -56,14 +61,15 @@ fun CashDollarBillComponent(
                 expanded = expanded,
                 onExpandedChange = { expanded = !expanded },
                 modifier = Modifier
-                    .width(250.dp)
-                    .height(50.dp)
+                    .width(screen.widthPercentage(0.13f))
+                    .height(screen.heightPercentage(0.08f))
+
             ) {
                 TextField(
                     value = valor,
                     onValueChange = {},
                     readOnly = true,
-                    placeholder = { Text("Denominación") },
+                    placeholder = { Text("Denominación", fontSize = bodyFontSize ) },
                     trailingIcon = {
                         ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                     },
@@ -85,7 +91,7 @@ fun CashDollarBillComponent(
                 ) {
                     options.forEach { option ->
                         DropdownMenuItem(
-                            text = { Text(option) },
+                            text = { Text(option, fontSize = bodyFontSize) },
                             onClick = {
                                 valor = option
                                 expanded = false
@@ -111,7 +117,7 @@ fun CashDollarBillComponent(
         Spacer(modifier = Modifier.height(12.dp))
         Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
             TextButton(onClick = onClose) {
-                Text("Cancelar")
+                Text("Cancelar", fontSize = bodyFontSize)
             }
             Spacer(modifier = Modifier.width(8.dp))
             IconButton(onClick = {
@@ -134,7 +140,7 @@ fun CashDollarBillComponent(
                     }
                 }
             }) {
-                Icon(Icons.Default.Add, contentDescription = "Agregar")
+                Icon(Icons.Default.Add, contentDescription = "Agregar", )
             }
         }
     }

@@ -58,7 +58,7 @@ fun FacturasModalContent(
                     .fillMaxWidth()
             ){
                 LazyVerticalGrid(
-                    columns = GridCells.Fixed(1),
+                    columns = GridCells.Fixed(if(state.invoices.size > 1) 2 else 1),
                     verticalArrangement = Arrangement.spacedBy(screen.heightPercentage(0.015f)),
                     horizontalArrangement = Arrangement.spacedBy(screen.widthPercentage(0.015f)),
                     modifier = Modifier

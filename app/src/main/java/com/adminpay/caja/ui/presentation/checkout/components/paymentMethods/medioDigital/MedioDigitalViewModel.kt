@@ -21,6 +21,8 @@ sealed class MedioDigitalUiState {
     data object Idle : MedioDigitalUiState()
     data class Success(val success: ResponsePaymentValidateModel? = null) : MedioDigitalUiState()
     data class Error(val message: String) : MedioDigitalUiState()
+    object Loading : MedioDigitalUiState()
+
 
 }
 
@@ -49,10 +51,9 @@ class MedioDigitalViewModel @Inject constructor(
             _uiState.value =
                 MedioDigitalUiState.Error("Ya existe un método de pago con esta referencia")
         } else {
-            loadingController.show()
+            _uiState.value = MedioDigitalUiState.Loading // Aquí ponemos el loading
 
             viewModelScope.launch {
-                _uiState.value = MedioDigitalUiState.Idle
                 try {
                     val response = validatePaymentUseCase(request)
                     _uiState.value = MedioDigitalUiState.Success(response)
@@ -78,7 +79,6 @@ class MedioDigitalViewModel @Inject constructor(
                     }
                     _uiState.value = MedioDigitalUiState.Error(errorMessage)
                 } finally {
-                    loadingController.hide()
 
                 }
             }

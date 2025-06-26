@@ -157,6 +157,7 @@ fun BancaNacionalScreen(
 
         InputComponent(
             value = fecha.formatFecha(),
+            modifier = Modifier.fillMaxWidth(),
             onValueChange = { fecha = it },
             placeholder = "Fecha de la operación",
             keyboardType = KeyboardType.Text,
@@ -172,6 +173,7 @@ fun BancaNacionalScreen(
 
         InputComponent(
             value = referencia,
+            modifier = Modifier.fillMaxWidth(),
             onValueChange = {
                 if (it.length <= 8 && it.all(Char::isDigit)) referencia = it
             },

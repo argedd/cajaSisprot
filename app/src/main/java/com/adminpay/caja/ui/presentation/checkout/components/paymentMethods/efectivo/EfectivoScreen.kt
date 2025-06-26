@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.adminpay.caja.domain.model.tasa.ModelTasa
 import com.adminpay.caja.ui.presentation.checkout.CheckoutSharedViewModel
@@ -20,6 +21,7 @@ import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.efec
 import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.efectivo.viewModels.EfectivoUsdViewModel
 import com.adminpay.caja.ui.presentation.components.AppModalComponent
 import com.adminpay.caja.ui.presentation.components.InputComponent
+import com.adminpay.caja.utils.adaptiveFontSize
 import com.adminpay.caja.utils.rememberScreenDimensions
 
 @Composable
@@ -36,6 +38,7 @@ fun EfectivoScreen(
     val remainingAmountBs by sharedViewModel.remainingAmountBs.collectAsState()
     val isButtonEnabled = remainingAmountBs > 0.0
     val screen = rememberScreenDimensions()
+    val bodyFontSize = adaptiveFontSize(screen, small = 12.sp, medium = 14.sp, large = 24.sp)
 
     LaunchedEffect(selectedCurrency) {
         bsViewModel.clearForm()
@@ -63,13 +66,14 @@ fun EfectivoScreen(
                     selected = selectedCurrency == "BS",
                     onClick = { selectedCurrency = "BS" }
                 )
-                Text("Efectivo BS")
+                Text("Efectivo BS", fontSize = bodyFontSize)
                 Spacer(modifier = Modifier.width(16.dp))
                 RadioButton(
+
                     selected = selectedCurrency == "USD",
                     onClick = { selectedCurrency = "USD" }
                 )
-                Text("Efectivo USD")
+                Text("Efectivo USD", fontSize = bodyFontSize)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -89,7 +93,7 @@ fun EfectivoScreen(
             if (selectedCurrency == "USD") {
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(onClick = { showModal = true }) {
-                    Text("Cargar Billetes")
+                    Text("Cargar Billetes", fontSize = bodyFontSize)
                 }
 
                 if (cashBills.isNotEmpty()) {
@@ -174,7 +178,7 @@ fun EfectivoScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 4.dp)
         ) {
-            Text("Cargar Pago")
+            Text("Cargar Pago", fontSize = bodyFontSize)
         }
     }
 
