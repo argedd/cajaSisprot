@@ -1,6 +1,5 @@
 package com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.efectivo.components
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -30,6 +30,7 @@ import androidx.compose.material3.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import com.adminpay.caja.utils.adaptiveFontSize
+import com.adminpay.caja.utils.validateDollarSerial
 import com.adminpay.caja.utils.rememberScreenDimensions
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,6 +43,7 @@ fun CashDollarBillComponent(
 ) {
     var valor by remember { mutableStateOf("") }
     var serial by remember { mutableStateOf("") }
+    val validationResult = remember(serial) { validateDollarSerial(serial) }
     var expanded by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
@@ -105,7 +107,17 @@ fun CashDollarBillComponent(
                 value = serial,
                 onValueChange = { serial = it },
                 placeholder = "Serial",
-                modifier = Modifier.weight(1f).height(50.dp)
+                modifier = Modifier.weight(1f).height(50.dp),
+                isError = !validationResult.isValid && serial.isNotEmpty(),
+            )
+        }
+
+        if (!validationResult.isValid && serial.isNotEmpty()) {
+            Text(
+                text = validationResult.message,
+                color = Color.Red,
+                fontSize = 14.sp,
+                modifier = Modifier.padding(top = 4.dp)
             )
         }
 
@@ -129,9 +141,9 @@ fun CashDollarBillComponent(
                     amount == null -> {
                         errorMessage = "Denominación inválida"
                     }
-                    currentTotal + amount > maxAmount -> {
-                        errorMessage = "No puedes exceder el monto máximo permitido ($maxAmount)"
-                    }
+//                    currentTotal + amount > maxAmount -> {
+//                        errorMessage = "No puedes exceder el monto máximo permitido ($maxAmount)"
+//                    }
                     else -> {
                         onAdd(CashDollarBill(denomination = amount, serialCode = serial))
                         valor = ""
@@ -140,7 +152,7 @@ fun CashDollarBillComponent(
                     }
                 }
             }) {
-                Icon(Icons.Default.Add, contentDescription = "Agregar", )
+                Icon(Icons.Default.Add, contentDescription = "Agregar" )
             }
         }
     }

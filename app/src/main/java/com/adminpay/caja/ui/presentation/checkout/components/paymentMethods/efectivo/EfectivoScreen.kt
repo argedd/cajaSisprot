@@ -10,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,11 +50,17 @@ fun EfectivoScreen(
     val amount = if (selectedCurrency == "BS") bsViewModel.amount else usdViewModel.amount
     val cashBills = usdViewModel.cashBills
     val selectedInvoice = sharedViewModel.selectedInvoice
-    println("selectedInvoice: $selectedInvoice")
 
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(16.dp)) {
+    // Calcular diferencia entre monto y billetes cargados
+    val amountValue = usdViewModel.amount.toDoubleOrNull() ?: 0.0
+    val totalBills = cashBills.sumOf { it.denomination?.toDouble() ?: 0.0 }
+    val difference = amountValue - totalBills
+    val hasInsufficientBills = amountValue > 0 && totalBills < amountValue
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
 
         // Contenido scrollable
         Column(
@@ -92,8 +99,23 @@ fun EfectivoScreen(
 
             if (selectedCurrency == "USD") {
                 Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = { showModal = true }) {
+                Button(
+                    onClick = { showModal = true },
+                    enabled = usdViewModel.amount.isNotEmpty() && (usdViewModel.amount.toDoubleOrNull()
+                        ?: 0.0) > 0.0
+                ) {
                     Text("Cargar Billetes", fontSize = bodyFontSize)
+                }
+
+
+
+                if (hasInsufficientBills) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Faltan billetes por cargar: \$${"%.2f".format(difference)}",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall
+                    )
                 }
 
                 if (cashBills.isNotEmpty()) {
@@ -129,12 +151,21 @@ fun EfectivoScreen(
                                             )
                                             Spacer(modifier = Modifier.width(8.dp))
                                             Column {
-                                                Text("Valor: \$${bill.denomination}", style = MaterialTheme.typography.bodyMedium)
-                                                Text("Serial: ${bill.serialCode}", style = MaterialTheme.typography.bodySmall)
+                                                Text(
+                                                    "Valor: \$${bill.denomination}",
+                                                    style = MaterialTheme.typography.bodyMedium
+                                                )
+                                                Text(
+                                                    "Serial: ${bill.serialCode}",
+                                                    style = MaterialTheme.typography.bodySmall
+                                                )
                                             }
                                         }
                                         IconButton(onClick = { usdViewModel.removeCashBill(bill) }) {
-                                            Icon(Icons.Default.Delete, contentDescription = "Eliminar")
+                                            Icon(
+                                                Icons.Default.Delete,
+                                                contentDescription = "Eliminar"
+                                            )
                                         }
                                     }
                                 }
@@ -160,11 +191,11 @@ fun EfectivoScreen(
         Button(
             onClick = {
                 if (selectedCurrency == "BS") {
-                    bsViewModel.addBsPayment(sharedViewModel,onDismiss) {
+                    bsViewModel.addBsPayment(sharedViewModel, onDismiss) {
                         showError = false
                     }
                 } else {
-                    if (cashBills.isEmpty()) {
+                    if (cashBills.isEmpty() || hasInsufficientBills ) {
                         showError = true
                     } else {
                         usdViewModel.addUsdPayment(sharedViewModel, tasa, onDismiss) {
@@ -176,7 +207,13 @@ fun EfectivoScreen(
             enabled = isButtonEnabled,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 4.dp)
+                .padding(horizontal = 4.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                disabledContainerColor = Color.LightGray,
+                disabledContentColor = Color.DarkGray
+
+            )
         ) {
             Text("Cargar Pago", fontSize = bodyFontSize)
         }
