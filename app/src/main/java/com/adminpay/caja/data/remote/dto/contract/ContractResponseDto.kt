@@ -41,7 +41,7 @@ data class ContractDto(
     @SerializedName("address_tax")
     val addressTax: String,
 
-    val debt: Int,
+    val debt: Double,
 
     @SerializedName("debt_bs")
     val debtBs: Float,
