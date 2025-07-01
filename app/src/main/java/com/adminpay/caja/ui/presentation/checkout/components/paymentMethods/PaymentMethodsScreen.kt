@@ -35,7 +35,7 @@ fun PaymentMethodsScreen(
     val fontSize = adaptiveFontSize(
         screen = screen,
         small = 12.sp,
-        medium = 20.sp,
+        medium = 16.sp,
         large = 28.sp
     )
 

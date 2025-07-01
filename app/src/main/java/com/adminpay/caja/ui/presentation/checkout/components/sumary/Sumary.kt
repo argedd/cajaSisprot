@@ -1,11 +1,8 @@
-
-
 package com.adminpay.caja.ui.presentation.checkout.components.sumary
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Assignment
 import androidx.compose.material.icons.filled.*
@@ -43,10 +40,10 @@ fun CheckoutSummary(
     val uiState by sharedViewModel.uiState.collectAsState()
     var showErrorModal by remember { mutableStateOf(false) }
 
-    val titleFontSize = adaptiveFontSize(screen, small = 14.sp, medium = 20.sp, large = 28.sp)
-    val bodyFontSize = adaptiveFontSize(screen, small = 12.sp, medium = 14.sp, large = 16.sp)
-    val smallFontSize = adaptiveFontSize(screen, small = 10.sp, medium = 12.sp, large = 14.sp)
-    val buttonFontSize = adaptiveFontSize(screen, small = 12.sp, medium = 14.sp, large = 16.sp)
+    val titleFontSize = adaptiveFontSize(screen, small = 14.sp, medium = 16.sp, large = 28.sp)
+    val bodyFontSize = adaptiveFontSize(screen, small = 10.sp, medium = 12.sp, large = 16.sp)
+    val smallFontSize = adaptiveFontSize(screen, small = 8.sp, medium = 10.sp, large = 14.sp)
+    val buttonFontSize = adaptiveFontSize(screen, small = 10.sp, medium = 14.sp, large = 16.sp)
 
     LaunchedEffect(uiState) {
         if (uiState is CheckoutUiState.Error) {
@@ -107,9 +104,7 @@ fun CheckoutSummary(
                                 infoItems.getOrNull(i + 1)
                             ).forEach { (icon, text) ->
                                 Row(
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .padding(screen.widthPercentage(0.001f)),
+                                    modifier = Modifier.weight(0.05f),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Icon(
@@ -118,7 +113,7 @@ fun CheckoutSummary(
                                         tint = MaterialTheme.colorScheme.primary,
                                         modifier = Modifier.size(screen.widthPercentage(0.020f))
                                     )
-                                    Spacer(modifier = Modifier.width(screen.widthPercentage(0.015f)))
+                                    Spacer(modifier = Modifier.width(screen.widthPercentage(0.01f)))
                                     Text(text, fontSize = bodyFontSize)
                                 }
                             }
@@ -126,12 +121,11 @@ fun CheckoutSummary(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(screen.heightPercentage(0.015f)))
+                Spacer(modifier = Modifier.height(screen.heightPercentage(0.01f)))
                 HorizontalDivider()
                 Spacer(modifier = Modifier.height(screen.heightPercentage(0.015f)))
 
                 Text("Métodos de Pago", fontSize = bodyFontSize)
-                Spacer(modifier = Modifier.height(screen.heightPercentage(0.01f)))
 
                 if (paymentMethods.isEmpty()) {
                     Text(
@@ -140,20 +134,19 @@ fun CheckoutSummary(
                         fontSize = bodyFontSize
                     )
                 } else {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
+                    LazyRow(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(max = screen.heightPercentage(0.3f)),
+                            .fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(screen.widthPercentage(0.01f)),
-                        verticalArrangement = Arrangement.spacedBy(screen.heightPercentage(0.01f))
                     ) {
                         items(paymentMethods) { metodo ->
                             Card(
-                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary)
+                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary),
+                                modifier = Modifier
+                                    .width(screen.widthPercentage(0.18f))
                             ) {
                                 Column(
-                                    modifier = Modifier.padding(screen.widthPercentage(0.005f)),
+                                    modifier = Modifier.padding(screen.widthPercentage(0.004f)),
                                     horizontalAlignment = Alignment.Start
                                 ) {
                                     Row(
@@ -164,7 +157,7 @@ fun CheckoutSummary(
                                             imageVector = Icons.Default.Wallet,
                                             contentDescription = metodo.methodName,
                                             tint = MaterialTheme.colorScheme.secondary,
-                                            modifier = Modifier.size(screen.widthPercentage(0.02f))
+                                            modifier = Modifier.size(screen.widthPercentage(0.015f))
                                         )
                                         Text(
                                             metodo.methodName,
@@ -183,10 +176,10 @@ fun CheckoutSummary(
                                                     imageVector = Icons.Default.Numbers,
                                                     contentDescription = "Referencia",
                                                     tint = MaterialTheme.colorScheme.secondary,
-                                                    modifier = Modifier.size(screen.widthPercentage(0.02f))
+                                                    modifier = Modifier.size(screen.widthPercentage(0.01f))
                                                 )
                                                 Text(
-                                                    text = "ref: ${metodo.reference}",
+                                                    text = metodo.reference,
                                                     color = Color.White,
                                                     fontSize = smallFontSize,
                                                     maxLines = 1
@@ -209,7 +202,7 @@ fun CheckoutSummary(
                                             onClick = {
                                                 sharedViewModel.removePaymentMethodById(metodo.id)
                                             },
-                                            modifier = Modifier.size(screen.widthPercentage(0.02f))
+                                            modifier = Modifier.size(screen.widthPercentage(0.015f))
                                         ) {
                                             Icon(
                                                 imageVector = Icons.Default.DeleteOutline,
@@ -224,13 +217,12 @@ fun CheckoutSummary(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(screen.heightPercentage(0.015f)))
+                Spacer(modifier = Modifier.height(screen.heightPercentage(0.01f)))
                 HorizontalDivider()
-                Spacer(modifier = Modifier.height(screen.heightPercentage(0.015f)))
+                Spacer(modifier = Modifier.height(screen.heightPercentage(0.01f)))
 
                 Column(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(screen.heightPercentage(0.01f))
                 ) {
                     SummaryLine(
                         label = "Monto cargado",
@@ -247,6 +239,7 @@ fun CheckoutSummary(
                         )
                     }
                     AmountComponent(monto = totalAmountBs, screen = screen)
+                    Spacer(modifier = Modifier.height(screen.heightPercentage(0.01f)))
 
                     if (user?.idGsoft == null) {
                         Text(
@@ -266,7 +259,7 @@ fun CheckoutSummary(
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = screen.widthPercentage(0.01f)),
+                                .padding(horizontal = screen.widthPercentage(0.005f)),
                             enabled = remainingAmountBs <= 0.0,
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = if (remainingAmountBs <= 0.0)
@@ -286,7 +279,7 @@ fun CheckoutSummary(
 
 @Composable
 fun SummaryLine(label: String, value: String, screen: ScreenDimensions, color: Color = Color.Black) {
-    val fontSize = adaptiveFontSize(screen, small = 12.sp, medium = 14.sp, large = 16.sp)
+    val fontSize = adaptiveFontSize(screen, small = 10.sp, medium = 12.sp, large = 16.sp)
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
@@ -295,5 +288,3 @@ fun SummaryLine(label: String, value: String, screen: ScreenDimensions, color: C
         Text(text = value, fontSize = fontSize, color = color)
     }
 }
-
-

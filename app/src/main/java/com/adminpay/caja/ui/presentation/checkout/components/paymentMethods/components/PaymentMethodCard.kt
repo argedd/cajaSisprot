@@ -32,7 +32,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.adminpay.caja.R
 import com.adminpay.caja.domain.model.paymentMethods.PaymentMethodUIModel
+import com.adminpay.caja.utils.ScreenCategory
 import com.adminpay.caja.utils.ScreenDimensions
+import com.adminpay.caja.utils.adaptiveFontSize
+import com.adminpay.caja.utils.getCategory
 
 @Composable
 fun PaymentMethodCard(
@@ -40,8 +43,18 @@ fun PaymentMethodCard(
     onClick: () -> Unit,
     screen: ScreenDimensions
 ) {
-    val iconSize = screen.widthPercentage(0.05f)
-    val textSize = (screen.width.value * 0.014).sp
+    val textSize = adaptiveFontSize(screen, 12.sp, 14.sp, 20.sp)
+    val iconSize = when (screen.getCategory()) {
+        ScreenCategory.SMALL -> 20.dp
+        ScreenCategory.MEDIUM -> 30.dp
+        ScreenCategory.LARGE -> 36.dp
+    }
+
+    val padding = when (screen.getCategory()) {
+        ScreenCategory.SMALL -> 6.dp
+        ScreenCategory.MEDIUM -> 8.dp
+        ScreenCategory.LARGE -> 12.dp
+    }
 
     Card(
         shape = RoundedCornerShape(12.dp),
@@ -51,7 +64,7 @@ fun PaymentMethodCard(
     ) {
         Row(
             modifier = Modifier
-                .padding(12.dp)
+                .padding(padding)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -78,10 +91,9 @@ fun PaymentMethodCard(
                     fontSize = textSize,
                     color = Color.White
                 )
-                Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = method.details,
-                    fontSize = textSize * 0.85f,
+                    fontSize = textSize,
                     color = Color.LightGray
                 )
             }
@@ -89,7 +101,7 @@ fun PaymentMethodCard(
             if (method.tag != null) {
                 Text(
                     text = method.tag,
-                    fontSize = textSize * 0.75f,
+                    fontSize = textSize,
                     color = method.tagColor,
                     modifier = Modifier
                         .background(method.tagColor.copy(alpha = 0.15f), RoundedCornerShape(6.dp))
@@ -104,7 +116,7 @@ fun PaymentMethodCard(
                     contentDescription = "Select",
                     tint = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier.size(
-                        screen.widthPercentage(0.05f)
+                        iconSize
                     )
                 )
             }

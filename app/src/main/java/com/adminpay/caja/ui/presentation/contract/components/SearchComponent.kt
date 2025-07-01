@@ -32,8 +32,8 @@ fun Buscador(
     val screen = rememberScreenDimensions()
 
     val paddingHorizontal = screen.widthPercentage(0.2f)
-    val fieldHeight = screen.heightPercentage(0.08f)
-    val dropdownWidth = screen.widthPercentage(0.08f)
+    val fieldHeight = screen.heightPercentage(0.09f)
+    val dropdownWidth = screen.widthPercentage(0.12f)
     val spacing = screen.widthPercentage(0.01f)
 
     // Nuevas dimensiones para iconos y textos
