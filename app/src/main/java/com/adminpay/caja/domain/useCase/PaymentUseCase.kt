@@ -1,5 +1,6 @@
 package com.adminpay.caja.domain.useCase
 
+import com.adminpay.caja.domain.model.payment.get.Payment
 import com.adminpay.caja.domain.model.payment.register.RequestPaymentRegisterModel
 import com.adminpay.caja.domain.model.payment.validate.RequestPaymentValidateModel
 import com.adminpay.caja.domain.model.payment.validate.ResponsePaymentValidateModel
@@ -19,5 +20,16 @@ class RegisterPaymentUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(request: RequestPaymentRegisterModel) {
         return repository.registerPayment(request)
+    }
+}
+
+class GetPaymentsOfDayUseCase(
+    private val repository: PaymentRepository
+) {
+    suspend operator fun invoke(group: String, date: String): List<Payment> {
+        return repository.getPaymentsOfDay(
+            group = group,
+            date = date
+        )
     }
 }
