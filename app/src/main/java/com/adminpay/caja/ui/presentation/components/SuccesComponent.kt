@@ -17,17 +17,17 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 
 @Composable
-fun ErrorComponent(
+fun SuccessComponent(
     message: String,
     screen: ScreenDimensions,
     onClose: () -> Unit
 ) {
-    val iconSize = screen.widthPercentage(0.05f)
+    val iconSize = screen.widthPercentage(0.08f)
     val spacing = screen.heightPercentage(0.02f)
     val fontSizeTitle = (screen.width.value * 0.018f).sp
     val fontSize = (screen.width.value * 0.014f).sp
     val buttonHeight = screen.heightPercentage(0.050f)
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.error))
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.success))
 
 
     Column(
@@ -44,8 +44,8 @@ fun ErrorComponent(
         )
 
         Text(
-            text = "Ha ocurrido un error",
-            color = MaterialTheme.colorScheme.error,
+            text = "Éxito",
+            color = MaterialTheme.colorScheme.primary,
             fontSize = fontSizeTitle,
             style = MaterialTheme.typography.bodyMedium,
             lineHeight = fontSize,
@@ -63,7 +63,7 @@ fun ErrorComponent(
 
         Button(
             onClick = onClose,
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
             modifier = Modifier
                 .width(screen.widthPercentage(0.25f))
                 .height(buttonHeight),
