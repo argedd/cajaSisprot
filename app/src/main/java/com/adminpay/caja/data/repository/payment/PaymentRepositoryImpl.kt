@@ -1,5 +1,6 @@
 package com.adminpay.caja.data.repository.payment
 
+import android.util.Log
 import com.adminpay.caja.data.remote.api.PaymentApi
 import com.adminpay.caja.data.remote.dto.payment.register.toDto
 import com.adminpay.caja.data.remote.dto.payment.validate.request.toDto
@@ -27,17 +28,10 @@ class PaymentRepositoryImpl @Inject constructor(
 
     override suspend fun getPaymentSummary(group: String, date: String): PaymentSummaryResultDomain {
         val response = api.getPaymentsOfDay(group, date)
-        val summaryDto = response.results?.firstOrNull()
-
-        return summaryDto?.toDomain() ?: PaymentSummaryResultDomain(
-            data = emptyList(),
-            total = PaymentSummaryTotal(
-                totalQuantity = 0,
-                totalAmount = 0f
-            )
-        )
-
+        return response.toDomain()
     }
+
+
 
 
 }

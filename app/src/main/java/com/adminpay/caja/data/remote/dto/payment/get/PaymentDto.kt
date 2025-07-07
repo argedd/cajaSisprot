@@ -5,10 +5,8 @@ import com.google.gson.annotations.SerializedName
 
 
 data class NewPaymentSummaryResponse(
-    val count: Int,
-    val next: String?,
-    val previous: String?,
-    val results: List<PaymentSummaryResult>?
+    val data: List<PaymentSummaryDto>,
+    val total: TotalSummaryDto
 )
 
 data class PaymentSummaryResult(

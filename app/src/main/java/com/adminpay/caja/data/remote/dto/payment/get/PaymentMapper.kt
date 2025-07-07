@@ -19,7 +19,8 @@ fun TotalSummaryDto.toDomain(): PaymentSummaryTotal = PaymentSummaryTotal(
     totalAmount = totalAmount
 )
 
-fun PaymentSummaryResult.toDomain(): PaymentSummaryResultDomain = PaymentSummaryResultDomain(
-    data = data.map { it.toDomain() },
-    total = total.toDomain()
-)
+fun NewPaymentSummaryResponse.toDomain(): PaymentSummaryResultDomain =
+    PaymentSummaryResultDomain(
+        data = data.map { it.toDomain() },
+        total = total.toDomain()
+    )
