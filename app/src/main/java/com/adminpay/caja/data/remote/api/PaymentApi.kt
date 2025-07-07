@@ -1,6 +1,6 @@
 package com.adminpay.caja.data.remote.api
 
-import com.adminpay.caja.data.remote.dto.payment.get.PaymentListResponse
+import com.adminpay.caja.data.remote.dto.payment.get.NewPaymentSummaryResponse
 import com.adminpay.caja.data.remote.dto.payment.register.RequestPaymentRegisterDto
 import com.adminpay.caja.data.remote.dto.payment.validate.request.RequestPaymentValidateDto
 import com.adminpay.caja.data.remote.dto.payment.validate.response.ResponsePaymentValidateDto
@@ -20,10 +20,10 @@ interface PaymentApi {
         @Body request: RequestPaymentRegisterDto
     )
 
-        @GET("api/base/currency_rate/")
+        @GET("api/gsoft/payments/")
         suspend fun getPaymentsOfDay(
             @Query("group_by") group: String,
             @Query("since") date: String,
-        ): PaymentListResponse
+        ): NewPaymentSummaryResponse
 
 }

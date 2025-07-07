@@ -85,6 +85,7 @@ dependencies {
     // Dagger Hilt con KSP
     implementation(libs.androidx.hilt.android)
     implementation(libs.androidx.benchmark.macro)
+    implementation(libs.androidx.media3.common.ktx)
     ksp(libs.androidx.hilt.compiler)  // Procesamiento con KSP
     implementation(libs.androidx.hilt.navigation.compose)
 

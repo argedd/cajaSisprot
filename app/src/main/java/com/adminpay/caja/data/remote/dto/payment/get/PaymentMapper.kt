@@ -1,21 +1,25 @@
 package com.adminpay.caja.data.remote.dto.payment.get
 
-import com.adminpay.caja.domain.model.payment.get.Payment
+import com.adminpay.caja.domain.model.payment.get.PaymentSummary
+import com.adminpay.caja.domain.model.payment.get.PaymentSummaryResultDomain
+import com.adminpay.caja.domain.model.payment.get.PaymentSummaryTotal
 
-fun PaymentDto.toDomain(): Payment {
-    return Payment(
-        id = id,
-        amount = amount,
-        bank = bank,
-        bankName = bankName,
-        date = date,
-        dollarDate = dollarDate,
-        dollarRate = dollarRate,
-        method = method,
-        methodName = methodName,
-        paymentCompany = paymentCompany,
-        reference = reference,
-        sender = sender,
-        status = status
-    )
-}
+
+fun PaymentSummaryDto.toDomain(): PaymentSummary = PaymentSummary(
+    quantity = quantity,
+    amount = amount.toFloatOrNull() ?: 0f,
+    quantityPercentage = quantityPercentage.toFloatOrNull() ?: 0f,
+    amountPercentage = amountPercentage.toFloatOrNull() ?: 0f,
+    method = method,
+    methodName = methodName
+)
+
+fun TotalSummaryDto.toDomain(): PaymentSummaryTotal = PaymentSummaryTotal(
+    totalQuantity = totalQuantity,
+    totalAmount = totalAmount
+)
+
+fun PaymentSummaryResult.toDomain(): PaymentSummaryResultDomain = PaymentSummaryResultDomain(
+    data = data.map { it.toDomain() },
+    total = total.toDomain()
+)

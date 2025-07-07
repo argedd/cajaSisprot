@@ -1,6 +1,6 @@
 package com.adminpay.caja.domain.repository.payment
 
-import com.adminpay.caja.domain.model.payment.get.Payment
+import com.adminpay.caja.domain.model.payment.get.PaymentSummaryResultDomain
 import com.adminpay.caja.domain.model.payment.register.RequestPaymentRegisterModel
 import com.adminpay.caja.domain.model.payment.validate.RequestPaymentValidateModel
 import com.adminpay.caja.domain.model.payment.validate.ResponsePaymentValidateModel
@@ -8,6 +8,6 @@ import com.adminpay.caja.domain.model.payment.validate.ResponsePaymentValidateMo
 interface PaymentRepository {
     suspend fun validatePayment(request: RequestPaymentValidateModel): ResponsePaymentValidateModel
     suspend fun registerPayment(request: RequestPaymentRegisterModel)
-    suspend fun getPaymentsOfDay(group: String, date: String): List<Payment>
+    suspend fun getPaymentSummary(group: String, date: String): PaymentSummaryResultDomain
 
 }
