@@ -14,13 +14,13 @@ import com.adminpay.caja.domain.model.paymentMethods.PaymentMethodCard
  */
 fun iconForMethod(methodName: String, tint: Color): @Composable () -> Unit {
     val icon: ImageVector = when (methodName.uppercase()) {
-        "EFECTIVO BS", "EFECTIVO $" -> Icons.Default.AttachMoney
+        "EFECTIVO BOLIVARES", "EFECTIVO USD" -> Icons.Default.Money
         "PAGO MOVIL" -> Icons.Default.QrCode
         "TRANSFERENCIA" -> Icons.Default.SwapHoriz
         "BINANCE" -> Icons.Default.CurrencyBitcoin
         "PAYPAL" -> Icons.Default.AccountBalanceWallet
         "ZELLE" -> Icons.Default.AttachMoney
-        "PUNTO DE VENTA" -> Icons.Default.CreditCard
+        "TDC" -> Icons.Default.CreditCard
         else -> Icons.Default.Payment
     }
 
@@ -34,14 +34,14 @@ fun iconForMethod(methodName: String, tint: Color): @Composable () -> Unit {
  */
 fun colorForMethod(methodName: String): Color {
     return when (methodName.uppercase()) {
-        "EFECTIVO BS" -> Color(0xFF4CAF50)
-        "EFECTIVO $" -> Color(0xFF81C784)
+        "EFECTIVO BOLIVARES" -> Color(0xFF009688)
+        "EFECTIVO USD" -> Color(0xFF4CCE51)
         "PAGO MOVIL" -> Color(0xFF00BCD4)
-        "TRANSFERENCIA" -> Color(0xFF3F51B5)
+        "TRANSFERENCIA" -> Color(0xFF0C33EA)
         "BINANCE" -> Color(0xFFFFC107)
         "PAYPAL" -> Color(0xFF2962FF)
         "ZELLE" -> Color(0xFF9C27B0)
-        "PUNTO DE VENTA" -> Color(0xFFFF9800)
+        "TDC" -> Color(0xFF673AB7)
         else -> Color.Gray
     }
 }
@@ -53,7 +53,7 @@ fun mapSummaryToCards(data: List<PaymentSummary>): List<PaymentMethodCard> {
     return data.map { item ->
         val methodName = item.methodName.uppercase()
         val color = colorForMethod(methodName)
-        val icon = iconForMethod(methodName, Color.White)
+        val icon = iconForMethod(methodName, Color(0xFFFCA311))
 
         PaymentMethodCard(
             name = item.methodName,

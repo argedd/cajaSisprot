@@ -20,11 +20,15 @@ import com.adminpay.caja.ui.presentation.box.components.PaymentMethodCardCompone
 import com.adminpay.caja.ui.presentation.box.components.PaymentMethodsBarChart
 import com.adminpay.caja.ui.presentation.box.components.TotalCard
 import com.adminpay.caja.ui.presentation.box.components.mapSummaryToCards
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun BoxScreen(viewModel: BoxViewModel = hiltViewModel()) {
     val summary by viewModel.summary.collectAsState()
-
+    val venezuelaZoneId = ZoneId.of("America/Caracas")
+    val today = ZonedDateTime.now(venezuelaZoneId).toLocalDate().format(DateTimeFormatter.ISO_DATE)
 
 
     LaunchedEffect(Unit) {
@@ -65,10 +69,10 @@ fun BoxScreen(viewModel: BoxViewModel = hiltViewModel()) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+            verticalArrangement = Arrangement.spacedBy(18.dp)
         ) {
             item {
-                Text("Resumen General", style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold))
+                Text("Resumen General del día $today", style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold))
                 Spacer(Modifier.height(8.dp))
 
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
