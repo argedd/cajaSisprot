@@ -16,7 +16,8 @@ fun PaymentSummaryDto.toDomain(): PaymentSummary = PaymentSummary(
 
 fun TotalSummaryDto.toDomain(): PaymentSummaryTotal = PaymentSummaryTotal(
     totalQuantity = totalQuantity,
-    totalAmount = totalAmount
+    totalAmount = totalAmount,
+    totalInvoices = totalInvoices
 )
 
 fun NewPaymentSummaryResponse.toDomain(): PaymentSummaryResultDomain =

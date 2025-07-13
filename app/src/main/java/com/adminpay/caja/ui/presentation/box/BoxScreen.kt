@@ -86,6 +86,7 @@ fun BoxScreen(viewModel: BoxViewModel = hiltViewModel()) {
         val paymentMethods = mapSummaryToCards(data.data)
         val totalAmount = data.total.totalAmount
         val totalTransactions = data.total.totalQuantity
+        val totalInvoices = data.total.totalInvoices
 
         Scaffold(
             containerColor = Color.White,
@@ -117,6 +118,7 @@ fun BoxScreen(viewModel: BoxViewModel = hiltViewModel()) {
                     Spacer(Modifier.height(8.dp))
 
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
+                        TotalCard(CardStyle.Dark, CardData("Facturas", 0f, totalInvoices), Modifier.weight(1f))
                         TotalCard(CardStyle.Dark, CardData("Transacciones", 0f, totalTransactions), Modifier.weight(1f))
                         TotalCard(CardStyle.Dark, CardData("Total Generado", totalAmount), Modifier.weight(1f))
                     }

@@ -4,7 +4,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.CreditCard
+import androidx.compose.material.icons.filled.FilePresent
 import androidx.compose.material.icons.filled.Money
+import androidx.compose.material.icons.filled.RequestPage
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -36,6 +38,7 @@ fun TotalCard(
     val verticalPadding = screen.heightPercentage(0.012f)
 
     val icon: ImageVector = when {
+        data.name.contains("Facturas", ignoreCase = true) -> Icons.Default.RequestPage
         data.name.contains("Transacciones", ignoreCase = true) -> Icons.Default.SwapHoriz
         data.name.contains("Total Generado", ignoreCase = true) -> Icons.Default.AttachMoney
         else -> Icons.Default.AttachMoney
@@ -77,8 +80,10 @@ fun TotalCard(
                 Text(
                     text = if (data.name.contains("Transacciones", true))
                         data.currentTotal.toString()
+                    else if (data.name.contains("Facturas", true))
+                        data.currentTotal.toString()
                     else
-                        "USD ${data.value.toInt()}",
+                        "USD ${data.value}",
                     fontSize = amountFontSize,
                     color = Color.White
                 )

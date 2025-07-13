@@ -14,9 +14,9 @@ import com.adminpay.caja.domain.model.paymentMethods.PaymentMethodCard
  */
 fun iconForMethod(methodName: String, tint: Color): @Composable () -> Unit {
     val icon: ImageVector = when (methodName.uppercase()) {
-        "EFECTIVO BOLIVARES", "EFECTIVO USD" -> Icons.Default.Money
-        "PAGO MOVIL" -> Icons.Default.QrCode
-        "TRANSFERENCIA" -> Icons.Default.SwapHoriz
+        "EFECTIVO BOLIVARES", "EFECTIVO USD" -> Icons.Default.Payments
+        "PAGO MOVIL" -> Icons.Default.PhoneIphone
+        "TRANSFERENCIA" -> Icons.Default.AccountBalance
         "BINANCE" -> Icons.Default.CurrencyBitcoin
         "PAYPAL" -> Icons.Default.AccountBalanceWallet
         "ZELLE" -> Icons.Default.AttachMoney

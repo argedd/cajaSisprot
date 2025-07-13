@@ -24,6 +24,7 @@ data class PaymentSummaryDto(
 )
 
 data class TotalSummaryDto(
+    @SerializedName("total_invoices") val totalInvoices: Int,
     @SerializedName("total_quantity") val totalQuantity: Int,
     @SerializedName("total_amount") val totalAmount: Float
 )

@@ -12,6 +12,7 @@ data class PaymentSummary(
 
 data class PaymentSummaryTotal(
     val totalQuantity: Int,
+    val totalInvoices: Int,
     val totalAmount: Float
 )
 
