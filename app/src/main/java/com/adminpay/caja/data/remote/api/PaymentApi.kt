@@ -1,10 +1,13 @@
 package com.adminpay.caja.data.remote.api
 
+import com.adminpay.caja.data.remote.dto.payment.get.PaymentListResponse
 import com.adminpay.caja.data.remote.dto.payment.register.RequestPaymentRegisterDto
 import com.adminpay.caja.data.remote.dto.payment.validate.request.RequestPaymentValidateDto
 import com.adminpay.caja.data.remote.dto.payment.validate.response.ResponsePaymentValidateDto
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface PaymentApi {
     @POST("api/gsoft/payments/validate/")
@@ -16,4 +19,11 @@ interface PaymentApi {
     suspend fun registerPayment(
         @Body request: RequestPaymentRegisterDto
     )
+
+        @GET("api/base/currency_rate/")
+        suspend fun getPaymentsOfDay(
+            @Query("group_by") group: String,
+            @Query("since") date: String,
+        ): PaymentListResponse
+
 }

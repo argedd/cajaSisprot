@@ -4,11 +4,14 @@ import com.adminpay.caja.data.remote.api.PaymentApi
 import com.adminpay.caja.data.remote.dto.payment.register.toDto
 import com.adminpay.caja.data.remote.dto.payment.validate.request.toDto
 import com.adminpay.caja.data.remote.dto.payment.validate.response.toDomain
+import com.adminpay.caja.domain.model.payment.get.Payment
 import com.adminpay.caja.domain.model.payment.register.RequestPaymentRegisterModel
 import com.adminpay.caja.domain.model.payment.validate.RequestPaymentValidateModel
 import com.adminpay.caja.domain.model.payment.validate.ResponsePaymentValidateModel
 import com.adminpay.caja.domain.repository.payment.PaymentRepository
 import javax.inject.Inject
+import com.adminpay.caja.data.remote.dto.payment.get.toDomain
+
 
 class PaymentRepositoryImpl @Inject constructor(
     private val api: PaymentApi
@@ -19,5 +22,14 @@ class PaymentRepositoryImpl @Inject constructor(
     }
     override suspend fun registerPayment(request: RequestPaymentRegisterModel) {
          api.registerPayment(request.toDto())
+    }
+
+    override suspend fun getPaymentsOfDay(group: String, date: String): List<Payment> {
+        val response = api.getPaymentsOfDay(
+            group = group,
+            date = date
+        )
+        val rawResults = response.results.flatten()
+        return rawResults.map { it.toDomain() }
     }
 }
