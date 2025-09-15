@@ -9,7 +9,12 @@ data class User(
     val referralCodeId: String,
     var idGsoft: Int,
     val office: Int,
-    val officeName: String,
+    val agencies: List<Agency>,
     val lastName: String,
     val isSuperuser: Boolean
+)
+
+data class Agency(
+    val agency: Int,
+    val agencyName: String
 )
