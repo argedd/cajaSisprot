@@ -17,7 +17,12 @@ data class UserDto(
     @SerializedName("referral_code_id") val referralCodeId: String,
     val office: Int,
     @SerializedName("id_gsoft") val idGsoft: Int,
-    @SerializedName("office_name") val officeName: String,
+    @SerializedName("agencies") val agencies: List<AgencyDto>,
     @SerializedName("last_name") val lastName: String,
     @SerializedName("is_superuser") val isSuperuser: Boolean
+)
+
+data class AgencyDto(
+    val agency: Int,
+    @SerializedName("agency_name") val agencyName: String
 )

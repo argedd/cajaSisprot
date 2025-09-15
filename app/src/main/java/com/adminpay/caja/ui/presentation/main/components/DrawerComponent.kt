@@ -84,21 +84,23 @@ fun DrawerContent(
 
         Column(modifier = Modifier.padding(spacing)) {
             if (user != null) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(bottom = spacing)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Apartment,
-                        contentDescription = "Sucursal",
-                        tint = Color.Gray,
-                        modifier = Modifier.size(iconSize)
-                    )
-                    Spacer(modifier = Modifier.width(spacing))
-                    Text(
-                        text = user.officeName,
-                        style = MaterialTheme.typography.bodySmall.copy(fontSize = textSize)
-                    )
+                user.agencies.forEach { agency ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(bottom = spacing)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Apartment,
+                            contentDescription = "Sucursal",
+                            tint = Color.Gray,
+                            modifier = Modifier.size(iconSize)
+                        )
+                        Spacer(modifier = Modifier.width(spacing))
+                        Text(
+                            text = agency.agencyName,
+                            style = MaterialTheme.typography.bodySmall.copy(fontSize = textSize)
+                        )
+                    }
                 }
 
                 Row(
