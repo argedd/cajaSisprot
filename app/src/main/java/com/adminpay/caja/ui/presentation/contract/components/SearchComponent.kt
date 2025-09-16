@@ -15,8 +15,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.adminpay.caja.utils.rememberScreenDimensions
+import com.adminpay.caja.utils.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,15 +31,13 @@ fun Buscador(
     val tipos = listOf("V", "E", "J", "G", "P")
     var expanded by remember { mutableStateOf(false) }
     val screen = rememberScreenDimensions()
+    val scale = screen.scaleFactor() // 🔑 Normalización por ancho
 
     val paddingHorizontal = screen.widthPercentage(0.2f)
     val fieldHeight = screen.heightPercentage(0.08f)
-    val dropdownWidth = screen.widthPercentage(0.08f)
+    val dropdownWidth = screen.widthPercentage(0.1f)
     val spacing = screen.widthPercentage(0.01f)
-
-    // Nuevas dimensiones para iconos y textos
-    val iconSize = screen.widthPercentage(0.022f)
-
+    val iconSize = (24 * scale).dp // 🔑 iconos adaptados por escala
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -47,7 +46,7 @@ fun Buscador(
             horizontal = paddingHorizontal
         )
     ) {
-        // 🟦 Menú desplegable de tipo
+        // 🟦 Menú desplegable
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = { expanded = !expanded },
@@ -62,7 +61,7 @@ fun Buscador(
                 label = {
                     Text(
                         "Tipo",
-                        fontSize = (screen.width.value * 0.012).sp
+                        fontSize = adaptiveFontSizeNew(screen, 10, 12, 14)
                     )
                 },
                 trailingIcon = {
@@ -71,7 +70,7 @@ fun Buscador(
                         modifier = Modifier.size(iconSize)
                     )
                 },
-                shape = RoundedCornerShape(screen.widthPercentage(0.03f)),
+                shape = RoundedCornerShape((12 * scale).dp),
                 colors = TextFieldDefaults.colors(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
@@ -79,15 +78,15 @@ fun Buscador(
                     unfocusedContainerColor = Color.White
                 ),
                 textStyle = LocalTextStyle.current.copy(
-                    fontSize = (screen.width.value * 0.015).sp
+                    fontSize = adaptiveFontSizeNew(screen, 12, 14, 16)
                 ),
                 modifier = Modifier
                     .menuAnchor()
                     .fillMaxHeight()
                     .border(
-                        screen.widthPercentage(0.0005f),
+                        (1 * scale).dp,
                         Color.LightGray,
-                        RoundedCornerShape(screen.widthPercentage(0.03f))
+                        RoundedCornerShape((12 * scale).dp)
                     )
             )
 
@@ -100,7 +99,7 @@ fun Buscador(
                         text = {
                             Text(
                                 text = tipo,
-                                fontSize = (screen.width.value * 0.02).sp
+                                fontSize = adaptiveFontSizeNew(screen, 12, 14, 16)
                             )
                         },
                         onClick = {
@@ -114,14 +113,14 @@ fun Buscador(
 
         Spacer(modifier = Modifier.width(spacing))
 
-        // 🧾 Campo de cédula o RIF
+        // 🧾 Campo cédula o RIF
         TextField(
             value = cedula,
             onValueChange = onCedulaChange,
             placeholder = {
                 Text(
                     "Cédula o RIF",
-                    fontSize = (screen.width.value * 0.014).sp
+                    fontSize = adaptiveFontSizeNew(screen, 12, 14, 16)
                 )
             },
             singleLine = true,
@@ -130,16 +129,15 @@ fun Buscador(
                     Icons.Default.Person,
                     contentDescription = null,
                     modifier = Modifier
-                        .padding(start = screen.widthPercentage(0.01f))
+                        .padding(start = (4 * scale).dp)
                         .size(iconSize)
                 )
             },
-
             trailingIcon = {
                 Box(
                     modifier = Modifier
-                        .padding(end = screen.widthPercentage(0.004f))
-                        .size(screen.widthPercentage(0.04f))
+                        .padding(end = (4 * scale).dp)
+                        .size((32 * scale).dp)
                         .clickable { onBuscarClick() },
                     contentAlignment = Alignment.Center
                 ) {
@@ -152,13 +150,13 @@ fun Buscador(
                             imageVector = Icons.Default.Search,
                             contentDescription = "Buscar",
                             tint = Color.White,
-                            modifier = Modifier.padding(screen.widthPercentage(0.01f))
+                            modifier = Modifier.padding((6 * scale).dp)
                         )
                     }
                 }
             },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-            shape = RoundedCornerShape(screen.widthPercentage(0.03f)),
+            shape = RoundedCornerShape((12 * scale).dp),
             colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
@@ -166,19 +164,16 @@ fun Buscador(
                 unfocusedContainerColor = Color.White
             ),
             textStyle = LocalTextStyle.current.copy(
-                fontSize = (screen.width.value * 0.014).sp
+                fontSize = adaptiveFontSizeNew(screen, 12, 14, 16)
             ),
             modifier = Modifier
                 .height(fieldHeight)
                 .weight(1f)
                 .border(
-                    screen.widthPercentage(0.0005f),
+                    (1 * scale).dp,
                     Color.LightGray,
-                    RoundedCornerShape(screen.widthPercentage(0.03f))
+                    RoundedCornerShape((12 * scale).dp)
                 )
         )
     }
 }
-
-
-

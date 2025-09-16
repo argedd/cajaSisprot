@@ -6,25 +6,17 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
-/**
- * Clase que contiene las dimensiones de la pantalla y métodos de ayuda
- */
 data class ScreenDimensions(
     val width: Dp,
     val height: Dp
 ) {
-    /**
-     * Calcula un porcentaje del ancho de pantalla
-     * @param percentage Porcentaje (0.0 a 1.0)
-     */
     fun widthPercentage(percentage: Float): Dp = width * percentage
-
-    /**
-     * Calcula un porcentaje del alto de pantalla
-     * @param percentage Porcentaje (0.0 a 1.0)
-     */
     fun heightPercentage(percentage: Float): Dp = height * percentage
+
+    // Factor relativo a un ancho base (ej. 800dp ~ tablet 8")
+    fun scaleFactor(baseWidth: Float = 800f): Float = width.value / baseWidth
 }
 
 /**
@@ -62,4 +54,27 @@ fun adaptiveFontSize(
         ScreenCategory.MEDIUM -> medium
         ScreenCategory.LARGE -> large
     }
+}
+
+@Composable
+fun adaptiveFontSizeNew(
+    screen: ScreenDimensions,
+    small: Int,
+    medium: Int,
+    large: Int
+): TextUnit {
+    return when (screen.getCategory()) {
+        ScreenCategory.SMALL -> small.sp
+        ScreenCategory.MEDIUM -> medium.sp
+        ScreenCategory.LARGE -> large.sp
+    }
+}
+
+@Composable
+fun adaptiveFontSizeScaled(
+    screen: ScreenDimensions,
+    base: Int = 14 // tamaño base
+): TextUnit {
+    val scale = screen.scaleFactor() // relativo a 800dp
+    return (base * scale).sp
 }

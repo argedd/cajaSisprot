@@ -125,7 +125,10 @@ fun EfectivoScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .heightIn(min = 100.dp, max = 220.dp)
+                            .heightIn(
+                                min = (screen.height.value * 0.15f).dp, // mínimo = 15% del alto
+                                max = (screen.height.value * 0.28f).dp  // máximo = 35% del alto
+                            )
                             .padding(top = 8.dp)
                     ) {
                         LazyColumn(modifier = Modifier.fillMaxSize()) {
@@ -184,7 +187,7 @@ fun EfectivoScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(4.dp))
         }
 
         // Botón fijo abajo

@@ -2,6 +2,8 @@ package com.adminpay.caja.ui.presentation.checkout.components.paymentMethods
 
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,6 +23,7 @@ import com.adminpay.caja.ui.presentation.checkout.components.paymentMethods.pos.
 import com.adminpay.caja.ui.presentation.components.AppModalComponent
 import com.adminpay.caja.utils.ScreenDimensions
 import com.adminpay.caja.utils.adaptiveFontSize
+import com.adminpay.caja.utils.adaptiveFontSizeNew
 import com.adminpay.caja.utils.rememberScreenDimensions
 
 @Composable
@@ -32,12 +35,7 @@ fun PaymentMethodsScreen(
 
     var selectedMethod by remember { mutableStateOf<PaymentMethod?>(null) }
     val showModal = selectedMethod != null
-    val fontSize = adaptiveFontSize(
-        screen = screen,
-        small = 12.sp,
-        medium = 20.sp,
-        large = 28.sp
-    )
+    val fontSize = adaptiveFontSizeNew(screen, 12, 18, 20)
 
     val paymentMethods = listOf(
         PaymentMethodUIModel(
@@ -62,7 +60,7 @@ fun PaymentMethodsScreen(
             details = "Débito Crédito",
             icon = R.drawable.tarjeta_icono,
 
-        )
+            )
     )
 
 
@@ -96,7 +94,8 @@ fun PaymentMethodsScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(24.dp),
+                    .padding(24.dp)
+                    .verticalScroll(rememberScrollState()), // ✅ scroll activado
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
@@ -131,20 +130,25 @@ fun PaymentMethodsScreen(
                                 selectedMethod = null
                             }
 
-                            PaymentMethod.MEDIOS_DIGITALES -> MedioDigitalScreen(sharedViewModel = sharedViewModel){
+                            PaymentMethod.MEDIOS_DIGITALES -> MedioDigitalScreen(sharedViewModel = sharedViewModel) {
                                 selectedMethod = null
                             }
-                            PaymentMethod.EFECTIVO -> EfectivoScreen(sharedViewModel = sharedViewModel, tasa = tasa){
+
+                            PaymentMethod.EFECTIVO -> EfectivoScreen(
+                                sharedViewModel = sharedViewModel,
+                                tasa = tasa
+                            ) {
                                 selectedMethod = null
                             }
-                            PaymentMethod.PUNTO_VENTA -> PosScreen(sharedViewModel = sharedViewModel){
+
+                            PaymentMethod.PUNTO_VENTA -> PosScreen(sharedViewModel = sharedViewModel) {
                                 selectedMethod = null
                             }
+
                             null -> {}
                         }
                     }
                 }
-
 
 
             }
