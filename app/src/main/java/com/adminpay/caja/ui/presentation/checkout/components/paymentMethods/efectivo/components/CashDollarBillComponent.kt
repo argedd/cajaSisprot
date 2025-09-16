@@ -63,8 +63,8 @@ fun CashDollarBillComponent(
                 expanded = expanded,
                 onExpandedChange = { expanded = !expanded },
                 modifier = Modifier
-                    .width(screen.widthPercentage(0.13f))
-                    .height(screen.heightPercentage(0.08f))
+                    .width(screen.widthPercentage(0.18f))
+                    .height(screen.heightPercentage(0.09f))
 
             ) {
                 TextField(

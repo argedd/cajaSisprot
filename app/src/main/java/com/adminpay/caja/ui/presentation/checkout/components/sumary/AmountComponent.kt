@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.adminpay.caja.utils.ScreenDimensions
+import com.adminpay.caja.utils.adaptiveFontSizeScaled
 
 @Composable
 fun AmountComponent(
@@ -30,9 +31,9 @@ fun AmountComponent(
     screen: ScreenDimensions
 ) {
     val horizontalPadding = 16.dp
-    val verticalPadding = 12.dp
+    val verticalPadding = 10.dp
     val iconSize = 24.dp
-    val textSize = 16.sp
+    val textSize = adaptiveFontSizeScaled(screen, base = 10)
 
     Surface(
         modifier = Modifier
